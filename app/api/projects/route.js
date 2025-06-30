@@ -2,10 +2,30 @@
 import { dbConnect } from "@/lib/dbConnect";
 import Project from "@/lib/models/Project";
 
-export async function GET() {
+export async function GET(req) {
   await dbConnect();
-  const projects = await Project.find({});
-  return Response.json(projects);
+
+  const url = new URL(req.url);
+  const search = url.searchParams.get('search') || '';
+  const status = url.searchParams.get('status');
+  const page = parseInt(url.searchParams.get('page') || '1');
+  const limit = parseInt(url.searchParams.get('limit') || '10');
+
+  const query = {
+    ...(search && { title: { $regex: search, $options: 'i' } }),
+    ...(status && { status }),
+  };
+
+  const totalCount = await Project.countDocuments(query);
+  const projects = await Project.find(query)
+    .skip((page - 1) * limit)
+    .limit(limit);
+
+  return Response.json({
+    projects,
+    totalPages: Math.ceil(totalCount / limit),
+    totalCount,
+  });
 }
 
 export async function POST(req) {
