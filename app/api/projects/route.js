@@ -16,15 +16,21 @@ export async function GET(req) {
     ...(status && { status }),
   };
 
-  const totalCount = await Project.countDocuments(query);
-  const projects = await Project.find(query)
-    .skip((page - 1) * limit)
-    .limit(limit);
+  const [totalCount, activeCount, completedCount, projects] = await Promise.all([
+    Project.countDocuments(query),
+    Project.countDocuments({ status: 'Active' }),
+    Project.countDocuments({ status: 'completed' }),
+    Project.find(query)
+      .skip((page - 1) * limit)
+      .limit(limit),
+  ]);
 
   return Response.json({
     projects,
     totalPages: Math.ceil(totalCount / limit),
     totalCount,
+    activeCount,
+    completedCount,
   });
 }
 
