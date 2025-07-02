@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Trash2, Pencil, Eye, Plus } from 'lucide-react'
 
-// Local UI Components
+
 const Table = ({ children }) => <div className="w-full overflow-x-auto border rounded-md">{children}</div>
 const TableHeader = ({ children }) => <thead className="bg-gray-100 text-gray-700">{children}</thead>
 const TableBody = ({ children }) => <tbody className="divide-y divide-gray-200">{children}</tbody>
