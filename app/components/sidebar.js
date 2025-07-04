@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X, LogOut } from 'lucide-react'
+import { Menu, X, LogOut, ChevronDown, ChevronUp, Users } from 'lucide-react'
 import {
   SignedIn,
   UserButton,
@@ -20,8 +20,15 @@ const navItems = [
   { name: 'Settings', href: '/settings' },
 ]
 
+const volunteerNavItems = [
+  { name: 'Add Position', href: '/volunteers/add-position' },
+  { name: 'View Positions', href: '/volunteers/positions' },
+  { name: 'View Volunteers', href: '/volunteers/list' },
+]
+
 export default function Sidebar({ children }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [volDropdown, setVolDropdown] = useState(false)
   const { user } = useUser()
   const pathname = usePathname()
 
@@ -29,6 +36,9 @@ export default function Sidebar({ children }) {
     pathname === href
       ? 'bg-gray-300 text-black font-semibold'
       : 'text-white hover:bg-black font-bold'
+
+  // Highlight dropdown if any of its items are active
+  const isVolunteerActive = volunteerNavItems.some(item => pathname === item.href)
 
   return (
     <div className="flex min-h-screen ">
@@ -40,7 +50,7 @@ export default function Sidebar({ children }) {
             {navItems.map((item) => (
               <Link key={item.name} href={item.href}>
                 <div
-                  className={`rounded-md px-3  mt-4 py-2 cursor-pointer font-medium transition ${getNavClass(
+                  className={`rounded-md px-3 mt-4 py-2 cursor-pointer font-medium transition ${getNavClass(
                     item.href
                   )}`}
                 >
@@ -48,6 +58,37 @@ export default function Sidebar({ children }) {
                 </div>
               </Link>
             ))}
+            {/* Volunteers Dropdown */}
+            <div className="mt-4">
+              <button
+                onClick={() => setVolDropdown((v) => !v)}
+                className={`flex items-center uppercase gap-2 w-full rounded-md px-3 py-2 font-bold transition ${
+                  isVolunteerActive
+                    ? 'bg-gray-300 text-black'
+                    : 'text-white hover:bg-black'
+                }`}
+              >
+                Volunteers
+                {volDropdown || isVolunteerActive ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              </button>
+              {(volDropdown || isVolunteerActive) && (
+                <div className="ml-6 mt-2 flex flex-col gap-1">
+                  {volunteerNavItems.map((item) => (
+                    <Link key={item.name} href={item.href}>
+                      <div
+                        className={`rounded px-2 py-1 cursor-pointer transition ${
+                          pathname === item.href
+                            ? 'bg-gray-300 text-black font-semibold'
+                            : 'hover:bg-gray-200 text-white'
+                        }`}
+                      >
+                        {item.name}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           </nav>
         </div>
 
@@ -61,8 +102,8 @@ export default function Sidebar({ children }) {
             </div>
             <SignOutButton>
               <button className="w-full flex items-center gap-3 text-white hover:bg-red-100 px-2 py-2 rounded-md transition font-medium bg-red-600">
-  <LogOut size={18} /> Log out
-</button>
+                <LogOut size={18} /> Log out
+              </button>
             </SignOutButton>
           </SignedIn>
         </div>
@@ -93,6 +134,39 @@ export default function Sidebar({ children }) {
                   </div>
                 </Link>
               ))}
+              {/* Volunteers Dropdown Mobile */}
+              <div className="mt-4">
+                <button
+                  onClick={() => setVolDropdown((v) => !v)}
+                  className={`flex items-center gap-2 w-full rounded-md px-3 py-2 font-bold transition ${
+                    isVolunteerActive
+                      ? 'bg-gray-300 text-black'
+                      : 'text-white hover:bg-gray-700'
+                  }`}
+                >
+                  <Users size={18} />
+                  Volunteers
+                  {volDropdown || isVolunteerActive ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </button>
+                {(volDropdown || isVolunteerActive) && (
+                  <div className="ml-6 mt-2 flex flex-col gap-1">
+                    {volunteerNavItems.map((item) => (
+                      <Link key={item.name} href={item.href}>
+                        <div
+                          onClick={() => setIsOpen(false)}
+                          className={`rounded px-2 py-1 cursor-pointer transition ${
+                            pathname === item.href
+                              ? 'bg-gray-300 text-black font-semibold'
+                              : 'hover:bg-gray-200 text-black'
+                          }`}
+                        >
+                          {item.name}
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
             </nav>
           </div>
           <div className="mt-8">
