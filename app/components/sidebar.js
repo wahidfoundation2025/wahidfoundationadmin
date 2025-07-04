@@ -17,7 +17,6 @@ const navItems = [
   { name: 'Donors', href: '/donors' },
   { name: 'Donation', href: '/donation' },
   { name: 'Impact', href: '/impact' },
-  { name: 'Settings', href: '/settings' },
 ]
 
 const volunteerNavItems = [
@@ -47,6 +46,7 @@ export default function Sidebar({ children }) {
         <div>
           <div className="text-xl font-bold mb-6 color-black pl-3 text-white uppercase">Wahid</div>
           <nav className="space-y-5 uppercase ">
+            {/* Render navItems except Settings */}
             {navItems.map((item) => (
               <Link key={item.name} href={item.href}>
                 <div
@@ -58,7 +58,7 @@ export default function Sidebar({ children }) {
                 </div>
               </Link>
             ))}
-            {/* Volunteers Dropdown */}
+            {/* Volunteers Dropdown before Settings */}
             <div className="mt-4">
               <button
                 onClick={() => setVolDropdown((v) => !v)}
@@ -89,6 +89,16 @@ export default function Sidebar({ children }) {
                 </div>
               )}
             </div>
+            {/* Settings always last */}
+            <Link href="/settings">
+              <div
+                className={`rounded-md px-3 mt-4 py-2 cursor-pointer font-medium transition ${getNavClass(
+                  '/settings'
+                )}`}
+              >
+                Settings
+              </div>
+            </Link>
           </nav>
         </div>
 
@@ -122,6 +132,7 @@ export default function Sidebar({ children }) {
           <div>
             <div className="text-xl font-bold mb-6 text-white mt-10 ml-3">Wahid</div>
             <nav className="space-y-2">
+              {/* Render navItems except Settings */}
               {navItems.map((item) => (
                 <Link key={item.name} href={item.href}>
                   <div
@@ -134,7 +145,7 @@ export default function Sidebar({ children }) {
                   </div>
                 </Link>
               ))}
-              {/* Volunteers Dropdown Mobile */}
+              {/* Volunteers Dropdown before Settings */}
               <div className="mt-4">
                 <button
                   onClick={() => setVolDropdown((v) => !v)}
@@ -167,6 +178,17 @@ export default function Sidebar({ children }) {
                   </div>
                 )}
               </div>
+              {/* Settings always last */}
+              <Link href="/settings">
+                <div
+                  onClick={() => setIsOpen(false)}
+                  className={`rounded-md px-3 mt-4 py-2 cursor-pointer font-medium transition ${getNavClass(
+                    '/settings'
+                  )}`}
+                >
+                  Settings
+                </div>
+              </Link>
             </nav>
           </div>
           <div className="mt-8">
