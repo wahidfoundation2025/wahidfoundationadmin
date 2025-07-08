@@ -2,12 +2,12 @@
 import { useState } from "react"
 import HomeHeroSectionEditor from "../components/homeherosection"
 import HomeImpactSectionEditor from "../components/homeimpactsection"
+import HomeQuoteSectionEditor from "../components/homequotesection"
 
 const sections = [
   { name: "Hero", key: "hero" },
   { name: "Impact", key: "impact" },
   { name: "Tag", key: "tag" },
-  { name: "Footer", key: "footer" },
 ]
 
 export default function HomeCMSPage() {
@@ -42,13 +42,7 @@ export default function HomeCMSPage() {
         {activeSection === "tag" && (
           <div>
             <h2 className="text-2xl font-bold mb-4">Tag Section</h2>
-            <p>Showcase and edit your homepage taglines or tags here.</p>
-          </div>
-        )}
-        {activeSection === "footer" && (
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Footer Section</h2>
-            <p>Showcase and edit your homepage footer content here.</p>
+            <HomeQuoteSectionEditor />
           </div>
         )}
       </div>
