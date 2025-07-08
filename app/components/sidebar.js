@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X, LogOut, ChevronDown, ChevronUp, Users } from 'lucide-react'
+import { Menu, X, LogOut, ChevronDown, ChevronUp, Users, LayoutDashboard, FolderKanban, Handshake, BookOpen, Settings as SettingsIcon, Database } from 'lucide-react'
 import {
   SignedIn,
   UserButton,
@@ -11,23 +11,24 @@ import {
   SignOutButton,
 } from '@clerk/nextjs'
 
-const navItems = [
-  { name: 'Dashboard', href: '/' },
-  { name: 'Projects', href: '/projects' },
-  { name: 'Donors', href: '/donors' },
-  { name: 'Donation', href: '/donation' },
-  { name: 'Impact', href: '/impact' },
+const cmsNavItems = [
+  { name: 'Home', href: '/home', icon: <LayoutDashboard size={18} /> },
+  { name: 'Projects', href: '/projects', icon: <FolderKanban size={18} /> },
+  { name: 'Impact', href: '/impact', icon: <BookOpen size={18} /> },
+  { name: 'Volunteers', href: '/volunteers/list', icon: <Users size={18} /> },
 ]
 
-const volunteerNavItems = [
-  { name: 'Add Position', href: '/volunteers/add-position' },
-  { name: 'View Positions', href: '/volunteers/positions' },
-  { name: 'View Volunteers', href: '/volunteers/list' },
+const navItems = [
+  { name: 'Dashboard', href: '/', icon: <LayoutDashboard size={18} /> },
+  { name: 'CMS', icon: <Database size={18} /> }, // Placeholder for dropdown
+  { name: 'Donation', href: '/donation', icon: <Handshake size={18} /> },
+  { name: 'Donors', href: '/donors', icon: <Users size={18} /> },
+  { name: 'Settings', href: '/settings', icon: <SettingsIcon size={18} /> },
 ]
 
 export default function Sidebar({ children }) {
   const [isOpen, setIsOpen] = useState(false)
-  const [volDropdown, setVolDropdown] = useState(false)
+  const [cmsDropdown, setCmsDropdown] = useState(false)
   const { user } = useUser()
   const pathname = usePathname()
 
@@ -37,7 +38,7 @@ export default function Sidebar({ children }) {
       : 'text-white hover:bg-black font-bold'
 
   // Highlight dropdown if any of its items are active
-  const isVolunteerActive = volunteerNavItems.some(item => pathname === item.href)
+  const isCmsActive = cmsNavItems.some(item => pathname.startsWith(item.href))
 
   return (
     <div className="flex min-h-screen ">
@@ -46,58 +47,39 @@ export default function Sidebar({ children }) {
         <div>
           <div className="text-xl font-bold mb-6 color-black pl-3 text-white uppercase">Wahid</div>
           <nav className="space-y-5 uppercase ">
-            {/* Render navItems except Settings */}
-            {navItems.map((item) => (
-              <Link key={item.name} href={item.href}>
-                <div
-                  className={`rounded-md px-3 mt-4 py-2 cursor-pointer font-medium transition ${getNavClass(
-                    item.href
-                  )}`}
-                >
-                  {item.name}
-                </div>
-              </Link>
-            ))}
-            {/* Volunteers Dropdown before Settings */}
+            {/* Dashboard */}
+            <Link href="/">
+              <div className={`flex items-center gap-2 rounded-md px-3 mt-4 py-2 cursor-pointer font-medium transition ${getNavClass('/')}`}>{navItems[0].icon} {navItems[0].name}</div>
+            </Link>
+            {/* CMS Dropdown */}
             <div className="mt-4">
               <button
-                onClick={() => setVolDropdown((v) => !v)}
-                className={`flex items-center uppercase gap-2 w-full rounded-md px-3 py-2 font-bold transition ${
-                  isVolunteerActive
-                    ? 'bg-gray-300 text-black'
-                    : 'text-white hover:bg-black'
-                }`}
+                onClick={() => setCmsDropdown((v) => !v)}
+                className={`flex items-center gap-2 w-full rounded-md px-3 py-2 font-bold transition ${isCmsActive ? 'bg-gray-300 text-black' : 'text-white hover:bg-black'}`}
               >
-                Volunteers
-                {volDropdown || isVolunteerActive ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                {navItems[1].icon} CMS {cmsDropdown || isCmsActive ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
               </button>
-              {(volDropdown || isVolunteerActive) && (
+              {(cmsDropdown || isCmsActive) && (
                 <div className="ml-6 mt-2 flex flex-col gap-1">
-                  {volunteerNavItems.map((item) => (
+                  {cmsNavItems.map((item) => (
                     <Link key={item.name} href={item.href}>
-                      <div
-                        className={`rounded px-2 py-1 cursor-pointer transition ${
-                          pathname === item.href
-                            ? 'bg-gray-300 text-black font-semibold'
-                            : 'hover:bg-gray-200 text-white'
-                        }`}
-                      >
-                        {item.name}
-                      </div>
+                      <div className={`flex items-center gap-2 rounded px-2 py-1 cursor-pointer transition ${pathname.startsWith(item.href) ? 'bg-gray-300 text-black font-semibold' : 'hover:bg-gray-200 text-white'}`}>{item.icon} {item.name}</div>
                     </Link>
                   ))}
                 </div>
               )}
             </div>
-            {/* Settings always last */}
+            {/* Donation */}
+            <Link href="/donation">
+              <div className={`flex items-center gap-2 rounded-md px-3 mt-4 py-2 cursor-pointer font-medium transition ${getNavClass('/donation')}`}>{navItems[2].icon} {navItems[2].name}</div>
+            </Link>
+            {/* Donors */}
+            <Link href="/donors">
+              <div className={`flex items-center gap-2 rounded-md px-3 mt-4 py-2 cursor-pointer font-medium transition ${getNavClass('/donors')}`}>{navItems[3].icon} {navItems[3].name}</div>
+            </Link>
+            {/* Settings */}
             <Link href="/settings">
-              <div
-                className={`rounded-md px-3 mt-4 py-2 cursor-pointer font-medium transition ${getNavClass(
-                  '/settings'
-                )}`}
-              >
-                Settings
-              </div>
+              <div className={`flex items-center gap-2 rounded-md px-3 mt-4 py-2 cursor-pointer font-medium transition ${getNavClass('/settings')}`}>{navItems[4].icon} {navItems[4].name}</div>
             </Link>
           </nav>
         </div>
@@ -132,62 +114,39 @@ export default function Sidebar({ children }) {
           <div>
             <div className="text-xl font-bold mb-6 text-white mt-10 ml-3">Wahid</div>
             <nav className="space-y-2">
-              {/* Render navItems except Settings */}
-              {navItems.map((item) => (
-                <Link key={item.name} href={item.href}>
-                  <div
-                    onClick={() => setIsOpen(false)}
-                    className={`rounded-md px-3 py-2 cursor-pointer font-medium transition ${getNavClass(
-                      item.href
-                    )}`}
-                  >
-                    {item.name}
-                  </div>
-                </Link>
-              ))}
-              {/* Volunteers Dropdown before Settings */}
+              {/* Dashboard */}
+              <Link href="/">
+                <div onClick={() => setIsOpen(false)} className={`flex items-center gap-2 rounded-md px-3 py-2 cursor-pointer font-medium transition ${getNavClass('/')}`}>{navItems[0].icon} {navItems[0].name}</div>
+              </Link>
+              {/* CMS Dropdown */}
               <div className="mt-4">
                 <button
-                  onClick={() => setVolDropdown((v) => !v)}
-                  className={`flex items-center gap-2 w-full rounded-md px-3 py-2 font-bold transition ${
-                    isVolunteerActive
-                      ? 'bg-gray-300 text-black'
-                      : 'text-white hover:bg-gray-700'
-                  }`}
+                  onClick={() => setCmsDropdown((v) => !v)}
+                  className={`flex items-center gap-2 w-full rounded-md px-3 py-2 font-bold transition ${isCmsActive ? 'bg-gray-300 text-black' : 'text-white hover:bg-gray-700'}`}
                 >
-                  <Users size={18} />
-                  Volunteers
-                  {volDropdown || isVolunteerActive ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  {navItems[1].icon} CMS {cmsDropdown || isCmsActive ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                 </button>
-                {(volDropdown || isVolunteerActive) && (
+                {(cmsDropdown || isCmsActive) && (
                   <div className="ml-6 mt-2 flex flex-col gap-1">
-                    {volunteerNavItems.map((item) => (
+                    {cmsNavItems.map((item) => (
                       <Link key={item.name} href={item.href}>
-                        <div
-                          onClick={() => setIsOpen(false)}
-                          className={`rounded px-2 py-1 cursor-pointer transition ${
-                            pathname === item.href
-                              ? 'bg-gray-300 text-black font-semibold'
-                              : 'hover:bg-gray-200 text-black'
-                          }`}
-                        >
-                          {item.name}
-                        </div>
+                        <div onClick={() => setIsOpen(false)} className={`flex items-center gap-2 rounded px-2 py-1 cursor-pointer transition ${pathname.startsWith(item.href) ? 'bg-gray-300 text-black font-semibold' : 'hover:bg-gray-200 text-black'}`}>{item.icon} {item.name}</div>
                       </Link>
                     ))}
                   </div>
                 )}
               </div>
-              {/* Settings always last */}
+              {/* Donation */}
+              <Link href="/donation">
+                <div onClick={() => setIsOpen(false)} className={`flex items-center gap-2 rounded-md px-3 mt-4 py-2 cursor-pointer font-medium transition ${getNavClass('/donation')}`}>{navItems[2].icon} {navItems[2].name}</div>
+              </Link>
+              {/* Donors */}
+              <Link href="/donors">
+                <div onClick={() => setIsOpen(false)} className={`flex items-center gap-2 rounded-md px-3 mt-4 py-2 cursor-pointer font-medium transition ${getNavClass('/donors')}`}>{navItems[3].icon} {navItems[3].name}</div>
+              </Link>
+              {/* Settings */}
               <Link href="/settings">
-                <div
-                  onClick={() => setIsOpen(false)}
-                  className={`rounded-md px-3 mt-4 py-2 cursor-pointer font-medium transition ${getNavClass(
-                    '/settings'
-                  )}`}
-                >
-                  Settings
-                </div>
+                <div onClick={() => setIsOpen(false)} className={`flex items-center gap-2 rounded-md px-3 mt-4 py-2 cursor-pointer font-medium transition ${getNavClass('/settings')}`}>{navItems[4].icon} {navItems[4].name}</div>
               </Link>
             </nav>
           </div>
