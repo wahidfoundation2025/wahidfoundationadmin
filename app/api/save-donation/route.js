@@ -1,5 +1,6 @@
 import { dbConnect } from '../../../lib/dbConnect'
 import Donation from '../../../lib/models/donation'
+import Donor from '../../../lib/models/donor'
 
 export async function OPTIONS() {
   return new Response(null, {
@@ -28,6 +29,28 @@ export async function POST(req) {
   await dbConnect()
   const data = await req.json()
   const donation = await Donation.create(data)
+
+  // Donor logic
+  let donor = await Donor.findOne({ email: data.email })
+  if (donor) {
+    donor.totalDonated += data.amount
+    if (data.projectId && (!donor.projectsDonatedTo || !donor.projectsDonatedTo.includes(data.projectId))) {
+      donor.totalProjects += 1
+      donor.projectsDonatedTo = donor.projectsDonatedTo || []
+      donor.projectsDonatedTo.push(data.projectId)
+    }
+    await donor.save()
+  } else {
+    donor = await Donor.create({
+      name: data.name,
+      email: data.email,
+      profilePicture: '', // Set if available
+      totalDonated: data.amount,
+      totalProjects: data.projectId ? 1 : 0,
+      projectsDonatedTo: data.projectId ? [data.projectId] : [],
+    })
+  }
+
   return new Response(JSON.stringify(donation), {
     status: 201,
     headers: {
