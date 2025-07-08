@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react"
 import HomeHeroSectionEditor from "../components/homeherosection"
+import HomeImpactSectionEditor from "../components/homeimpactsection"
 
 const sections = [
   { name: "Hero", key: "hero" },
@@ -35,7 +36,7 @@ export default function HomeCMSPage() {
         {activeSection === "impact" && (
           <div>
             <h2 className="text-2xl font-bold mb-4">Impact Section</h2>
-            <p>Showcase and edit your homepage impact content here.</p>
+            <HomeImpactSectionEditor />
           </div>
         )}
         {activeSection === "tag" && (
