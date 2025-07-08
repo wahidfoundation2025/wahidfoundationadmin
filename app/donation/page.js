@@ -3,27 +3,43 @@ import { useEffect, useState } from 'react'
 
 export default function DonationPage() {
   const [donations, setDonations] = useState([])
+  const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function fetchDonations() {
+    async function fetchAll() {
       setLoading(true)
-      const res = await fetch('/api/save-donation')
-      const data = await res.json()
-      setDonations(data)
+      const [donRes, projRes] = await Promise.all([
+        fetch('/api/save-donation'),
+        fetch('/api/projects'),
+      ])
+      const donations = await donRes.json()
+
+      const projects = await projRes.json()
+      console.log('Projects:', projects)
+      setDonations(donations)
+      setProjects(projects.projects || projects) 
       setLoading(false)
     }
-    fetchDonations()
+    fetchAll()
   }, [])
 
+  // Helper to get project name from id
+  const getProjectName = (id) => {
+    if (!id) return '-'
+    console.log(id)
+    const proj = projects.find((p) => p._id === id)
+    return proj ? proj.title : id
+  }
+
   return (
-    <div className="min-h-screen w-full bg-gray-100 flex flex-col py-10 px-4">
-      <div className="w-full max-w-6xl mx-auto flex-1 flex flex-col">
+    <div className="min-h-screen w-full  flex flex-col py-10 px-4">
+      <div className="w-full max-w-6xl flex-1 flex flex-col">
         {/* Heading */}
-        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">Donation Records</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center uppercase">Donation Records</h1>
 
         {/* Card Container */}
-        <div className="bg-white rounded-xl shadow-md p-6 flex-1 flex flex-col">
+        <div className="bg-white rounded-xl p-3 flex-1 flex flex-col">
           {loading ? (
             <div className="flex-1 flex items-center justify-center text-gray-500 text-lg">
               Loading...
@@ -58,7 +74,7 @@ export default function DonationPage() {
                       <td className="px-4 py-2 border">₹{donation.amount}</td>
                       <td className="px-4 py-2 border">{donation.donationType}</td>
                       <td className="px-4 py-2 border">{donation.donationFrequency}</td>
-                      <td className="px-4 py-2 border">{donation.projectId || '-'}</td>
+                      <td className="px-4 py-2 border">{getProjectName(donation.projectId)}</td>
                       <td className="px-4 py-2 border">
                         {donation.paymentId ? (
                           <span className="text-green-600 font-semibold">Success</span>
