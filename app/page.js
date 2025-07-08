@@ -44,13 +44,13 @@ export default function DashboardPage() {
     },
     {
       title: 'Total Donors',
-      value: 128, // dummy
+      value: 0, // dummy
       icon: <Users className="text-blue-600 w-6 h-6" />,
       bg: 'bg-blue-100',
     },
     {
       title: 'Total Donations',
-      value: 243, // dummy
+      value: 0, // dummy
       icon: <CheckCircle className="text-yellow-600 w-6 h-6" />,
       bg: 'bg-yellow-100',
     },
@@ -76,11 +76,11 @@ export default function DashboardPage() {
 
   // Dummy project status breakdown
   const projectPieData = {
-    labels: ['Active', 'Completed', 'Pending'],
+    labels: ['Active', 'Completed'],
     datasets: [
       {
-        data: [summary.activeCount, summary.completedCount, 5], // Assume 5 pending
-        backgroundColor: ['#34d399', '#a78bfa', '#facc15'], // Tailwind green/purple/yellow
+        data: [summary.activeCount, summary.completedCount], // Assume 5 pending
+        backgroundColor: ['#34d399', '#a78bfa'], // Tailwind green/purple/yellow
       },
     ],
   }
