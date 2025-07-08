@@ -114,6 +114,21 @@ export default function EditProjectPage({ params }) {
       <h1 className="text-3xl font-bold mb-6">Edit Project</h1>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
+          {/* Status Dropdown */}
+          <label className="block font-medium">Status</label>
+          <select
+            name="status"
+            value={form.status}
+            onChange={handleChange}
+            className="w-full border px-3 py-2 rounded"
+            required
+          >
+            <option value="Active">Active</option>
+            <option value="Completed">Completed</option>
+            <option value="Upcoming">Upcoming</option>
+            <option value="Draft">Draft</option>
+          </select>
+
           <label className="block font-medium">Title</label>
           <input name="title" value={form.title} onChange={handleChange} placeholder="Title" className="w-full border px-3 py-2 rounded" required />
 

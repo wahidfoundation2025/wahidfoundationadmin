@@ -128,6 +128,7 @@ export default function CreateProjectPage() {
             <option value="Active">Active</option>
             <option value="Completed">Completed</option>
             <option value="Upcoming">Upcoming</option>
+             <option value="Draft">Draft</option>
           </select>
 
           <div className="space-y-2">
