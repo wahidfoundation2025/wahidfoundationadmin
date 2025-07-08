@@ -20,18 +20,47 @@ export default function DashboardPage() {
   const [summary, setSummary] = useState({
     activeCount: 0,
     completedCount: 0,
+    totalDonors: 0,
+    totalDonations: 0,
+    monthlyDonations: [],
+    months: [],
   })
 
   useEffect(() => {
     async function fetchData() {
-      const res = await fetch('/api/projects')
-      const data = await res.json()
+      const [projectRes, donorRes, donationRes] = await Promise.all([
+        fetch('/api/projects'),
+        fetch('/api/donors'),
+        fetch('/api/save-donation'),
+      ])
+      const projectData = await projectRes.json()
+      const donorData = await donorRes.json()
+      const donationData = await donationRes.json()
+
+      // Calculate monthly donations
+      const monthly = {}
+      const months = []
+      donationData.forEach((don) => {
+        const date = new Date(don.createdAt)
+        const key = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`
+        if (!monthly[key]) {
+          monthly[key] = 0
+          months.push(key)
+        }
+        monthly[key] += don.amount || 0
+      })
+      months.sort()
+      const monthlyDonations = months.map((m) => monthly[m])
+
       setSummary({
-        activeCount: data.activeCount,
-        completedCount: data.completedCount,
+        activeCount: projectData.activeCount,
+        completedCount: projectData.completedCount,
+        totalDonors: donorData.length,
+        totalDonations: donationData.reduce((sum, d) => sum + (d.amount || 0), 0),
+        monthlyDonations,
+        months,
       })
     }
-
     fetchData()
   }, [])
 
@@ -44,13 +73,13 @@ export default function DashboardPage() {
     },
     {
       title: 'Total Donors',
-      value: 0, // dummy
+      value: summary.totalDonors,
       icon: <Users className="text-blue-600 w-6 h-6" />,
       bg: 'bg-blue-100',
     },
     {
       title: 'Total Donations',
-      value: 0, // dummy
+      value: `₹${summary.totalDonations}`,
       icon: <CheckCircle className="text-yellow-600 w-6 h-6" />,
       bg: 'bg-yellow-100',
     },
@@ -62,25 +91,23 @@ export default function DashboardPage() {
     },
   ]
 
-  // Dummy donation data (total donations per month)
   const donationBarData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    labels: summary.months,
     datasets: [
       {
         label: 'Donations (in ₹)',
-        data: [10000, 15000, 8000, 20000, 12000, 17000],
-        backgroundColor: 'rgba(59, 130, 246, 0.6)', // Tailwind blue-500
+        data: summary.monthlyDonations,
+        backgroundColor: 'rgba(59, 130, 246, 0.6)',
       },
     ],
   }
 
-  // Dummy project status breakdown
   const projectPieData = {
     labels: ['Active', 'Completed'],
     datasets: [
       {
-        data: [summary.activeCount, summary.completedCount], // Assume 5 pending
-        backgroundColor: ['#34d399', '#a78bfa'], // Tailwind green/purple/yellow
+        data: [summary.activeCount, summary.completedCount],
+        backgroundColor: ['#34d399', '#a78bfa'],
       },
     ],
   }
