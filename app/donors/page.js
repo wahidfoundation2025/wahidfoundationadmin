@@ -64,7 +64,7 @@ export default function DonorsPage() {
               <table className="min-w-full table-auto text-sm">
                 <thead className="bg-gray-100 text-gray-700 font-semibold">
                   <tr>
-                    <th className="px-4 py-3 border">Profile</th>
+                    {/* <th className="px-4 py-3 border">Profile</th> */}
                     <th className="px-4 py-3 border">Name</th>
                     <th className="px-4 py-3 border">Email</th>
                     <th className="px-4 py-3 border">Total Donated</th>
@@ -75,13 +75,7 @@ export default function DonorsPage() {
                 <tbody className="text-gray-800">
                   {donors.map((donor) => (
                     <tr key={donor._id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-4 py-2 border text-center">
-                        {donor.profilePicture ? (
-                          <img src={donor.profilePicture} alt={donor.name} className="w-10 h-10 rounded-full object-cover mx-auto" />
-                        ) : (
-                          <UserButton userId={donor.email} />
-                        )}
-                      </td>
+                      {/* Profile picture removed */}
                       <td className="px-4 py-2 border">{donor.name}</td>
                       <td className="px-4 py-2 border">{donor.email}</td>
                       <td className="px-4 py-2 border">₹{donor.totalDonated}</td>

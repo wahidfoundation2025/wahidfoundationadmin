@@ -34,6 +34,11 @@ export async function POST(req) {
   let donor = await Donor.findOne({ email: data.email })
   if (donor) {
     donor.totalDonated += data.amount
+    donor.donations = donor.donations || []
+    // Add donationId if not already present
+    if (!donor.donations.some((id) => id.toString() === donation._id.toString())) {
+      donor.donations.push(donation._id)
+    }
     if (data.projectId && (!donor.projectsDonatedTo || !donor.projectsDonatedTo.includes(data.projectId))) {
       donor.totalProjects += 1
       donor.projectsDonatedTo = donor.projectsDonatedTo || []
@@ -48,6 +53,7 @@ export async function POST(req) {
       totalDonated: data.amount,
       totalProjects: data.projectId ? 1 : 0,
       projectsDonatedTo: data.projectId ? [data.projectId] : [],
+      donations: [donation._id],
     })
   }
 
