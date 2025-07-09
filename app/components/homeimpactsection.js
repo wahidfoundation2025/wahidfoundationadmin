@@ -78,7 +78,7 @@ export default function HomeImpactSectionEditor() {
 
   return (
     <div className="bg-white p-6 rounded shadow text-black min-h-screen">
-      <h2 className="text-2xl font-bold mb-4">Impact Section Editor</h2>
+      <h2 className="text-2xl font-semibold mb-4">Impact Section Editor</h2>
       {edit ? (
         <div className="space-y-6">
           <div>

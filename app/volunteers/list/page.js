@@ -82,7 +82,7 @@ export default function VolunteerListPage() {
             >
               &times;
             </button>
-            <h2 className="text-xl font-bold text-gray-800 mb-4">{selected.name}</h2>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">{selected.name}</h2>
             <div className="mb-2">
               <span className="font-semibold text-gray-700">Email:</span> {selected.email}
             </div>

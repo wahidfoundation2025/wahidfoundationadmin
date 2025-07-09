@@ -112,7 +112,7 @@ export default function CreateProjectPage() {
 
   return (
     <div className="w-full px-4 py-6">
-      <h1 className="text-3xl font-bold mb-6">Create New Project</h1>
+      <h1 className="text-3xl font-semibold mb-6">Create New Project</h1>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
           <input name="title" placeholder="Title" onChange={handleChange} className="w-full p-2 border rounded" required />

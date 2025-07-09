@@ -56,7 +56,7 @@ export default function AddPositionPage() {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-2xl bg-white p-10 rounded shadow-md">
-        <h1 className="text-3xl font-bold mb-8 text-gray-800">Add Volunteer Position</h1>
+        <h1 className="text-3xl font-semibold mb-8 text-gray-800">Add Volunteer Position</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block mb-1 font-medium text-gray-700">Title</label>

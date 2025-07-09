@@ -15,7 +15,7 @@ export default async function ProjectDetailPage({ params }) {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-6">
-      <h1 className="text-4xl font-bold mb-6">{project.title}</h1>
+      <h1 className="text-4xl font-semibold mb-6">{project.title}</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="bg-white rounded-lg shadow p-4">

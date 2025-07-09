@@ -1,11 +1,12 @@
 "use client"
 import { useEffect, useState } from "react"
 import { Calendar, Users, Heart } from "lucide-react"
+import { TbEdit, TbTrash } from "react-icons/tb";
 
 const ICON_MAP = {
-  Calendar: <Calendar size={16} className="inline-block align-middle mr-1" />,
-  Users: <Users size={16} className="inline-block align-middle mr-1" />,
-  Heart: <Heart size={16} className="inline-block align-middle mr-1" />,
+  Calendar: <Calendar size={24} className="inline-block align-middle mr-1" />,
+  Users: <Users size={24} className="inline-block align-middle mr-1" />,
+  Heart: <Heart size={24} className="inline-block align-middle mr-1" />,
 }
 
 export default function HomeHeroSectionEditor() {
@@ -101,21 +102,24 @@ export default function HomeHeroSectionEditor() {
   )
 
   return (
-    <div className="bg-white p-6 rounded shadow text-black min-h-screen">
+    <>
       {edit ? (
-        <div className="space-y-6">
+        <div className="space-y-6 mt-4">
           <div>
             <label className="block font-semibold mb-1">Title</label>
             <input name="title" value={form.title || ""} onChange={handleChange} className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
           </div>
+
           <div>
             <label className="block font-semibold mb-1">Subtitle</label>
             <input name="subtitle" value={form.subtitle || ""} onChange={handleChange} className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
           </div>
+
           <div>
             <label className="block font-semibold mb-1">CTA Text</label>
             <input name="ctaText" value={form.ctaText || ""} onChange={handleChange} className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
           </div>
+
           <div>
             <label className="block font-semibold mb-1">Stats</label>
             <div className="flex gap-4 mb-2">
@@ -139,56 +143,105 @@ export default function HomeHeroSectionEditor() {
               </div>
             </div>
           </div>
+
           <div>
-            <label className="block font-semibold mb-1">Cards</label>
-            {(form.cards || []).map((card, idx) => (
-              <div key={idx} className="border p-3 mb-3 rounded bg-gray-50 flex flex-col gap-2">
-                <div className="flex gap-2 items-center">
-                  {/* Icon select with preview */}
-                  <select
-                    value={card.icon || ''}
-                    onChange={e => handleCardChange(idx, 'icon', e.target.value)}
-                    className="border border-gray-300 rounded px-2 py-1 w-28 bg-white"
-                  >
-                    <option value="">Select Icon</option>
-                    <option value="Calendar">📅 Calendar</option>
-                    <option value="Users">👥 Users</option>
-                    <option value="Heart">❤️ Heart</option>
-                  </select>
-                  {ICON_MAP[card.icon] && <span>{ICON_MAP[card.icon]}</span>}
-                  <input placeholder="Title" value={card.title || ''} onChange={e => handleCardChange(idx, 'title', e.target.value)} className="border border-gray-300 rounded px-2 py-1 w-32" />
-                  <input placeholder="Description" value={card.description || ''} onChange={e => handleCardChange(idx, 'description', e.target.value)} className="border border-gray-300 rounded px-2 py-1 w-48" />
-                  <input type="color" value={card.themeColor?.startsWith('#') ? card.themeColor : '#10b981'} onChange={e => handleCardChange(idx, 'themeColor', e.target.value)} className="w-10 h-10 p-0 border-none bg-transparent" title="Pick color" />
-                  <button className="btn btn-sm btn-error ml-2" onClick={() => handleRemoveCard(idx)} type="button">Remove</button>
+            <div className="flex flex-row gap-2 items-center justify-between w-full">
+              <label className="block text-xl font-semibold mb-4">Cards</label>
+              <button
+                className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-500 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+                onClick={handleAddCard} type="button"
+              >
+                Add Card
+              </button>
+            </div>
+
+            <div className="flex gap-2 max-w-full overflow-x-auto">
+              {(form.cards || []).map((card, idx) => (
+                <div key={idx} className="flex min-w-[250px] max-w-[300px] flex-col gap-4 items-center border border-gray-200 p-4 mb-3 rounded-xl bg-gray-50">
+                  <div className="flex flex-row gap-2 items-center justify-between w-full">
+                    <select
+                      value={card.icon || ''}
+                      onChange={e => handleCardChange(idx, 'icon', e.target.value)}
+                      className="border border-gray-300 flex-1 rounded-lg px-3 py-2 w-28 bg-white appearance-none cursor-pointer"
+                    >
+                      <option value="">Select Icon</option>
+                      <option value="Calendar">📅 Calendar</option>
+                      <option value="Users">👥 Users</option>
+                      <option value="Heart">❤️ Heart</option>
+                    </select>
+
+                    {ICON_MAP[card.icon] && <span>{ICON_MAP[card.icon]}</span>}
+                  </div>
+
+                  <input placeholder="Title"
+                    value={card.title || ''}
+                    onChange={e => handleCardChange(idx, 'title', e.target.value)}
+                    className="border border-gray-300 w-full rounded-lg bg-white px-3 py-2"
+                  />
+                  <input placeholder="Description"
+                    value={card.description || ''}
+                    onChange={e => handleCardChange(idx, 'description', e.target.value)}
+                    className="border border-gray-300 rounded-lg bg-white px-3 py-2 w-full"
+                  />
+
+                  <div className="flex flex-row gap-2 items-center justify-between w-full">
+                    <input type="color" value={card.themeColor?.startsWith('#') ? card.themeColor : '#10b981'} onChange={e => handleCardChange(idx, 'themeColor', e.target.value)} className="w-10 h-10 p-0 border-none bg-transparent" title="Pick color" />
+
+                    <button
+                      className="btn btn-sm btn-error ml-2 text-red-500 cursor-pointer hover:bg-red-100 rounded-full p-2.5"
+                      onClick={() => handleRemoveCard(idx)} type="button"
+                    >
+                      <TbTrash className="text-xl" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-            <button className="btn btn-sm btn-primary mt-2" onClick={handleAddCard} type="button">Add Card</button>
+              ))}
+            </div>
           </div>
+
           <div>
             <label className="block font-semibold mb-1">Secondary CTA</label>
             <input name="text" value={form.secondaryCTA?.text || ''} onChange={handleSecondaryCTAChange} className="w-full border border-gray-300 rounded px-3 py-2 mb-1" placeholder="Text" />
             <input name="link" value={form.secondaryCTA?.link || ''} onChange={handleSecondaryCTAChange} className="w-full border border-gray-300 rounded px-3 py-2" placeholder="Link" />
           </div>
-          <div className="flex gap-2 mt-4">
-            <button className="btn btn-primary" onClick={handleSave} disabled={saving}>{saving ? "Saving..." : "Save"}</button>
-            <button className="btn ml-2" onClick={() => { setEdit(false); setForm(data) }}>Cancel</button>
+
+          <div className="flex gap-2 absolute right-6 top-6">
+            <button
+              className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-500 px-6 py-2 cursor-pointer text-white  transition rounded-xl"
+              onClick={handleSave}
+              disabled={saving}
+            >
+              {saving ? "Saving..." : "Save"}
+            </button>
+            <button
+              className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-500 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+              onClick={() => { setEdit(false); setForm(data) }}
+            >
+              Cancel
+            </button>
           </div>
         </div>
       ) : (
-        <div className="space-y-6 border border-gray-200 rounded-lg p-6 bg-gray-50">
+        <div className="space-y-6 px-2 mt-4">
+          <button className="absolute right-6 top-6 flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-500 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl" onClick={() => setEdit(true)}>
+            Edit Hero <TbEdit className="text-xl" />
+          </button>
+
           <div className="mb-4">
             <span className="block font-semibold mb-1">Title:</span>
             <span className="block text-lg">{data.title}</span>
           </div>
+
           <div className="mb-4">
             <span className="block font-semibold mb-1">Subtitle:</span>
             <span className="block">{data.subtitle}</span>
           </div>
+
           <div className="mb-4">
             <span className="block font-semibold mb-1">CTA Text:</span>
             <span className="block">{data.ctaText}</span>
           </div>
+
           <div className="mb-4">
             <span className="block font-semibold mb-1">Stats:</span>
             {data.stats && (
@@ -199,6 +252,7 @@ export default function HomeHeroSectionEditor() {
               </div>
             )}
           </div>
+
           <div className="mb-4">
             <span className="block font-semibold mb-1">Cards:</span>
             <ul className="space-y-2">
@@ -225,9 +279,8 @@ export default function HomeHeroSectionEditor() {
             <span className="block font-semibold mb-1">Secondary CTA:</span>
             <span className="block">{data.secondaryCTA?.text} <span className="text-blue-600">({data.secondaryCTA?.link})</span></span>
           </div>
-          <button className="btn btn-primary mt-4" onClick={() => setEdit(true)}>Edit</button>
         </div>
       )}
-    </div>
+    </>
   )
 }

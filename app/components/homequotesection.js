@@ -51,7 +51,7 @@ export default function HomeQuoteSectionEditor() {
 
   return (
     <div className="bg-white p-6 rounded shadow text-black min-h-[200px]">
-      <h2 className="text-xl font-bold mb-4">Quote Section Editor</h2>
+      <h2 className="text-xl font-semibold mb-4">Quote Section Editor</h2>
       {edit || !quote ? (
         <div className="mb-6 flex flex-col gap-2">
           <input name="text" value={form.text} onChange={handleChange} placeholder="Quote text" className="w-full border border-gray-300 rounded px-3 py-2" />

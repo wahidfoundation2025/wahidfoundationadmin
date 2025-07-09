@@ -49,7 +49,7 @@ export default function DonorsPage() {
   return (
     <div className="min-h-screen w-full flex flex-col py-10 px-4">
       <div className="w-full max-w-6xl flex-1 flex flex-col">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center uppercase">Donors</h1>
+        <h1 className="text-3xl font-semibold text-gray-800 mb-6 text-center uppercase">Donors</h1>
         <div className="bg-white rounded-xl p-3 flex-1 flex flex-col">
           {loading ? (
             <div className="flex-1 flex items-center justify-center text-gray-500 text-lg">

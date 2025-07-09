@@ -113,37 +113,82 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+    <div className="space-y-6 bg-white rounded-2xl p-6">
+      <h1 className="text-2xl font-semibold">Active Projects</h1>
 
       {/* Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
           <div
             key={index}
-            className={`p-4 rounded-lg shadow flex items-center justify-between ${stat.bg}`}
-          >
+            className='flex flex-1 flex-col gap-3 border-[1px] border-gray-300 rounded-xl p-4'          >
+            <div className={`${stat.bg} w-fit p-2.5 rounded-xl`}>{stat.icon}</div>
             <div>
               <h2 className="text-sm font-medium">{stat.title}</h2>
-              <p className="text-2xl font-semibold">{stat.value}</p>
+              <p className="text-3xl font-semibold">{stat.value}</p>
             </div>
-            <div>{stat.icon}</div>
           </div>
         ))}
       </div>
 
+
       {/* Graphs */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="p-4 bg-white rounded-lg shadow">
+        <div className="p-4 bg-white shadow border border-gray-300 rounded-2xl">
           <h2 className="text-lg font-semibold mb-4">Monthly Donations</h2>
           <Bar data={donationBarData} />
         </div>
 
-        <div className="p-4 bg-white rounded-lg shadow">
+        <div className="p-4 bg-white shadow border border-gray-300 rounded-2xl">
           <h2 className="text-lg font-semibold mb-4">Project Status Breakdown</h2>
-          <Pie data={projectPieData} />
+          <Pie data={projectPieData} style={{ maxHeight: "300px" }} />
         </div>
       </div>
     </div>
   )
 }
+
+
+// const DashboardOverview = ({ stats }) => {
+
+//   function formatAmount(amount) {
+//     if (!amount) return "₹0.00"
+
+//     return new Intl.NumberFormat('en-IN', {
+//       style: 'currency',
+//       currency: 'INR',
+//       minimumFractionDigits: 0,
+//       maximumFractionDigits: 2,
+//     }).format(amount);
+//   }
+
+//   return (
+//     <div className="flex flex-row gap-4 mt-6">
+//       {[
+//         { name: "Active Projects", value: stats.value, percentage: 0, },
+//         { name: "Total Donations", value: formatAmount(stats.value), percentage: revenueStats?.percentageChange, },
+//         { name: "Total Donors", value: stats.value, percentage: 100 },
+//         { name: "Completed Projects", value: "45", percentage: -9 },
+//       ].map(({ title, value }) => (
+//         <div key={`${title}-${value}}`} className='flex flex-1 flex-col gap-3 border-[1px] border-gray-300 rounded-xl p-4'>
+//           <MainIcon name={title} />
+//           <h4 className='text-[#4D4D5A] text-base font-medium'>{title}</h4>
+//           <h1 className='text-3xl font-semibold'>{value}</h1>
+//         </div>
+//       ))}
+//     </div>
+//   )
+// }
+
+// const MainIcon = ({ name }) => {
+//   return (
+//     <img
+//       alt="Icon"
+//       className='w-12 h-12 object-contain'
+//       src={name === "Users" ?
+//         Users : name === "Revenue" ?
+//           Revenue : name === "Active Sessions" ?
+//             ActiveSessions : Tickets}
+//     />
+//   )
+// }
