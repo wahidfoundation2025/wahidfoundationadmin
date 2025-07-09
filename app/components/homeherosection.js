@@ -92,7 +92,7 @@ export default function HomeHeroSectionEditor() {
     setSaving(false)
   }
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <div className="mt-10">Loading...</div>
 
   if (!data && !edit) return (
     <div>
@@ -104,49 +104,60 @@ export default function HomeHeroSectionEditor() {
   return (
     <>
       {edit ? (
-        <div className="space-y-6 mt-4">
-          <div>
-            <label className="block font-semibold mb-1">Title</label>
-            <input name="title" value={form.title || ""} onChange={handleChange} className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <div className="space-y-6 mt-6 px-2">
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-semibold">Title</label>
+            <input name="title" value={form.title || ""} onChange={handleChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
           </div>
 
-          <div>
-            <label className="block font-semibold mb-1">Subtitle</label>
-            <input name="subtitle" value={form.subtitle || ""} onChange={handleChange} className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-semibold">Subtitle</label>
+            <input name="subtitle" value={form.subtitle || ""} onChange={handleChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
           </div>
 
-          <div>
-            <label className="block font-semibold mb-1">CTA Text</label>
-            <input name="ctaText" value={form.ctaText || ""} onChange={handleChange} className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-semibold">CTA Text</label>
+            <input name="ctaText" value={form.ctaText || ""} onChange={handleChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
           </div>
 
-          <div>
-            <label className="block font-semibold mb-1">Stats</label>
-            <div className="flex gap-4 mb-2">
-              <div className="flex-1">
-                <label className="text-xs">Per Day Label</label>
-                <input name="perDay.label" value={form.stats?.perDay?.label || ''} onChange={handleStatsChange} className="w-full border border-gray-300 rounded px-2 py-1 mb-1" />
-                <label className="text-xs">Per Day Value</label>
-                <input name="perDay.value" value={form.stats?.perDay?.value || ''} onChange={handleStatsChange} className="w-full border border-gray-300 rounded px-2 py-1" />
+          <hr className="text-gray-300 my-8" />
+
+          <>
+            <label className="text-xl font-semibold">Stats</label>
+
+            <div className="grid grid-cols-4 gap-4 mb-2 mt-4">
+              <div className="flex flex-col gap-2">
+                <label>Per Day Label</label>
+                <input name="perDay.label" value={form.stats?.perDay?.label || ''} onChange={handleStatsChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 mb-1" />
               </div>
-              <div className="flex-1">
-                <label className="text-xs">Lives Changed Label</label>
-                <input name="livesChanged.label" value={form.stats?.livesChanged?.label || ''} onChange={handleStatsChange} className="w-full border border-gray-300 rounded px-2 py-1 mb-1" />
-                <label className="text-xs">Lives Changed Value</label>
-                <input name="livesChanged.value" value={form.stats?.livesChanged?.value || ''} onChange={handleStatsChange} className="w-full border border-gray-300 rounded px-2 py-1" />
+              <div className="flex flex-col gap-2">
+                <label>Per Day Value</label>
+                <input name="perDay.value" value={form.stats?.perDay?.value || ''} onChange={handleStatsChange} className="w-full border border-gray-300 rounded-xl px-3 py-2" />
               </div>
-              <div className="flex-1">
-                <label className="text-xs">States Label</label>
-                <input name="states.label" value={form.stats?.states?.label || ''} onChange={handleStatsChange} className="w-full border border-gray-300 rounded px-2 py-1 mb-1" />
-                <label className="text-xs">States Value</label>
-                <input name="states.value" value={form.stats?.states?.value || ''} onChange={handleStatsChange} className="w-full border border-gray-300 rounded px-2 py-1" />
+              <div className="flex flex-col gap-2">
+                <label>Lives Changed Label</label>
+                <input name="livesChanged.label" value={form.stats?.livesChanged?.label || ''} onChange={handleStatsChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 mb-1" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label>Lives Changed Value</label>
+                <input name="livesChanged.value" value={form.stats?.livesChanged?.value || ''} onChange={handleStatsChange} className="w-full border border-gray-300 rounded-xl px-3 py-2" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label>States Label</label>
+                <input name="states.label" value={form.stats?.states?.label || ''} onChange={handleStatsChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 mb-1" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label>States Value</label>
+                <input name="states.value" value={form.stats?.states?.value || ''} onChange={handleStatsChange} className="w-full border border-gray-300 rounded-xl px-3 py-2" />
               </div>
             </div>
-          </div>
+          </>
 
-          <div>
+          <hr className="text-gray-300 my-8" />
+
+          <>
             <div className="flex flex-row gap-2 items-center justify-between w-full">
-              <label className="block text-xl font-semibold mb-4">Cards</label>
+              <label className="text-xl font-semibold">Cards</label>
               <button
                 className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-500 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
                 onClick={handleAddCard} type="button"
@@ -197,24 +208,29 @@ export default function HomeHeroSectionEditor() {
                 </div>
               ))}
             </div>
-          </div>
+          </>
 
-          <div>
-            <label className="block font-semibold mb-1">Secondary CTA</label>
-            <input name="text" value={form.secondaryCTA?.text || ''} onChange={handleSecondaryCTAChange} className="w-full border border-gray-300 rounded px-3 py-2 mb-1" placeholder="Text" />
-            <input name="link" value={form.secondaryCTA?.link || ''} onChange={handleSecondaryCTAChange} className="w-full border border-gray-300 rounded px-3 py-2" placeholder="Link" />
-          </div>
+          <hr className="text-gray-300 my-8" />
+
+          <>
+            <label className="text-xl font-semibold">Secondary CTA</label>
+
+            <div className="flex flex-row mt-4 gap-4">
+              <input name="text" value={form.secondaryCTA?.text || ''} onChange={handleSecondaryCTAChange} className="w-full border border-gray-300 rounded-xl px-3 py-2" placeholder="Text" />
+              <input name="link" value={form.secondaryCTA?.link || ''} onChange={handleSecondaryCTAChange} className="w-full border border-gray-300 rounded-xl px-3 py-2" placeholder="Link" />
+            </div>
+          </>
 
           <div className="flex gap-2 absolute right-6 top-6">
             <button
-              className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-500 px-6 py-2 cursor-pointer text-white  transition rounded-xl"
+              className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-white  transition rounded-xl"
               onClick={handleSave}
               disabled={saving}
             >
               {saving ? "Saving..." : "Save"}
             </button>
             <button
-              className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-500 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+              className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
               onClick={() => { setEdit(false); setForm(data) }}
             >
               Cancel
@@ -222,63 +238,107 @@ export default function HomeHeroSectionEditor() {
           </div>
         </div>
       ) : (
-        <div className="space-y-6 px-2 mt-4">
-          <button className="absolute right-6 top-6 flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-500 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl" onClick={() => setEdit(true)}>
+        <div className="px-2 mt-6 space-y-6">
+          <button className="absolute right-6 top-6 flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl" onClick={() => setEdit(true)}>
             Edit Hero <TbEdit className="text-xl" />
           </button>
 
-          <div className="mb-4">
-            <span className="block font-semibold mb-1">Title:</span>
+          <div className="flex flex-col gap-2">
+            <span className="text-xl font-semibold">Title:</span>
             <span className="block text-lg">{data.title}</span>
           </div>
 
-          <div className="mb-4">
-            <span className="block font-semibold mb-1">Subtitle:</span>
+          <div className="flex flex-col gap-2">
+            <span className="text-xl font-semibold">Subtitle:</span>
             <span className="block">{data.subtitle}</span>
           </div>
 
-          <div className="mb-4">
-            <span className="block font-semibold mb-1">CTA Text:</span>
+          <div className="flex flex-col gap-2">
+            <span className="text-xl font-semibold">CTA Text:</span>
             <span className="block">{data.ctaText}</span>
           </div>
 
-          <div className="mb-4">
-            <span className="block font-semibold mb-1">Stats:</span>
-            {data.stats && (
-              <div className="flex gap-6 mt-1">
-                <div className="bg-white border rounded px-3 py-1"><span className="font-semibold">{data.stats.perDay?.label}:</span> {data.stats.perDay?.value}</div>
-                <div className="bg-white border rounded px-3 py-1"><span className="font-semibold">{data.stats.livesChanged?.label}:</span> {data.stats.livesChanged?.value}</div>
-                <div className="bg-white border rounded px-3 py-1"><span className="font-semibold">{data.stats.states?.label}:</span> {data.stats.states?.value}</div>
-              </div>
-            )}
-          </div>
+          <hr className="text-gray-300 my-8" />
 
-          <div className="mb-4">
-            <span className="block font-semibold mb-1">Cards:</span>
-            <ul className="space-y-2">
-              {(data.cards || []).map((card, idx) => {
-                const Icon = ICON_MAP[card.icon] || null
-                return (
-                  <li key={idx} className="flex items-center gap-3 border rounded px-3 py-2 bg-white">
-                    {Icon ? Icon : <span className="font-semibold">{card.icon}</span>}
-                    <span className="font-semibold">{card.title}</span>
-                    <span className="text-gray-700">{card.description}</span>
-                    <span className="italic flex items-center gap-1">
-                      <span
-                        className="inline-block w-4 h-4 rounded-full border border-gray-300 align-middle"
-                        style={{ background: card.themeColor?.startsWith('#') ? card.themeColor : undefined, backgroundColor: card.themeColor?.startsWith('#') ? card.themeColor : undefined }}
-                      ></span>
-                      {card.themeColor}
+
+          <>
+            <span className="text-xl font-semibold">Stats:</span>
+
+            <div className="flex gap-6 mt-4">
+              {data.stats && (
+                <>
+                  <div className="bg-white border border-gray-400 rounded-lg px-3 py-2">
+                    <span className="font-semibold">
+                      {data.stats.perDay?.label}{": "}
                     </span>
-                  </li>
-                )
+                    {data.stats.perDay?.value}
+                  </div>
+                  <div className="bg-white border border-gray-400 rounded-lg px-3 py-2">
+                    <span className="font-semibold">
+                      {data.stats.livesChanged?.label}{": "}
+                    </span>
+                    {data.stats.livesChanged?.value}
+                  </div>
+                  <div className="bg-white border border-gray-400 rounded-lg px-3 py-2">
+                    <span className="font-semibold">
+                      {data.stats.states?.label}{": "}
+                    </span>
+                    {data.stats.states?.value}
+                  </div>
+                </>
+              )}
+            </div>
+          </>
+
+          <hr className="text-gray-300 my-8" />
+
+          <>
+            <span className="text-xl font-semibold block mb-2">Cards:</span>
+
+            <div className="flex gap-4 overflow-x-auto">
+              {(data.cards || []).map((card, idx) => {
+                const Icon = ICON_MAP[card.icon] || null;
+                return (
+                  <div
+                    key={idx}
+                    className="flex-shrink-0 min-w-[250px] max-w-[300px] border border-gray-200 p-4 rounded-xl bg-gray-50 flex flex-col gap-3"
+                  >
+                    {/* Icon & Name */}
+                    <div className="flex items-center justify-between">
+                      <div className="text-sm text-gray-500">{card.icon || "No Icon"}</div>
+                      {Icon}
+                    </div>
+
+                    {/* Title */}
+                    <div className="font-semibold text-base text-gray-800">
+                      {card.title || "No Title"}
+                    </div>
+
+                    {/* Description */}
+                    <div className="text-gray-600 text-sm">
+                      {card.description || "No Description"}
+                    </div>
+
+                    {/* Theme Color */}
+                    <div className="flex justify-between items-center">
+                      <div
+                        className="w-6 h-6 rounded-full border border-gray-300"
+                        style={{ backgroundColor: card.themeColor?.startsWith('#') ? card.themeColor : '#10b981' }}
+                      ></div>
+                      <div className="text-sm italic text-gray-500">
+                        {card.themeColor || "#10b981"}
+                      </div>
+                    </div>
+                  </div>
+                );
               })}
-            </ul>
-          </div>
-          <div className="mb-4">
-            <span className="block font-semibold mb-1">Secondary CTA:</span>
-            <span className="block">{data.secondaryCTA?.text} <span className="text-blue-600">({data.secondaryCTA?.link})</span></span>
-          </div>
+            </div>
+          </>
+
+          <>
+            <span className="text-xl font-semibold">Secondary CTA:</span>
+            <span className="block mt-2">{data.secondaryCTA?.text} <span className="text-blue-600">({data.secondaryCTA?.link})</span></span>
+          </>
         </div>
       )}
     </>

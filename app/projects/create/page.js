@@ -166,15 +166,6 @@ export default function CreateProjectPage() {
           <input name="youtubeIframe" placeholder="YouTube iframe embed" onChange={handleChange} className="w-full p-2 border rounded" />
           <textarea name="overview" placeholder="Overview" onChange={handleChange} className="w-full p-2 border rounded" />
 
-          <div className="flex items-center gap-2">
-            <input type="checkbox" name="zakat_eligible" checked={form.zakat_eligible} onChange={handleChange} />
-            <label>Zakat Eligible</label>
-          </div>
-          <div className="flex items-center gap-2">
-            <input type="checkbox" name="interest_earnings_eligible" checked={form.interest_earnings_eligible} onChange={handleChange} />
-            <label>Interest Earnings Eligible</label>
-          </div>
-
           <h2 className="font-semibold">Project Manager</h2>
           <input name="projectManager.name" placeholder="Name" onChange={handleChange} className="w-full p-2 border rounded" />
           <input name="projectManager.email" placeholder="Email" onChange={handleChange} className="w-full p-2 border rounded" />

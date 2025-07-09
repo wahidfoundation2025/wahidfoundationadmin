@@ -155,13 +155,6 @@ export default function EditProjectPage({ params }) {
 
           <label className="block font-medium">Days Left</label>
           <input name="daysLeft" type="number" value={form.daysLeft} onChange={handleChange} placeholder="Days Left" className="w-full border px-3 py-2 rounded" />
-
-          <div className="flex items-center gap-2">
-            <input type="checkbox" name="zakat_eligible" checked={form.zakat_eligible} onChange={handleChange} /> Zakat Eligible
-          </div>
-          <div className="flex items-center gap-2">
-            <input type="checkbox" name="interest_earnings_eligible" checked={form.interest_earnings_eligible} onChange={handleChange} /> Interest Eligible
-          </div>
         </div>
 
         <div className="space-y-4">
