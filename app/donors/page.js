@@ -52,39 +52,59 @@ export default function DonorsPage() {
       <h1 className="text-2xl font-bold mb-6">Donors</h1>
 
       <div className="bg-white border border-gray-300 rounded-xl shadow overflow-hidden">
-        <table className="w-full text-sm table-auto">
+        <table className="w-full text-sm table-auto text-left">
           <thead className="bg-gray-200 text-gray-700 font-semibold border-b border-gray-300">
             <tr>
-              <th className="py-3 px-4 text-left">Name</th>
-              <th className="py-3 px-4 text-left">Email</th>
-              <th className="py-3 px-4 text-left">Total Donated</th>
-              <th className="py-3 px-4 text-left">Total Projects</th>
-              <th className="py-3 px-4 text-left">Projects Donated</th>
+              {["Avatar", "Name", "Email", "Total Donated", "Total Projects", "Projects Donated"].map((title, idx) => (
+                <th
+                  key={idx}
+                  className={`py-3 px-4 text-nowrap font-medium ${idx === 0 ? "rounded-tl-xl" : idx === 5 ? "rounded-tr-xl" : ""
+                    }`}
+                >
+                  {title}
+                </th>
+              ))}
             </tr>
           </thead>
 
           <tbody className="text-gray-800">
-            {paginatedDonors.map((donor) => (
-              <tr key={donor._id} className="border-b border-gray-300 last:border-none">
-                <td className="py-3 px-4">{donor.name}</td>
-                <td className="py-3 px-4">{donor.email}</td>
-                <td className="py-3 px-4">₹{donor.totalDonated}</td>
-                <td className="py-3 px-4">{donor.totalProjects}</td>
-                <td className="py-3 px-4">
-                  <ul className="list-disc pl-4">
-                    {donor.projectsDonatedTo?.length > 0 ? (
-                      donor.projectsDonatedTo.map((pid) => (
-                        <li key={pid}>
-                          {getProjectName(pid)}: ₹{getDonationAmount(donor, pid)}
-                        </li>
-                      ))
-                    ) : (
-                      <li>—</li>
-                    )}
-                  </ul>
-                </td>
-              </tr>
-            ))}
+            {paginatedDonors.map((donor) => {
+              const color = donor.colorCode || "#6B7280"; // fallback gray
+              const initials = donor.name?.split(' ').map(n => n[0]).join('').slice(0, 2) || "US";
+
+              return (
+                <tr key={donor._id} className="border-b border-gray-300 last:border-none">
+                  <td className="py-3 px-4 text-sm">
+                    <div
+                      style={{
+                        backgroundColor: `${color}20`,
+                        color: color,
+                      }}
+                      className="min-w-8 w-8 min-h-8 rounded-full font-bold flex items-center justify-center text-sm"
+                    >
+                      {initials}
+                    </div>
+                  </td>
+                  <td className="py-3 px-4">{donor.name}</td>
+                  <td className="py-3 px-4">{donor.email}</td>
+                  <td className="py-3 px-4">₹{donor.totalDonated}</td>
+                  <td className="py-3 px-4">{donor.totalProjects}</td>
+                  <td className="py-3 px-4">
+                    <ul className="list-disc pl-4">
+                      {donor.projectsDonatedTo?.length > 0 ? (
+                        donor.projectsDonatedTo.map((pid) => (
+                          <li key={pid}>
+                            {getProjectName(pid)}: ₹{getDonationAmount(donor, pid)}
+                          </li>
+                        ))
+                      ) : (
+                        <li>—</li>
+                      )}
+                    </ul>
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>
