@@ -6,7 +6,8 @@ import { TbEdit } from "react-icons/tb";
 export default function SettingsPage() {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
-  const [formData, setFormData] = useState({ name: '', role: '', access: '' });
+  const [updateFormData, setUpdateFormData] = useState({ name: '', role: '', access: '' });
+  const [addNewFormData, setAddNewFormData] = useState({ name: '', role: '', access: '' });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,7 +24,7 @@ export default function SettingsPage() {
 
   function openEditModal(user) {
     setEditingUser(user);
-    setFormData({
+    setUpdateFormData({
       name: user.name || '',
       role: user.role || '',
       access: user.access?.join(', ') || '',
@@ -36,9 +37,9 @@ export default function SettingsPage() {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name: formData.name,
-        role: formData.role,
-        access: formData.access.split(',').map((item) => item.trim()),
+        name: updateFormData.name,
+        role: updateFormData.role,
+        access: updateFormData.access.split(',').map((item) => item.trim()),
       }),
     });
 
@@ -112,54 +113,111 @@ export default function SettingsPage() {
       </div>
 
       {/* Edit Modal */}
-      {editingUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-10">
-          <div className="bg-white p-6 rounded shadow-md w-full max-w-md relative">
-            <h2 className="text-xl font-semibold mb-4">Edit User</h2>
-            <form onSubmit={handleUpdate} className="space-y-4">
+      <div className="mt-2 border-[1px] border-gray-300 rounded-xl p-6">
+        {editingUser ? (
+          <>
+            <h2 className="font-semibold text-lg mb-4">Edit User</h2>
+
+            <form onSubmit={handleUpdate} className="flex flex-col gap-y-4">
+              <div className="flex flex-row gap-x-4 w-full">
+                <div className="flex-1">
+                  <p className="font-medium text-base mb-1">Name</p>
+                  <input
+                    type="text"
+                    className="p-2.5 text-sm w-full border-[1px] border-gray-300 rounded-xl"
+                    value={updateFormData.name}
+                    onChange={(e) => setUpdateFormData({ ...updateFormData, name: e.target.value })}
+                  />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-base mb-1">Role</p>
+                  <input
+                    type="text"
+                    className="p-2.5 text-sm w-full border-[1px] border-gray-300 rounded-xl"
+                    value={updateFormData.role}
+                    onChange={(e) => setUpdateFormData({ ...updateFormData, role: e.target.value })}
+                  />
+                </div>
+              </div>
+
               <div>
-                <label className="block text-sm font-medium">Name</label>
+                <p className="font-medium text-base mb-1">Access (comma separated)</p>
                 <input
-                  className="w-full border border-gray-300 rounded px-3 py-2"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  type="text"
+                  className="p-2.5 text-sm w-full border-[1px] border-gray-300 rounded-xl"
+                  value={updateFormData.access}
+                  onChange={(e) => setUpdateFormData({ ...updateFormData, access: e.target.value })}
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium">Role</label>
-                <input
-                  className="w-full border border-gray-300 rounded px-3 py-2"
-                  value={formData.role}
-                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Access (comma separated)</label>
-                <input
-                  className="w-full border border-gray-300 rounded px-3 py-2"
-                  value={formData.access}
-                  onChange={(e) => setFormData({ ...formData, access: e.target.value })}
-                />
-              </div>
-              <div className="flex justify-end space-x-2 pt-2">
+
+              <div className="flex justify-end gap-4">
                 <button
                   type="button"
                   onClick={() => setEditingUser(null)}
-                  className="px-4 py-2 bg-gray-300 text-sm rounded hover:bg-gray-400"
+                  className="px-6 py-2 font-medium cursor-pointer border border-violet-600 text-violet-600 hover:bg-violet-600 hover:text-white transition-colors text-sm rounded-xl"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+                  className="px-6 py-2 font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white text-sm rounded-xl"
                 >
                   Save
                 </button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
+          </>
+        ) : (
+          <>
+            <h2 className="font-semibold text-lg mb-4">Add New User</h2>
+
+            <form  className="flex flex-col gap-y-4">
+              <div className="flex flex-row gap-x-4 w-full">
+                <div className="flex-1">
+                  <p className="font-medium text-base mb-1">Name</p>
+                  <input
+                    type="text"
+                    className="p-2.5 text-sm w-full border-[1px] border-gray-300 rounded-xl"
+                    value={addNewFormData.name}
+                    placeholder="User Name"
+                    onChange={(e) => setUpdateFormData({ ...addNewFormData, name: e.target.value })}
+                  />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-base mb-1">Role</p>
+                  <input
+                    type="text"
+                    className="p-2.5 text-sm w-full border-[1px] border-gray-300 rounded-xl"
+                    value={addNewFormData.role}
+                    placeholder="User Role"
+                    onChange={(e) => setUpdateFormData({ ...addNewFormData, role: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <p className="font-medium text-base mb-1">Access (comma separated)</p>
+                <input
+                  type="text"
+                  className="p-2.5 text-sm w-full border-[1px] border-gray-300 rounded-xl"
+                  value={addNewFormData.access}
+                  placeholder="eg., dashboard, donations, "
+                  onChange={(e) => setUpdateFormData({ ...addNewFormData, access: e.target.value })}
+                />
+              </div>
+
+              <div className="flex justify-end gap-4">
+                <button
+                  type="submit"
+                  className="px-10 py-2 font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white text-sm rounded-xl"
+                >
+                  Add
+                </button>
+              </div>
+            </form>
+          </>
+        )}
+      </div>
     </div>
   );
 }
