@@ -77,7 +77,7 @@ export default function ImpactPage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gray-100 py-10 px-0">
+    <div className="bg-white p-6 rounded-2xl min-h-full">
       <div className="w-full max-w-5xl mx-auto bg-white p-8 rounded shadow">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
           <h1 className="text-3xl font-semibold text-gray-800">Impact Stories</h1>

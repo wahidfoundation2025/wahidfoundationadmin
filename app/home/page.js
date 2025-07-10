@@ -14,7 +14,7 @@ export default function HomeCMSPage() {
   const [activeSection, setActiveSection] = useState("hero")
 
   return (
-    <div className="min-h-screen bg-white p-6 rounded-2xl relative">
+    <div className="min-h-full bg-white p-6 rounded-2xl relative">
       <nav className="flex flex-row gap-2">
         {sections.map((section) => (
           <button
