@@ -13,6 +13,8 @@ import {
   useUser,
   SignOutButton,
 } from '@clerk/nextjs';
+import Image from 'next/image';
+import Logo from "../../public/logo.png"
 
 const cmsNavItems = [
   { name: 'Home', key: 'dashboard', href: '/home', icon: <LayoutDashboard size={18} /> },
@@ -163,7 +165,12 @@ export default function Sidebar({ children }) {
 const NavBar = () => {
   return (
     <nav className='flex items-center justify-between w-full p-4 px-12 border-b border-gray-200 h-[10dvh]'>
-      <h1 className='text-xl font-semibold'>WAHID</h1>
+      {Logo
+        ? <div className='flex flex-row gap-3 items-center'>
+          <Image src={Logo} alt="Wahid" height={40} />
+          <h1 className="text-xl font-semibold">WAHID</h1>
+        </div>
+        : <h1 className="text-xl font-semibold">WAHID</h1>}
 
       <SignedIn>
         <div className='flex flex-row gap-4 items-center'>
