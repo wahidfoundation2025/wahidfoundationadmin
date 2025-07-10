@@ -7,17 +7,29 @@ import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 export default function SettingsPage() {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
-  const [updateFormData, setUpdateFormData] = useState({ name: '', role: '', access: '' });
-  const [addNewFormData, setAddNewFormData] = useState({ name: '', role: '', access: '' });
-  const ACCESS_OPTIONS = ["dashboard", "donations", "settings", "cms", "donors"];
 
+  const [updateFormData, setUpdateFormData] = useState({
+    name: '',
+    email: '',
+    role: '',
+    access: [],
+  });
+
+  const [newUserData, setNewUserData] = useState({
+    name: '',
+    email: '',
+    role: '',
+    access: [],
+  });
+
+  const ACCESS_OPTIONS = ["dashboard", "donations", "settings", "cms", "donors"];
   const [loading, setLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
   const totalPages = Math.ceil(users.length / rowsPerPage);
-  const paginatedUsers = users.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+  const paginatedUsers = users?.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
 
   useEffect(() => {
     fetchUsers();
@@ -33,24 +45,21 @@ export default function SettingsPage() {
 
   function openEditModal(user) {
     setEditingUser(user);
-
     setUpdateFormData({
       name: user.name || '',
+      email: user.email || '',
       role: user.role || '',
-      access: user.access?.join(', ') || '',
+      access: user.access || [],
     });
   }
 
   async function handleUpdate(e) {
     e.preventDefault();
-    const res = await fetch(`/api/users/${encodeURIComponent(editingUser.email)}`, {
+
+    const res = await fetch(`/api/users/${encodeURIComponent(updateFormData.email)}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: updateFormData.name,
-        role: updateFormData.role,
-        access: updateFormData.access.split(',').map((item) => item.trim()),
-      }),
+      body: JSON.stringify(updateFormData),
     });
 
     if (res.ok) {
@@ -61,26 +70,48 @@ export default function SettingsPage() {
     }
   }
 
-  function handleAccessChange(option, inNewForm) {
-    const current = updateFormData.access.split(',').map(s => s.trim()).filter(Boolean);
-    const exists = current.includes(option);
-
-    const updated = exists
-      ? current.filter(item => item !== option)
-      : [...current, option];
-
-    if (inNewForm) {
-      setAddNewFormData(prev => ({
-        ...prev,
-        access: updated.join(', '),
-      }))
+  function handleAccessChange(option, isNewForm = false) {
+    const form = isNewForm ? newUserData : updateFormData;
+    const currentAccess = new Set(form.access);
+    if (currentAccess.has(option)) {
+      currentAccess.delete(option);
     } else {
-      setUpdateFormData(prev => ({
-        ...prev,
-        access: updated.join(', '),
-      }));
+      currentAccess.add(option);
+    }
+
+    const updatedAccess = Array.from(currentAccess);
+    if (isNewForm) {
+      setNewUserData((prev) => ({ ...prev, access: updatedAccess }));
+    } else {
+      setUpdateFormData((prev) => ({ ...prev, access: updatedAccess }));
     }
   }
+
+  async function handleAddSubmit() {
+    try {
+      const res = await fetch('/api/send-invite', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newUserData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message || 'Failed to send invite');
+
+      setNewUserData({
+        name: '',
+        email: '',
+        role: '',
+        access: [],
+      });
+    } catch (err) {
+      console.log('error in adding user: ', err);
+      alert("Failed to Invite");
+    }
+  };
 
   if (loading) return <div className="p-10 text-center">Loading users...</div>;
 
@@ -96,8 +127,7 @@ export default function SettingsPage() {
                 {["Avatar", "Email", "Name", "Role", "Access", "Actions"].map((title, idx) => (
                   <th
                     key={idx}
-                    className={`py-3 px-4 text-nowrap font-medium ${idx === 0 ? "rounded-tl-xl" : idx === 5 ? "rounded-tr-xl" : ""
-                      }`}
+                    className={`py-3 px-4 text-nowrap font-medium ${idx === 0 ? "rounded-tl-xl" : idx === 5 ? "rounded-tr-xl" : ""}`}
                   >
                     {title}
                   </th>
@@ -105,39 +135,37 @@ export default function SettingsPage() {
               </tr>
             </thead>
             <tbody>
-              {paginatedUsers.map((user, idx) => {
-                const color = user.colorCode || "#6B7280"; // fallback gray
-                const initials = user.name?.split(' ').map(n => n[0]).join('').slice(0, 2) || "US";
+              {paginatedUsers.length > 0 &&
+                paginatedUsers.map((user) => {
+                  const color = user.colorCode || "#6B7280";
+                  const initials = user.name?.split(' ').map(n => n[0]).join('').slice(0, 2) || "US";
 
-                return (
-                  <tr key={user.email} className="border-b border-gray-300 last:border-none">
-                    <td className="py-3 px-4 text-sm">
-                      <div
-                        style={{
-                          backgroundColor: `${color}20`,
-                          color: color,
-                        }}
-                        className="min-w-8 w-8 min-h-8 rounded-full font-bold flex items-center justify-center text-sm"
-                      >
-                        {initials}
-                      </div>
-                    </td>
-                    <td className="py-3 px-4 text-sm">{user.email}</td>
-                    <td className="py-3 px-4 text-sm text-nowrap">{user.name || "—"}</td>
-                    <td className="py-3 px-4 text-sm">{user.role || "—"}</td>
-                    <td className="py-3 px-4 text-sm text-nowrap">{user.access?.join(', ') || "—"}</td>
-                    <td className="py-3 px-2 text-sm text-gray-900  bg-white">
-                      <button
-                        onClick={() => openEditModal(user)}
-                        className="ml-4 cursor-pointer text-xl text-gray-700 hover:text-blue-600"
-                        title="Edit user"
-                      >
-                        <TbEdit />
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
+                  return (
+                    <tr key={user.email} className="border-b border-gray-300 last:border-none">
+                      <td className="py-3 px-4 text-sm">
+                        <div
+                          style={{ backgroundColor: `${color}20`, color }}
+                          className="min-w-8 w-8 min-h-8 rounded-full font-bold flex items-center justify-center text-sm"
+                        >
+                          {initials}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-sm">{user.email}</td>
+                      <td className="py-3 px-4 text-sm text-nowrap">{user.name || "—"}</td>
+                      <td className="py-3 px-4 text-sm">{user.role || "—"}</td>
+                      <td className="py-3 px-4 text-sm text-nowrap">{user.access?.join(', ') || "—"}</td>
+                      <td className="py-3 px-2 text-sm text-gray-900 bg-white">
+                        <button
+                          onClick={() => openEditModal(user)}
+                          className="ml-4 cursor-pointer text-xl text-gray-700 hover:text-blue-600"
+                          title="Edit user"
+                        >
+                          <TbEdit />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </div>
@@ -151,14 +179,14 @@ export default function SettingsPage() {
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="p-3 border cursor-pointer hover:bg-gray-200 rounded-xl disabled:opacity-50 disabled:cursor-default disabled:bg-white"
+              className="p-3 border cursor-pointer hover:bg-gray-200 rounded-xl disabled:opacity-50"
             >
               <FaAnglesLeft />
             </button>
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="p-3 border cursor-pointer hover:bg-gray-200 rounded-xl disabled:opacity-50 disabled:cursor-default disabled:bg-white"
+              className="p-3 border cursor-pointer hover:bg-gray-200 rounded-xl disabled:opacity-50"
             >
               <FaAnglesRight />
             </button>
@@ -166,30 +194,38 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Edit and Add New Modal */}
-      <div className="mt-2 border-[1px] border-gray-300 rounded-xl p-6">
+      {/* Edit/Add Form Section */}
+      <div className="mt-6 border border-gray-300 rounded-xl p-6">
         {editingUser ? (
           <>
             <h2 className="font-semibold text-lg mb-4">Edit User</h2>
-
-            <form onSubmit={handleUpdate} className="flex flex-col gap-y-4">
-              <div className="flex flex-row gap-x-4 w-full">
-                <div className="flex-1">
-                  <p className="font-medium text-base mb-1">Name</p>
+            <div className="flex flex-col gap-y-4">
+              <div className="grid grid-cols-2 gap-4 w-full">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Email</label>
                   <input
                     type="text"
-                    className="p-2.5 text-sm w-full border-[1px] border-gray-300 rounded-xl"
-                    value={updateFormData.name}
-                    onChange={(e) => setUpdateFormData({ ...updateFormData, name: e.target.value })}
+                    value={updateFormData.email}
+                    disabled
+                    className="p-2.5 text-sm w-full border border-gray-300 rounded-xl bg-gray-100"
                   />
                 </div>
-                <div className="flex-1">
-                  <p className="font-medium text-base mb-1">Role</p>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Name</label>
                   <input
                     type="text"
-                    className="p-2.5 text-sm w-full border-[1px] border-gray-300 rounded-xl"
+                    value={updateFormData.name}
+                    onChange={(e) => setUpdateFormData({ ...updateFormData, name: e.target.value })}
+                    className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Role</label>
+                  <input
+                    type="text"
                     value={updateFormData.role}
                     onChange={(e) => setUpdateFormData({ ...updateFormData, role: e.target.value })}
+                    className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
                   />
                 </div>
               </div>
@@ -197,20 +233,17 @@ export default function SettingsPage() {
               <div>
                 <p className="font-medium mb-2">Access Permissions</p>
                 <div className="flex flex-wrap gap-4">
-                  {ACCESS_OPTIONS.map((option) => {
-                    const selected = updateFormData.access.includes(option);
-                    return (
-                      <label key={option} className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={selected}
-                          onChange={() => handleAccessChange(option, false)}
-                          className="custom-checkbox"
-                        />
-                        <span className="text-sm capitalize">{option}</span>
-                      </label>
-                    );
-                  })}
+                  {ACCESS_OPTIONS.map((option) => (
+                    <label key={option} className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={updateFormData.access.includes(option)}
+                        onChange={() => handleAccessChange(option)}
+                        className="custom-checkbox"
+                      />
+                      <span className="text-sm capitalize">{option}</span>
+                    </label>
+                  ))}
                 </div>
               </div>
 
@@ -224,37 +257,44 @@ export default function SettingsPage() {
                 </button>
                 <button
                   type="submit"
+                  onClick={handleUpdate}
                   className="px-6 py-2 font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white text-sm rounded-xl"
                 >
                   Save
                 </button>
               </div>
-            </form>
+            </div>
           </>
         ) : (
           <>
             <h2 className="font-semibold text-lg mb-4">Add New User</h2>
-
-            <form className="flex flex-col gap-y-4">
-              <div className="flex flex-row gap-x-4 w-full">
-                <div className="flex-1">
-                  <p className="font-medium text-base mb-1">Name</p>
+            <div className="flex flex-col gap-y-4">
+              <div className="grid grid-cols-2 gap-4 w-full">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Email</label>
                   <input
-                    type="text"
-                    className="p-2.5 text-sm w-full border-[1px] border-gray-300 rounded-xl"
-                    value={addNewFormData.name}
-                    placeholder="User Name"
-                    onChange={(e) => setUpdateFormData({ ...addNewFormData, name: e.target.value })}
+                    type="email"
+                    value={newUserData.email}
+                    onChange={(e) => setNewUserData({ ...newUserData, email: e.target.value })}
+                    className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
                   />
                 </div>
-                <div className="flex-1">
-                  <p className="font-medium text-base mb-1">Role</p>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Name</label>
                   <input
                     type="text"
-                    className="p-2.5 text-sm w-full border-[1px] border-gray-300 rounded-xl"
-                    value={addNewFormData.role}
-                    placeholder="User Role"
-                    onChange={(e) => setUpdateFormData({ ...addNewFormData, role: e.target.value })}
+                    value={newUserData.name}
+                    onChange={(e) => setNewUserData({ ...newUserData, name: e.target.value })}
+                    className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Role</label>
+                  <input
+                    type="text"
+                    value={newUserData.role}
+                    onChange={(e) => setNewUserData({ ...newUserData, role: e.target.value })}
+                    className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
                   />
                 </div>
               </div>
@@ -262,32 +302,30 @@ export default function SettingsPage() {
               <div>
                 <p className="font-medium mb-2">Access Permissions</p>
                 <div className="flex flex-wrap gap-4">
-                  {ACCESS_OPTIONS.map((option) => {
-                    const selected = updateFormData.access.includes(option);
-                    return (
-                      <label key={option} className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={selected}
-                          onChange={() => handleAccessChange(option, true)}
-                          className="custom-checkbox"
-                        />
-                        <span className="text-sm capitalize">{option}</span>
-                      </label>
-                    );
-                  })}
+                  {ACCESS_OPTIONS.map((option) => (
+                    <label key={option} className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={newUserData.access.includes(option)}
+                        onChange={() => handleAccessChange(option, true)}
+                        className="custom-checkbox"
+                      />
+                      <span className="text-sm capitalize">{option}</span>
+                    </label>
+                  ))}
                 </div>
               </div>
 
-              <div className="flex justify-end gap-4">
+              <div className="flex justify-end">
                 <button
                   type="submit"
+                  onClick={handleAddSubmit}
                   className="px-10 py-2 font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white text-sm rounded-xl"
                 >
                   Add
                 </button>
               </div>
-            </form>
+            </div>
           </>
         )}
       </div>
