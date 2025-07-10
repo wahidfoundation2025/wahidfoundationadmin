@@ -33,6 +33,7 @@ export default function Sidebar({ children }) {
   const [isOpen, setIsOpen] = useState(false);
   const [cmsDropdown, setCmsDropdown] = useState(false);
   const [access, setAccess] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const pathname = usePathname();
   const { user } = useUser();
@@ -44,18 +45,23 @@ export default function Sidebar({ children }) {
 
   const isCmsActive = cmsNavItems.some(item => pathname.startsWith(item.href));
 
+  const fetchAccess = async () => {
+    try {
+      setLoading(true);
+
+      const res = await fetch(`/api/users/${encodeURIComponent(user.primaryEmailAddress.emailAddress)}`);
+      if (!res.ok) throw new Error('Access fetch failed');
+      const data = await res.json();
+      setAccess(data.access || []);
+    } catch (err) {
+      console.error('Failed to load user access:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (user?.primaryEmailAddress?.emailAddress) {
-      const fetchAccess = async () => {
-        try {
-          const res = await fetch(`/api/users/${encodeURIComponent(user.primaryEmailAddress.emailAddress)}`);
-          if (!res.ok) throw new Error('Access fetch failed');
-          const data = await res.json();
-          setAccess(data.access || []);
-        } catch (err) {
-          console.error('Failed to load user access:', err);
-        }
-      };
       fetchAccess();
     }
   }, [user]);
@@ -68,66 +74,75 @@ export default function Sidebar({ children }) {
 
       <div className='flex flex-row h-[90dvh]'>
         <aside className="hidden md:flex flex-col gap-2 min-w-[20%] p-6 bg-white text-black">
-          {show('dashboard') && (
-            <Link href="/">
-              <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/')}`}>
-                {navItems[0].icon} {navItems[0].name}
-              </div>
-            </Link>
-          )}
+          {loading
+            ? <div className='flex flex-col gap-2'>
+              {[Array.from({ length: 5 }).map((_, indx) => (
+                <div key={indx} className='w-full h-10 rounded-xl bg-gray-200'> </div>
+              ))]}
+            </div>
+            : <>
+              {show('dashboard') && (
+                <Link href="/">
+                  <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/')}`}>
+                    {navItems[0].icon} {navItems[0].name}
+                  </div>
+                </Link>
+              )}
 
-          {show('cms') && (
-            <>
-              <button
-                onClick={() => setCmsDropdown(v => !v)}
-                className={`flex hover:bg-violet-200 cursor-pointer items-center justify-between gap-2 w-full rounded-lg px-3 py-2 font-medium transition normal-case ${isCmsActive ? 'text-violet-700 bg-violet-200 font-medium' : ''}`}
-              >
-                <div className='flex flex-row items-center gap-2'>
-                  {navItems[1].icon} CMS
-                </div>
-                {cmsDropdown || isCmsActive
-                  ? <ChevronUp size={20} />
-                  : <ChevronDown size={20} />
-                }
-              </button>
+              {show('cms') && (
+                <>
+                  <button
+                    onClick={() => setCmsDropdown(v => !v)}
+                    className={`flex hover:bg-violet-200 cursor-pointer items-center justify-between gap-2 w-full rounded-lg px-3 py-2 font-medium transition normal-case ${isCmsActive ? 'text-violet-700 bg-violet-200 font-medium' : ''}`}
+                  >
+                    <div className='flex flex-row items-center gap-2'>
+                      {navItems[1].icon} CMS
+                    </div>
+                    {cmsDropdown || isCmsActive
+                      ? <ChevronUp size={20} />
+                      : <ChevronDown size={20} />
+                    }
+                  </button>
 
-              {(cmsDropdown || isCmsActive) && (
-                <div className="ml-6 flex flex-col gap-0.5">
-                  {cmsNavItems.map(item => (
-                    <Link key={item.name} href={item.href}>
-                      <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg p-2 cursor-pointer transition normal-case ${pathname.startsWith(item.href) ? 'text-violet-700 bg-violet-200 font-medium' : ''}`}>
-                        {item.icon} {item.name}
-                      </div>
-                    </Link>
-                  ))}
-                </div>
+                  {(cmsDropdown || isCmsActive) && (
+                    <div className="ml-6 flex flex-col gap-0.5">
+                      {cmsNavItems.map(item => (
+                        <Link key={item.name} href={item.href}>
+                          <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg p-2 cursor-pointer transition normal-case ${pathname.startsWith(item.href) ? 'text-violet-700 bg-violet-200 font-medium' : ''}`}>
+                            {item.icon} {item.name}
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+
+              {show('donations') && (
+                <Link href="/donation">
+                  <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/donation')}`}>
+                    {navItems[2].icon} {navItems[2].name}
+                  </div>
+                </Link>
+              )}
+
+              {show('donors') && (
+                <Link href="/donors">
+                  <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/donors')}`}>
+                    {navItems[3].icon} {navItems[3].name}
+                  </div>
+                </Link>
+              )}
+
+              {show('settings') && (
+                <Link href="/settings">
+                  <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/settings')}`}>
+                    {navItems[4].icon} {navItems[4].name}
+                  </div>
+                </Link>
               )}
             </>
-          )}
-
-          {show('donations') && (
-            <Link href="/donation">
-              <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/donation')}`}>
-                {navItems[2].icon} {navItems[2].name}
-              </div>
-            </Link>
-          )}
-
-          {show('donors') && (
-            <Link href="/donors">
-              <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/donors')}`}>
-                {navItems[3].icon} {navItems[3].name}
-              </div>
-            </Link>
-          )}
-
-          {show('settings') && (
-            <Link href="/settings">
-              <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/settings')}`}>
-                {navItems[4].icon} {navItems[4].name}
-              </div>
-            </Link>
-          )}
+          }
         </aside>
 
         <div className="md:hidden fixed top-4 left-4 z-50">
