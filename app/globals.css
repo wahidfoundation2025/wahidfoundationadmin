@@ -25,3 +25,45 @@ body {
   color: black;
   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
 }
+
+
+.custom-checkbox {
+  appearance: none;
+  cursor: pointer;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid #c4c4c4;
+  /* border-gray-500 */
+  border-radius: 0.25rem;
+  /* Adjust if you want rounder corners */
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  /* Ensures the background is white */
+}
+
+.custom-checkbox:checked::before {
+  content: '';
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  background-color: #ccc0ff;
+  /* bg-primary-blue */
+  border-radius: 0.25rem;
+  /* Adjust if you want rounder corners */
+  border: 1px solid #663eff;
+}
+
+.custom-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  width: 0.25rem;
+  height: 0.5rem;
+  border: solid #663eff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  left: 0.35rem;
+  top: 0.2rem;
+}

@@ -9,6 +9,8 @@ export default function SettingsPage() {
   const [editingUser, setEditingUser] = useState(null);
   const [updateFormData, setUpdateFormData] = useState({ name: '', role: '', access: '' });
   const [addNewFormData, setAddNewFormData] = useState({ name: '', role: '', access: '' });
+  const ACCESS_OPTIONS = ["dashboard", "donations", "settings", "cms", "donors"];
+
   const [loading, setLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,6 +33,7 @@ export default function SettingsPage() {
 
   function openEditModal(user) {
     setEditingUser(user);
+
     setUpdateFormData({
       name: user.name || '',
       role: user.role || '',
@@ -55,6 +58,27 @@ export default function SettingsPage() {
       setEditingUser(null);
     } else {
       alert('Failed to update user');
+    }
+  }
+
+  function handleAccessChange(option, inNewForm) {
+    const current = updateFormData.access.split(',').map(s => s.trim()).filter(Boolean);
+    const exists = current.includes(option);
+
+    const updated = exists
+      ? current.filter(item => item !== option)
+      : [...current, option];
+
+    if (inNewForm) {
+      setAddNewFormData(prev => ({
+        ...prev,
+        access: updated.join(', '),
+      }))
+    } else {
+      setUpdateFormData(prev => ({
+        ...prev,
+        access: updated.join(', '),
+      }));
     }
   }
 
@@ -171,13 +195,23 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <p className="font-medium text-base mb-1">Access (comma separated)</p>
-                <input
-                  type="text"
-                  className="p-2.5 text-sm w-full border-[1px] border-gray-300 rounded-xl"
-                  value={updateFormData.access}
-                  onChange={(e) => setUpdateFormData({ ...updateFormData, access: e.target.value })}
-                />
+                <p className="font-medium mb-2">Access Permissions</p>
+                <div className="flex flex-wrap gap-4">
+                  {ACCESS_OPTIONS.map((option) => {
+                    const selected = updateFormData.access.includes(option);
+                    return (
+                      <label key={option} className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={selected}
+                          onChange={() => handleAccessChange(option, false)}
+                          className="custom-checkbox"
+                        />
+                        <span className="text-sm capitalize">{option}</span>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="flex justify-end gap-4">
@@ -226,14 +260,23 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <p className="font-medium text-base mb-1">Access (comma separated)</p>
-                <input
-                  type="text"
-                  className="p-2.5 text-sm w-full border-[1px] border-gray-300 rounded-xl"
-                  value={addNewFormData.access}
-                  placeholder="eg., dashboard, donations, "
-                  onChange={(e) => setUpdateFormData({ ...addNewFormData, access: e.target.value })}
-                />
+                <p className="font-medium mb-2">Access Permissions</p>
+                <div className="flex flex-wrap gap-4">
+                  {ACCESS_OPTIONS.map((option) => {
+                    const selected = updateFormData.access.includes(option);
+                    return (
+                      <label key={option} className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={selected}
+                          onChange={() => handleAccessChange(option, true)}
+                          className="custom-checkbox"
+                        />
+                        <span className="text-sm capitalize">{option}</span>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="flex justify-end gap-4">
