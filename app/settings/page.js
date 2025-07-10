@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { TbEdit } from "react-icons/tb";
+import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 
 export default function SettingsPage() {
   const [users, setUsers] = useState([]);
@@ -9,6 +10,12 @@ export default function SettingsPage() {
   const [updateFormData, setUpdateFormData] = useState({ name: '', role: '', access: '' });
   const [addNewFormData, setAddNewFormData] = useState({ name: '', role: '', access: '' });
   const [loading, setLoading] = useState(true);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 5;
+
+  const totalPages = Math.ceil(users.length / rowsPerPage);
+  const paginatedUsers = users.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
 
   useEffect(() => {
     fetchUsers();
@@ -74,7 +81,7 @@ export default function SettingsPage() {
               </tr>
             </thead>
             <tbody>
-              {users.map((user, idx) => {
+              {paginatedUsers.map((user, idx) => {
                 const color = user.colorCode || "#6B7280"; // fallback gray
                 const initials = user.name?.split(' ').map(n => n[0]).join('').slice(0, 2) || "US";
 
@@ -92,13 +99,13 @@ export default function SettingsPage() {
                       </div>
                     </td>
                     <td className="py-3 px-4 text-sm">{user.email}</td>
-                    <td className="py-3 px-4 text-sm">{user.name || "—"}</td>
+                    <td className="py-3 px-4 text-sm text-nowrap">{user.name || "—"}</td>
                     <td className="py-3 px-4 text-sm">{user.role || "—"}</td>
-                    <td className="py-3 px-4 text-sm">{user.access?.join(', ') || "—"}</td>
+                    <td className="py-3 px-4 text-sm text-nowrap">{user.access?.join(', ') || "—"}</td>
                     <td className="py-3 px-2 text-sm text-gray-900  bg-white">
                       <button
                         onClick={() => openEditModal(user)}
-                        className="cursor-pointer text-xl text-gray-700 hover:text-blue-600"
+                        className="ml-4 cursor-pointer text-xl text-gray-700 hover:text-blue-600"
                         title="Edit user"
                       >
                         <TbEdit />
@@ -110,9 +117,32 @@ export default function SettingsPage() {
             </tbody>
           </table>
         </div>
+
+        <div className="flex justify-between items-center mt-4 px-2 text-sm text-gray-700">
+          <div>
+            Showing {(currentPage - 1) * rowsPerPage + 1} to{" "}
+            {Math.min(currentPage * rowsPerPage, users.length)} of {users.length} entries
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="p-3 border cursor-pointer hover:bg-gray-200 rounded-xl disabled:opacity-50 disabled:cursor-default disabled:bg-white"
+            >
+              <FaAnglesLeft />
+            </button>
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="p-3 border cursor-pointer hover:bg-gray-200 rounded-xl disabled:opacity-50 disabled:cursor-default disabled:bg-white"
+            >
+              <FaAnglesRight />
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* Edit Modal */}
+      {/* Edit and Add New Modal */}
       <div className="mt-2 border-[1px] border-gray-300 rounded-xl p-6">
         {editingUser ? (
           <>
@@ -171,7 +201,7 @@ export default function SettingsPage() {
           <>
             <h2 className="font-semibold text-lg mb-4">Add New User</h2>
 
-            <form  className="flex flex-col gap-y-4">
+            <form className="flex flex-col gap-y-4">
               <div className="flex flex-row gap-x-4 w-full">
                 <div className="flex-1">
                   <p className="font-medium text-base mb-1">Name</p>
