@@ -86,7 +86,7 @@ export default function ProjectsPage() {
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Projects</h1>
+        <h1 className="text-2xl font-semibold">Projects</h1>
         <Button onClick={() => router.push('/projects/create')} className="bg-blue-600 hover:bg-blue-700">
           <Plus size={16} /> Create Project
         </Button>

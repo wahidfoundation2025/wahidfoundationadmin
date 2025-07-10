@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -8,7 +9,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: 'Poppins', sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
@@ -22,5 +23,47 @@
 body {
   background: white;
   color: black;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
+
+
+.custom-checkbox {
+  appearance: none;
+  cursor: pointer;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid #c4c4c4;
+  /* border-gray-500 */
+  border-radius: 0.25rem;
+  /* Adjust if you want rounder corners */
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  /* Ensures the background is white */
+}
+
+.custom-checkbox:checked::before {
+  content: '';
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  background-color: #ccc0ff;
+  /* bg-primary-blue */
+  border-radius: 0.25rem;
+  /* Adjust if you want rounder corners */
+  border: 1px solid #663eff;
+}
+
+.custom-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  width: 0.25rem;
+  height: 0.5rem;
+  border: solid #663eff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  left: 0.35rem;
+  top: 0.2rem;
 }

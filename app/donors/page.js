@@ -1,12 +1,15 @@
 "use client"
 import { useEffect, useState } from 'react'
 import { UserButton } from '@clerk/nextjs'
+import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 
 export default function DonorsPage() {
   const [donors, setDonors] = useState([])
   const [projects, setProjects] = useState([])
   const [donations, setDonations] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 5;
 
   useEffect(() => {
     async function fetchAll() {
@@ -29,77 +32,104 @@ export default function DonorsPage() {
     fetchAll()
   }, [])
 
+  const getProjectName = (id) => id; // Replace with actual lookup logic
+  const getDonationAmount = (donor, pid) =>
+    donor.donations?.find((d) => d.projectId === pid)?.amount || 0;
 
-  const getProjectName = (id) => {
-    if (!id) return '-'
-    const idStr = id.toString()
-    const proj = projects.find((p) => p._id?.toString() === idStr)
-    return proj ? proj.title : idStr
-  }
+  const totalPages = Math.ceil(donors.length / rowsPerPage);
+  const paginatedDonors = donors.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
 
+  const handlePrev = () => setCurrentPage((p) => Math.max(1, p - 1));
+  const handleNext = () => setCurrentPage((p) => Math.min(totalPages, p + 1));
 
-  const getDonationAmount = (donor, projectId) => {
-    if (!donor.donations || !Array.isArray(donor.donations)) return 0
-    const pidStr = projectId.toString()
-    return donations
-      .filter((d) => d._id && donor.donations.some((id) => id.toString() === d._id.toString()) && d.projectId && d.projectId.toString() === pidStr)
-      .reduce((sum, d) => sum + (d.amount || 0), 0)
-  }
+  if (loading) return <div className="p-10 text-center">Loading donors...</div>;
 
   return (
-    <div className="min-h-screen w-full flex flex-col py-10 px-4">
-      <div className="w-full max-w-6xl flex-1 flex flex-col">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center uppercase">Donors</h1>
-        <div className="bg-white rounded-xl p-3 flex-1 flex flex-col">
-          {loading ? (
-            <div className="flex-1 flex items-center justify-center text-gray-500 text-lg">
-              Loading...
-            </div>
-          ) : donors.length === 0 ? (
-            <div className="flex-1 flex items-center justify-center text-gray-500 text-lg">
-              No donors found.
-            </div>
-          ) : (
-            <div className="overflow-auto rounded border">
-              <table className="min-w-full table-auto text-sm">
-                <thead className="bg-gray-100 text-gray-700 font-semibold">
-                  <tr>
-                    {/* <th className="px-4 py-3 border">Profile</th> */}
-                    <th className="px-4 py-3 border">Name</th>
-                    <th className="px-4 py-3 border">Email</th>
-                    <th className="px-4 py-3 border">Total Donated</th>
-                    <th className="px-4 py-3 border">Total Projects</th>
-                    <th className="px-4 py-3 border">Projects Donated</th>
-                  </tr>
-                </thead>
-                <tbody className="text-gray-800">
-                  {donors.map((donor) => (
-                    <tr key={donor._id} className="hover:bg-gray-50 transition-colors">
-                      {/* Profile picture removed */}
-                      <td className="px-4 py-2 border">{donor.name}</td>
-                      <td className="px-4 py-2 border">{donor.email}</td>
-                      <td className="px-4 py-2 border">₹{donor.totalDonated}</td>
-                      <td className="px-4 py-2 border">{donor.totalProjects}</td>
-                      <td className="px-4 py-2 border">
-                        <ul className="list-disc pl-4">
-                          {donor.projectsDonatedTo && donor.projectsDonatedTo.length > 0 ? (
-                            donor.projectsDonatedTo.map((pid) => (
-                              <li key={pid}>
-                                {getProjectName(pid)}
-                                {': '}₹{getDonationAmount(donor, pid)}
-                              </li>
-                            ))
-                          ) : (
-                            <li>-</li>
-                          )}
-                        </ul>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+    <div className="min-h-full w-full bg-white p-6 rounded-2xl">
+      <h1 className="text-2xl font-bold mb-6">Donors</h1>
+
+      <div className="bg-white border border-gray-300 rounded-xl shadow overflow-hidden">
+        <table className="w-full text-sm table-auto text-left">
+          <thead className="bg-gray-200 text-gray-700 font-semibold border-b border-gray-300">
+            <tr>
+              {["Avatar", "Name", "Email", "Total Donated", "Total Projects", "Projects Donated"].map((title, idx) => (
+                <th
+                  key={idx}
+                  className={`py-3 px-4 text-nowrap font-medium ${idx === 0 ? "rounded-tl-xl" : idx === 5 ? "rounded-tr-xl" : ""
+                    }`}
+                >
+                  {title}
+                </th>
+              ))}
+            </tr>
+          </thead>
+
+          <tbody className="text-gray-800">
+            {paginatedDonors.map((donor) => {
+              const color = donor.colorCode || "#6B7280"; // fallback gray
+              const initials = donor.name?.split(' ').map(n => n[0]).join('').slice(0, 2) || "US";
+
+              return (
+                <tr key={donor._id} className="border-b border-gray-300 last:border-none">
+                  <td className="py-3 px-4 text-sm">
+                    <div
+                      style={{
+                        backgroundColor: `${color}20`,
+                        color: color,
+                      }}
+                      className="min-w-8 w-8 min-h-8 rounded-full font-bold flex items-center justify-center text-sm"
+                    >
+                      {initials}
+                    </div>
+                  </td>
+                  <td className="py-3 px-4">{donor.name}</td>
+                  <td className="py-3 px-4">{donor.email}</td>
+                  <td className="py-3 px-4">₹{donor.totalDonated}</td>
+                  <td className="py-3 px-4">{donor.totalProjects}</td>
+                  <td className="py-3 px-4">
+                    <ul className="list-disc pl-4">
+                      {donor.projectsDonatedTo?.length > 0 ? (
+                        donor.projectsDonatedTo.map((pid) => (
+                          <li key={pid}>
+                            {getProjectName(pid)}: ₹{getDonationAmount(donor, pid)}
+                          </li>
+                        ))
+                      ) : (
+                        <li>—</li>
+                      )}
+                    </ul>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-300 text-sm text-gray-700">
+        <div>
+          Showing {Math.min((currentPage - 1) * rowsPerPage + 1, donors.length)} to{' '}
+          {Math.min(currentPage * rowsPerPage, donors.length)} of {donors.length} entries
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={handlePrev}
+            disabled={currentPage === 1}
+            className="p-3 border cursor-pointer hover:bg-gray-200 rounded-xl disabled:opacity-50 disabled:cursor-default disabled:bg-white"
+          >
+            <FaAnglesLeft />
+          </button>
+          <button
+            onClick={handleNext}
+            disabled={currentPage === totalPages}
+            className="p-3 border cursor-pointer hover:bg-gray-200 rounded-xl disabled:opacity-50 disabled:cursor-default disabled:bg-white"
+          >
+            <FaAnglesRight />
+          </button>
         </div>
       </div>
     </div>

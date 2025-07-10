@@ -13,6 +13,8 @@ import {
   useUser,
   SignOutButton,
 } from '@clerk/nextjs';
+import Image from 'next/image';
+import Logo from "../../public/logo.png"
 
 const cmsNavItems = [
   { name: 'Home', key: 'dashboard', href: '/home', icon: <LayoutDashboard size={18} /> },
@@ -33,28 +35,35 @@ export default function Sidebar({ children }) {
   const [isOpen, setIsOpen] = useState(false);
   const [cmsDropdown, setCmsDropdown] = useState(false);
   const [access, setAccess] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const pathname = usePathname();
   const { user } = useUser();
 
   const getNavClass = (href) =>
     pathname === href
-      ? 'bg-gray-300 text-black font-semibold'
-      : 'text-white hover:bg-black font-bold';
+      ? 'text-violet-700 bg-violet-200 font-medium'
+      : '';
 
   const isCmsActive = cmsNavItems.some(item => pathname.startsWith(item.href));
 
+  const fetchAccess = async () => {
+    try {
+      setLoading(true);
+
+      const res = await fetch(`/api/users/${encodeURIComponent(user.primaryEmailAddress.emailAddress)}`);
+      if (!res.ok) throw new Error('Access fetch failed');
+      const data = await res.json();
+      setAccess(data.access || []);
+    } catch (err) {
+      console.error('Failed to load user access:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (user?.primaryEmailAddress?.emailAddress) {
-      const fetchAccess = async () => {
-        try {
-          const res = await fetch(`/api/users/${encodeURIComponent(user.primaryEmailAddress.emailAddress)}`);
-          if (!res.ok) throw new Error('Access fetch failed');
-          const data = await res.json();
-          setAccess(data.access || []);
-        } catch (err) {
-          console.error('Failed to load user access:', err);
-        }
-      };
       fetchAccess();
     }
   }, [user]);
@@ -62,94 +71,115 @@ export default function Sidebar({ children }) {
   const show = (key) => access.includes(key);
 
   return (
-    <div className="flex min-h-screen">
-      {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-64 border-r p-6 justify-between bg-gray-800">
-        <div>
-          <div className="text-xl font-bold mb-6 color-black pl-3 text-white uppercase">Wahid</div>
-          <nav className="space-y-5 uppercase">
-            {show('dashboard') && (
-              <Link href="/">
-                <div className={`flex items-center gap-2 rounded-md px-3 mt-4 py-2 cursor-pointer font-medium transition ${getNavClass('/')}`}>
-                  {navItems[0].icon} {navItems[0].name}
-                </div>
-              </Link>
-            )}
+    <div className="flex flex-col h-screen overflow-y-auto normal-case">
+      <NavBar />
 
-            {show('cms') && (
-              <div className="mt-4">
-                <button
-                  onClick={() => setCmsDropdown(v => !v)}
-                  className={`flex items-center gap-2 w-full rounded-md px-3 py-2 font-bold transition ${isCmsActive ? 'bg-gray-300 text-black' : 'text-white hover:bg-black'}`}
-                >
-                  {navItems[1].icon} CMS {cmsDropdown || isCmsActive ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                </button>
-                {(cmsDropdown || isCmsActive) && (
-                  <div className="ml-6 mt-2 flex flex-col gap-1">
-                    {cmsNavItems.map(item => (
-                      <Link key={item.name} href={item.href}>
-                        <div className={`flex items-center gap-2 rounded px-2 py-1 cursor-pointer transition ${pathname.startsWith(item.href) ? 'bg-gray-300 text-black font-semibold' : 'hover:bg-gray-200 text-white'}`}>
-                          {item.icon} {item.name}
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {show('donations') && (
-              <Link href="/donation">
-                <div className={`flex items-center gap-2 rounded-md px-3 mt-4 py-2 cursor-pointer font-medium transition ${getNavClass('/donation')}`}>
-                  {navItems[2].icon} {navItems[2].name}
-                </div>
-              </Link>
-            )}
-
-            {show('donors') && (
-              <Link href="/donors">
-                <div className={`flex items-center gap-2 rounded-md px-3 mt-4 py-2 cursor-pointer font-medium transition ${getNavClass('/donors')}`}>
-                  {navItems[3].icon} {navItems[3].name}
-                </div>
-              </Link>
-            )}
-
-            {show('settings') && (
-              <Link href="/settings">
-                <div className={`flex items-center gap-2 rounded-md px-3 mt-4 py-2 cursor-pointer font-medium transition ${getNavClass('/settings')}`}>
-                  {navItems[4].icon} {navItems[4].name}
-                </div>
-              </Link>
-            )}
-          </nav>
-        </div>
-
-        <div className="mt-8">
-          <SignedIn>
-            <div className="flex items-center gap-3 mb-4 py-2 px-2 bg-gray-100 rounded-xl">
-              <UserButton afterSignOutUrl="/sign-in" />
-              <div className="text-sm font-medium text-black">
-                {user?.firstName} {user?.lastName}
-              </div>
+      <div className='flex flex-row h-[90dvh]'>
+        <aside className="hidden md:flex flex-col gap-2 min-w-[20%] p-6 bg-white text-black">
+          {loading
+            ? <div className='flex flex-col gap-2'>
+              {[Array.from({ length: 5 }).map((_, indx) => (
+                <div key={indx} className='w-full h-10 rounded-xl bg-gray-200'> </div>
+              ))]}
             </div>
-            <SignOutButton>
-              <button className="w-full flex items-center gap-3 text-white hover:bg-red-100 px-2 py-2 rounded-md transition font-medium bg-red-600">
-                <LogOut size={18} /> Log out
-              </button>
-            </SignOutButton>
-          </SignedIn>
+            : <>
+              {show('dashboard') && (
+                <Link href="/">
+                  <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/')}`}>
+                    {navItems[0].icon} {navItems[0].name}
+                  </div>
+                </Link>
+              )}
+
+              {show('cms') && (
+                <>
+                  <button
+                    onClick={() => setCmsDropdown(v => !v)}
+                    className={`flex hover:bg-violet-200 cursor-pointer items-center justify-between gap-2 w-full rounded-lg px-3 py-2 font-medium transition normal-case ${isCmsActive ? 'text-violet-700 bg-violet-200 font-medium' : ''}`}
+                  >
+                    <div className='flex flex-row items-center gap-2'>
+                      {navItems[1].icon} CMS
+                    </div>
+                    {cmsDropdown || isCmsActive
+                      ? <ChevronUp size={20} />
+                      : <ChevronDown size={20} />
+                    }
+                  </button>
+
+                  {(cmsDropdown || isCmsActive) && (
+                    <div className="ml-6 flex flex-col gap-0.5">
+                      {cmsNavItems.map(item => (
+                        <Link key={item.name} href={item.href}>
+                          <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg p-2 cursor-pointer transition normal-case ${pathname.startsWith(item.href) ? 'text-violet-700 bg-violet-200 font-medium' : ''}`}>
+                            {item.icon} {item.name}
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+
+              {show('donations') && (
+                <Link href="/donation">
+                  <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/donation')}`}>
+                    {navItems[2].icon} {navItems[2].name}
+                  </div>
+                </Link>
+              )}
+
+              {show('donors') && (
+                <Link href="/donors">
+                  <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/donors')}`}>
+                    {navItems[3].icon} {navItems[3].name}
+                  </div>
+                </Link>
+              )}
+
+              {show('settings') && (
+                <Link href="/settings">
+                  <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/settings')}`}>
+                    {navItems[4].icon} {navItems[4].name}
+                  </div>
+                </Link>
+              )}
+            </>
+          }
+        </aside>
+
+        <div className="md:hidden fixed top-4 left-4 z-50">
+          <button onClick={() => setIsOpen(!isOpen)} className="text-gray-800">
+            {isOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
         </div>
-      </aside>
 
-      {/* Mobile toggle button */}
-      <div className="md:hidden fixed top-4 left-4 z-50">
-        <button onClick={() => setIsOpen(!isOpen)} className="text-gray-800">
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
+        {/* Main content */}
+        <main className="flex-1 p-6 bg-gray-100 w-full max-h-screen overflow-y-auto">
+          {children}
+        </main>
       </div>
-
-      {/* Main content */}
-      <main className="flex-1 p-6 bg-white w-full">{children}</main>
     </div>
   );
+}
+
+const NavBar = () => {
+  return (
+    <nav className='flex items-center justify-between w-full p-4 px-12 border-b border-gray-200 h-[10dvh]'>
+      {Logo
+        ? <div className='flex flex-row gap-3 items-center'>
+          <Image src={Logo} alt="Wahid" height={40} />
+          <h1 className="text-xl font-semibold">WAHID</h1>
+        </div>
+        : <h1 className="text-xl font-semibold">WAHID</h1>}
+
+      <SignedIn>
+        <div className='flex flex-row gap-4 items-center'>
+          <UserButton afterSignOutUrl="/sign-in" showName />
+          <button className="cursor-pointer hover:bg-red-200 rounded-full p-2.5 border border-gray-300 transition hover:border-red-300">
+            <LogOut size={16} />
+          </button>
+        </div>
+      </SignedIn>
+    </nav>
+  )
 }

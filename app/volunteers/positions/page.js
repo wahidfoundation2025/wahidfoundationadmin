@@ -118,7 +118,7 @@ export default function VolunteerPositionsPage() {
                 const Icon = ICON_MAP[selected.icon] || Users
                 return <Icon className="w-8 h-8 text-gray-700" />
               })()}
-              <h2 className="text-xl font-bold text-gray-800">{selected.title}</h2>
+              <h2 className="text-xl font-semibold text-gray-800">{selected.title}</h2>
             </div>
             <div className="mb-2">
               <span className="font-semibold text-gray-700">Commitment:</span> {selected.commitment}

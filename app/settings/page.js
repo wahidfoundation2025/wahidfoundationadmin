@@ -1,12 +1,23 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { TbEdit } from "react-icons/tb";
+import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 
 export default function SettingsPage() {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
-  const [formData, setFormData] = useState({ name: '', role: '', access: '' });
+  const [updateFormData, setUpdateFormData] = useState({ name: '', role: '', access: '' });
+  const [addNewFormData, setAddNewFormData] = useState({ name: '', role: '', access: '' });
+  const ACCESS_OPTIONS = ["dashboard", "donations", "settings", "cms", "donors"];
+
   const [loading, setLoading] = useState(true);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 5;
+
+  const totalPages = Math.ceil(users.length / rowsPerPage);
+  const paginatedUsers = users.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
 
   useEffect(() => {
     fetchUsers();
@@ -22,7 +33,8 @@ export default function SettingsPage() {
 
   function openEditModal(user) {
     setEditingUser(user);
-    setFormData({
+
+    setUpdateFormData({
       name: user.name || '',
       role: user.role || '',
       access: user.access?.join(', ') || '',
@@ -35,9 +47,9 @@ export default function SettingsPage() {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name: formData.name,
-        role: formData.role,
-        access: formData.access.split(',').map((item) => item.trim()),
+        name: updateFormData.name,
+        role: updateFormData.role,
+        access: updateFormData.access.split(',').map((item) => item.trim()),
       }),
     });
 
@@ -49,91 +61,236 @@ export default function SettingsPage() {
     }
   }
 
+  function handleAccessChange(option, inNewForm) {
+    const current = updateFormData.access.split(',').map(s => s.trim()).filter(Boolean);
+    const exists = current.includes(option);
+
+    const updated = exists
+      ? current.filter(item => item !== option)
+      : [...current, option];
+
+    if (inNewForm) {
+      setAddNewFormData(prev => ({
+        ...prev,
+        access: updated.join(', '),
+      }))
+    } else {
+      setUpdateFormData(prev => ({
+        ...prev,
+        access: updated.join(', '),
+      }));
+    }
+  }
+
   if (loading) return <div className="p-10 text-center">Loading users...</div>;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="bg-white p-6 rounded-2xl min-h-full">
       <h1 className="text-2xl font-bold mb-6">Settings - User Management</h1>
 
-      <table className="w-full border text-sm">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="p-2 border">Email</th>
-            <th className="p-2 border">Name</th>
-            <th className="p-2 border">Role</th>
-            <th className="p-2 border">Access</th>
-            <th className="p-2 border">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.email}>
-              <td className="p-2 border">{user.email}</td>
-              <td className="p-2 border">{user.name}</td>
-              <td className="p-2 border">{user.role}</td>
-              <td className="p-2 border">{user.access?.join(', ')}</td>
-              <td className="p-2 border">
-                <button
-                  onClick={() => openEditModal(user)}
-                  className="text-blue-600 hover:underline"
-                >
-                  Edit
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="overflow-x-auto w-full pb-4">
+        <div className="bg-white w-full border border-gray-300 shadow rounded-xl overflow-auto">
+          <table className="w-full table-auto text-left">
+            <thead className="bg-gray-200 text-gray-700 border-b border-gray-300 text-sm font-semibold">
+              <tr>
+                {["Avatar", "Email", "Name", "Role", "Access", "Actions"].map((title, idx) => (
+                  <th
+                    key={idx}
+                    className={`py-3 px-4 text-nowrap font-medium ${idx === 0 ? "rounded-tl-xl" : idx === 5 ? "rounded-tr-xl" : ""
+                      }`}
+                  >
+                    {title}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {paginatedUsers.map((user, idx) => {
+                const color = user.colorCode || "#6B7280"; // fallback gray
+                const initials = user.name?.split(' ').map(n => n[0]).join('').slice(0, 2) || "US";
 
-      {/* Edit Modal */}
-      {editingUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-10">
-          <div className="bg-white p-6 rounded shadow-md w-full max-w-md relative">
-            <h2 className="text-xl font-semibold mb-4">Edit User</h2>
-            <form onSubmit={handleUpdate} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium">Name</label>
-                <input
-                  className="w-full border rounded p-2"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                />
+                return (
+                  <tr key={user.email} className="border-b border-gray-300 last:border-none">
+                    <td className="py-3 px-4 text-sm">
+                      <div
+                        style={{
+                          backgroundColor: `${color}20`,
+                          color: color,
+                        }}
+                        className="min-w-8 w-8 min-h-8 rounded-full font-bold flex items-center justify-center text-sm"
+                      >
+                        {initials}
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 text-sm">{user.email}</td>
+                    <td className="py-3 px-4 text-sm text-nowrap">{user.name || "—"}</td>
+                    <td className="py-3 px-4 text-sm">{user.role || "—"}</td>
+                    <td className="py-3 px-4 text-sm text-nowrap">{user.access?.join(', ') || "—"}</td>
+                    <td className="py-3 px-2 text-sm text-gray-900  bg-white">
+                      <button
+                        onClick={() => openEditModal(user)}
+                        className="ml-4 cursor-pointer text-xl text-gray-700 hover:text-blue-600"
+                        title="Edit user"
+                      >
+                        <TbEdit />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="flex justify-between items-center mt-4 px-2 text-sm text-gray-700">
+          <div>
+            Showing {(currentPage - 1) * rowsPerPage + 1} to{" "}
+            {Math.min(currentPage * rowsPerPage, users.length)} of {users.length} entries
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="p-3 border cursor-pointer hover:bg-gray-200 rounded-xl disabled:opacity-50 disabled:cursor-default disabled:bg-white"
+            >
+              <FaAnglesLeft />
+            </button>
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="p-3 border cursor-pointer hover:bg-gray-200 rounded-xl disabled:opacity-50 disabled:cursor-default disabled:bg-white"
+            >
+              <FaAnglesRight />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Edit and Add New Modal */}
+      <div className="mt-2 border-[1px] border-gray-300 rounded-xl p-6">
+        {editingUser ? (
+          <>
+            <h2 className="font-semibold text-lg mb-4">Edit User</h2>
+
+            <form onSubmit={handleUpdate} className="flex flex-col gap-y-4">
+              <div className="flex flex-row gap-x-4 w-full">
+                <div className="flex-1">
+                  <p className="font-medium text-base mb-1">Name</p>
+                  <input
+                    type="text"
+                    className="p-2.5 text-sm w-full border-[1px] border-gray-300 rounded-xl"
+                    value={updateFormData.name}
+                    onChange={(e) => setUpdateFormData({ ...updateFormData, name: e.target.value })}
+                  />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-base mb-1">Role</p>
+                  <input
+                    type="text"
+                    className="p-2.5 text-sm w-full border-[1px] border-gray-300 rounded-xl"
+                    value={updateFormData.role}
+                    onChange={(e) => setUpdateFormData({ ...updateFormData, role: e.target.value })}
+                  />
+                </div>
               </div>
+
               <div>
-                <label className="block text-sm font-medium">Role</label>
-                <input
-                  className="w-full border rounded p-2"
-                  value={formData.role}
-                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                />
+                <p className="font-medium mb-2">Access Permissions</p>
+                <div className="flex flex-wrap gap-4">
+                  {ACCESS_OPTIONS.map((option) => {
+                    const selected = updateFormData.access.includes(option);
+                    return (
+                      <label key={option} className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={selected}
+                          onChange={() => handleAccessChange(option, false)}
+                          className="custom-checkbox"
+                        />
+                        <span className="text-sm capitalize">{option}</span>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium">Access (comma separated)</label>
-                <input
-                  className="w-full border rounded p-2"
-                  value={formData.access}
-                  onChange={(e) => setFormData({ ...formData, access: e.target.value })}
-                />
-              </div>
-              <div className="flex justify-end space-x-2 pt-2">
+
+              <div className="flex justify-end gap-4">
                 <button
                   type="button"
                   onClick={() => setEditingUser(null)}
-                  className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                  className="px-6 py-2 font-medium cursor-pointer border border-violet-600 text-violet-600 hover:bg-violet-600 hover:text-white transition-colors text-sm rounded-xl"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  className="px-6 py-2 font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white text-sm rounded-xl"
                 >
                   Save
                 </button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
+          </>
+        ) : (
+          <>
+            <h2 className="font-semibold text-lg mb-4">Add New User</h2>
+
+            <form className="flex flex-col gap-y-4">
+              <div className="flex flex-row gap-x-4 w-full">
+                <div className="flex-1">
+                  <p className="font-medium text-base mb-1">Name</p>
+                  <input
+                    type="text"
+                    className="p-2.5 text-sm w-full border-[1px] border-gray-300 rounded-xl"
+                    value={addNewFormData.name}
+                    placeholder="User Name"
+                    onChange={(e) => setUpdateFormData({ ...addNewFormData, name: e.target.value })}
+                  />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-base mb-1">Role</p>
+                  <input
+                    type="text"
+                    className="p-2.5 text-sm w-full border-[1px] border-gray-300 rounded-xl"
+                    value={addNewFormData.role}
+                    placeholder="User Role"
+                    onChange={(e) => setUpdateFormData({ ...addNewFormData, role: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <p className="font-medium mb-2">Access Permissions</p>
+                <div className="flex flex-wrap gap-4">
+                  {ACCESS_OPTIONS.map((option) => {
+                    const selected = updateFormData.access.includes(option);
+                    return (
+                      <label key={option} className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={selected}
+                          onChange={() => handleAccessChange(option, true)}
+                          className="custom-checkbox"
+                        />
+                        <span className="text-sm capitalize">{option}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-4">
+                <button
+                  type="submit"
+                  className="px-10 py-2 font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white text-sm rounded-xl"
+                >
+                  Add
+                </button>
+              </div>
+            </form>
+          </>
+        )}
+      </div>
     </div>
   );
 }

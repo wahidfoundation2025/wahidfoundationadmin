@@ -32,7 +32,7 @@ export default function ImpactPage() {
   const [adding, setAdding] = useState(false)
 
   useEffect(() => {
-    fetchStories()
+    fetchStories();
   }, [])
 
   async function fetchStories() {
@@ -77,10 +77,10 @@ export default function ImpactPage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gray-100 py-10 px-0">
+    <div className="bg-white p-6 rounded-2xl min-h-full">
       <div className="w-full max-w-5xl mx-auto bg-white p-8 rounded shadow">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
-          <h1 className="text-3xl font-bold text-gray-800">Impact Stories</h1>
+          <h1 className="text-3xl font-semibold text-gray-800">Impact Stories</h1>
           <button
             onClick={() => setShowAdd(true)}
             className="flex items-center gap-2 bg-black text-white px-5 py-2 rounded font-semibold hover:bg-gray-800 transition"
@@ -104,9 +104,9 @@ export default function ImpactPage() {
                   <div className="flex-1">
                     <p className="text-gray-700 mb-2">"{story.quote}"</p>
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-gray-900">{story.name}</span>
+                      <span className="font-semibold text-gray-900">{story.name}</span>
                       <span className="text-gray-500 text-sm">({story.location})</span>
-                      <span className="bg-gray-200 text-gray-700 rounded-full px-2 py-1 text-xs font-bold ml-2">{story.initials}</span>
+                      <span className="bg-gray-200 text-gray-700 rounded-full px-2 py-1 text-xs font-semibold ml-2">{story.initials}</span>
                     </div>
                     <div className="text-xs text-gray-400 mt-1">
                       {story.createdAt ? new Date(story.createdAt).toLocaleString() : ''}
@@ -139,7 +139,7 @@ export default function ImpactPage() {
               &times;
             </button>
             <form onSubmit={handleAdd} className="space-y-5">
-              <h2 className="text-xl font-bold mb-2 text-gray-800">Add Impact Story</h2>
+              <h2 className="text-xl font-semibold mb-2 text-gray-800">Add Impact Story</h2>
               <div>
                 <label className="block mb-1 font-medium">Quote</label>
                 <textarea name="quote" value={form.quote} onChange={handleFormChange} required className="w-full border rounded px-3 py-2" />

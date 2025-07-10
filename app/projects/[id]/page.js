@@ -15,7 +15,7 @@ export default async function ProjectDetailPage({ params }) {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-6">
-      <h1 className="text-4xl font-bold mb-6">{project.title}</h1>
+      <h1 className="text-4xl font-semibold mb-6">{project.title}</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="bg-white rounded-lg shadow p-4">
@@ -39,18 +39,8 @@ export default async function ProjectDetailPage({ params }) {
           <h2 className="text-lg font-semibold mb-2">Donation</h2>
           <p><strong>Donation Frequency:</strong> {project.donationFrequency}</p>
           <p><strong>Min Donation Amount:</strong> ₹{project.minDonationAmount}</p>
-
-          {project.donationOptions?.length > 0 && (
-            <>
-              <h3 className="mt-4 font-medium">Enabled Donation Options</h3>
-              <ul className="list-disc list-inside">
-                {project.donationOptions.filter(opt => opt.isEnabled).map((opt, i) => (
-                  <li key={i}>{opt.type}</li>
-                ))}
-              </ul>
-            </>
-          )}
         </div>
+        
         <div className="bg-white rounded-lg shadow p-4">
           <h2 className="text-lg font-semibold mb-2">Project Manager</h2>
           <p><strong>Name:</strong> {project.projectManager?.name || 'N/A'}</p>

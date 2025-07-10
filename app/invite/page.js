@@ -47,7 +47,7 @@ export default function InvitePage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md space-y-4">
-        <h1 className="text-2xl font-bold text-center">Send Invitation</h1>
+        <h1 className="text-2xl font-semibold text-center">Send Invitation</h1>
 
         <input
           type="email"

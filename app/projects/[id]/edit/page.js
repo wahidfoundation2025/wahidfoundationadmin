@@ -111,7 +111,7 @@ export default function EditProjectPage({ params }) {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-6">
-      <h1 className="text-3xl font-bold mb-6">Edit Project</h1>
+      <h1 className="text-3xl font-semibold mb-6">Edit Project</h1>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
           {/* Status Dropdown */}
@@ -155,13 +155,6 @@ export default function EditProjectPage({ params }) {
 
           <label className="block font-medium">Days Left</label>
           <input name="daysLeft" type="number" value={form.daysLeft} onChange={handleChange} placeholder="Days Left" className="w-full border px-3 py-2 rounded" />
-
-          <div className="flex items-center gap-2">
-            <input type="checkbox" name="zakat_eligible" checked={form.zakat_eligible} onChange={handleChange} /> Zakat Eligible
-          </div>
-          <div className="flex items-center gap-2">
-            <input type="checkbox" name="interest_earnings_eligible" checked={form.interest_earnings_eligible} onChange={handleChange} /> Interest Eligible
-          </div>
         </div>
 
         <div className="space-y-4">

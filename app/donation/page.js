@@ -36,7 +36,7 @@ export default function DonationPage() {
     <div className="min-h-screen w-full  flex flex-col py-10 px-4">
       <div className="w-full max-w-6xl flex-1 flex flex-col">
         {/* Heading */}
-        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center uppercase">Donation Records</h1>
+        <h1 className="text-3xl font-semibold text-gray-800 mb-6 text-center uppercase">Donation Records</h1>
 
         {/* Card Container */}
         <div className="bg-white rounded-xl p-3 flex-1 flex flex-col">

@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useState } from "react"
+import { TbEdit, TbTrash } from "react-icons/tb"
 
 export default function HomeQuoteSectionEditor() {
   const [quote, setQuote] = useState(null)
@@ -12,8 +13,9 @@ export default function HomeQuoteSectionEditor() {
     fetch("/api/homequotesection")
       .then((res) => res.json())
       .then((d) => {
-        setQuote(Array.isArray(d) ? d[0] : d)
-        setForm(Array.isArray(d) && d[0] ? d[0] : d || { text: "", reference: "", theme: "inspiration" })
+        const q = Array.isArray(d) ? d[0] : d
+        setQuote(q)
+        setForm(q || { text: "", reference: "", theme: "inspiration" })
         setLoading(false)
       })
   }, [])
@@ -47,31 +49,96 @@ export default function HomeQuoteSectionEditor() {
     setSaving(false)
   }
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <div className="mt-10">Loading...</div>
 
   return (
-    <div className="bg-white p-6 rounded shadow text-black min-h-[200px]">
-      <h2 className="text-xl font-bold mb-4">Quote Section Editor</h2>
-      {edit || !quote ? (
-        <div className="mb-6 flex flex-col gap-2">
-          <input name="text" value={form.text} onChange={handleChange} placeholder="Quote text" className="w-full border border-gray-300 rounded px-3 py-2" />
-          <input name="reference" value={form.reference} onChange={handleChange} placeholder="Reference (optional)" className="w-full border border-gray-300 rounded px-3 py-2" />
-          <select name="theme" value={form.theme} onChange={handleChange} className="w-full border border-gray-300 rounded px-3 py-2">
-            <option value="inspiration">Inspiration</option>
-            <option value="gratitude">Gratitude</option>
-            <option value="hope">Hope</option>
-          </select>
-          <button className="btn btn-primary mt-2" onClick={handleSave} disabled={saving || !form.text}>{saving ? "Saving..." : (quote ? "Update Quote" : "Add Quote")}</button>
-          {quote && <button className="btn btn-error mt-2" onClick={handleDelete} disabled={saving}>Delete Quote</button>}
+    <div className="px-2 mt-6 space-y-6">
+      {(edit || !quote) ? (
+        <div className="space-y-6">
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-semibold">Quote Text</label>
+            <input
+              name="text"
+              value={form.text}
+              onChange={handleChange}
+              placeholder="Enter quote"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-semibold">Reference</label>
+            <input
+              name="reference"
+              value={form.reference}
+              onChange={handleChange}
+              placeholder="e.g. Mahatma Gandhi"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-semibold">Theme</label>
+            <select
+              name="theme"
+              value={form.theme}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 bg-white"
+            >
+              <option value="inspiration">Inspiration</option>
+              <option value="gratitude">Gratitude</option>
+              <option value="hope">Hope</option>
+            </select>
+          </div>
+
+          <div className="flex gap-2 absolute right-6 top-6">
+            <button
+              className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-white transition rounded-xl"
+              onClick={handleSave}
+              disabled={saving || !form.text}
+            >
+              {saving ? "Saving..." : quote ? "Update Quote" : "Add Quote"}
+            </button>
+
+            {quote && (
+              <button
+                className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-red-600 hover:bg-red-600 px-6 py-2 cursor-pointer text-red-600 hover:text-white transition rounded-xl"
+                onClick={handleDelete}
+                disabled={saving}
+              >
+                <TbTrash className="text-lg" />
+              </button>
+            )}
+
+            <button
+              className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+              onClick={() => {
+                setEdit(false)
+                setForm(quote || { text: "", reference: "", theme: "inspiration" })
+              }}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       ) : (
-        <div className="mb-6">
-          <div className="border rounded px-3 py-2 bg-gray-50">
-            <span className="block">"{quote.text}"</span>
-            {quote.reference && <span className="block text-xs text-gray-500">- {quote.reference}</span>}
-            <span className="block text-xs text-blue-600">Theme: {quote.theme}</span>
+        <div className="space-y-4">
+          <button
+            className="absolute right-6 top-6 flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+            onClick={() => setEdit(true)}
+          >
+            Edit Quote <TbEdit className="text-xl" />
+          </button>
+
+          <div className="text-xl font-semibold">Quote:</div>
+
+          <div className="border border-gray-300 rounded-xl px-4 py-3 bg-gray-50 text-gray-800">
+            <div className="text-lg italic">"{quote?.text}"</div>
+            {quote?.reference && (
+              <div className="mt-2 text-sm text-gray-500 font-medium">- {quote.reference}</div>
+            )}
+            <div className="mt-1 text-sm text-blue-600 font-semibold">Theme: {quote.theme}</div>
           </div>
-          <button className="btn btn-primary mt-4" onClick={() => setEdit(true)}>Edit</button>
         </div>
       )}
     </div>
