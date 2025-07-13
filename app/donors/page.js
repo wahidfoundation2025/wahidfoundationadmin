@@ -110,7 +110,7 @@ export default function DonorsPage() {
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-300 text-sm text-gray-700">
+      <div className="flex items-center justify-between px-4 py-3 bg-white text-sm text-gray-700">
         <div>
           Showing {Math.min((currentPage - 1) * rowsPerPage + 1, donors.length)} to{' '}
           {Math.min(currentPage * rowsPerPage, donors.length)} of {donors.length} entries
