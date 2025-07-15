@@ -74,7 +74,7 @@ export default function ProjectsPage() {
         </select>
       </div>
 
-      <div className="bg-white border border-gray-300 rounded-xl shadow overflow-hidden">
+      <div className="bg-white border border-gray-300 rounded-xl shadow overflow-x-auto">
         <table className="w-full text-sm table-auto text-left">
           <thead className="bg-gray-200 text-gray-700 font-semibold border-b border-gray-300">
             <tr>
