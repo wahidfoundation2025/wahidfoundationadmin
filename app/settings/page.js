@@ -157,10 +157,10 @@ export default function SettingsPage() {
                       <td className="py-3 px-2 text-sm text-gray-900 bg-white">
                         <button
                           onClick={() => openEditModal(user)}
-                          className="ml-4 cursor-pointer text-xl text-gray-700 hover:text-violet-600"
+                          className="ml-4 cursor-pointer text-violet-600 p-2 rounded-full hover:bg-violet-100"
                           title="Edit user"
                         >
-                          <TbEdit />
+                          <TbEdit size={20} />
                         </button>
                       </td>
                     </tr>

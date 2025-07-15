@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Trash2, Pencil, Eye, Plus } from 'lucide-react'
 import { FaAnglesLeft, FaAnglesRight } from 'react-icons/fa6'
+import { TbEdit } from 'react-icons/tb'
 
 const Input = (props) => (
   <input className="border px-3 py-2 rounded-md text-sm w-full" {...props} />
@@ -102,21 +103,21 @@ export default function ProjectsPage() {
                       className="text-blue-600 hover:bg-blue-200 rounded-3xl p-2 cursor-pointer transition"
                       title="View"
                     >
-                      <Eye size={16} />
+                      <Eye size={20} />
                     </button>
                     <button
                       onClick={() => router.push(`/projects/${project._id}/edit`)}
-                      className="text-green-600 hover:bg-green-200 rounded-3xl p-2 cursor-pointer transition"
+                      className="text-violet-600 hover:bg-violet-200 rounded-3xl p-2 cursor-pointer transition"
                       title="Edit"
                     >
-                      <Pencil size={16} />
+                      <TbEdit size={20} />
                     </button>
                     <button
                       onClick={() => handleDelete(project._id)}
                       className="text-red-600 hover:bg-red-200 rounded-3xl p-2 cursor-pointer transition"
                       title="Delete"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={20} />
                     </button>
                   </div>
                 </td>
