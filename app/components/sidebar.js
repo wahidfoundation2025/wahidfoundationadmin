@@ -42,7 +42,7 @@ export default function Sidebar({ children }) {
 
   const getNavClass = (href) =>
     pathname === href
-      ? 'text-blue-700 bg-blue-200 font-medium'
+      ? 'text-violet-700 bg-violet-200 font-medium'
       : '';
 
   const isCmsActive = cmsNavItems.some(item => pathname.startsWith(item.href));
@@ -85,7 +85,7 @@ export default function Sidebar({ children }) {
             : <>
               {show('dashboard') && (
                 <Link href="/">
-                  <div className={`flex hover:bg-blue-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/')}`}>
+                  <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/')}`}>
                     {navItems[0].icon} {navItems[0].name}
                   </div>
                 </Link>
@@ -95,7 +95,7 @@ export default function Sidebar({ children }) {
                 <>
                   <button
                     onClick={() => setCmsDropdown(v => !v)}
-                    className={`flex hover:bg-blue-200 cursor-pointer items-center justify-between gap-2 w-full rounded-lg px-3 py-2 font-medium transition normal-case ${isCmsActive ? 'text-blue-700 bg-blue-200 font-medium' : ''}`}
+                    className={`flex hover:bg-violet-200 cursor-pointer items-center justify-between gap-2 w-full rounded-lg px-3 py-2 font-medium transition normal-case ${isCmsActive ? 'text-violet-700 bg-violet-200 font-medium' : ''}`}
                   >
                     <div className='flex flex-row items-center gap-2'>
                       {navItems[1].icon} CMS
@@ -110,7 +110,7 @@ export default function Sidebar({ children }) {
                     <div className="ml-6 flex flex-col gap-0.5">
                       {cmsNavItems.map(item => (
                         <Link key={item.name} href={item.href}>
-                          <div className={`flex hover:bg-blue-200 items-center gap-2 rounded-lg p-2 cursor-pointer transition normal-case ${pathname.startsWith(item.href) ? 'text-blue-700 bg-blue-200 font-medium' : ''}`}>
+                          <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg p-2 cursor-pointer transition normal-case ${pathname.startsWith(item.href) ? 'text-violet-700 bg-violet-200 font-medium' : ''}`}>
                             {item.icon} {item.name}
                           </div>
                         </Link>
@@ -122,7 +122,7 @@ export default function Sidebar({ children }) {
 
               {show('donations') && (
                 <Link href="/donation">
-                  <div className={`flex hover:bg-blue-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/donation')}`}>
+                  <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/donation')}`}>
                     {navItems[2].icon} {navItems[2].name}
                   </div>
                 </Link>
@@ -130,7 +130,7 @@ export default function Sidebar({ children }) {
 
               {show('donors') && (
                 <Link href="/donors">
-                  <div className={`flex hover:bg-blue-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/donors')}`}>
+                  <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/donors')}`}>
                     {navItems[3].icon} {navItems[3].name}
                   </div>
                 </Link>
@@ -138,7 +138,7 @@ export default function Sidebar({ children }) {
 
               {show('settings') && (
                 <Link href="/settings">
-                  <div className={`flex hover:bg-blue-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/settings')}`}>
+                  <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass('/settings')}`}>
                     {navItems[4].icon} {navItems[4].name}
                   </div>
                 </Link>

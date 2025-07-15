@@ -62,7 +62,7 @@ export default function HomeQuoteSectionEditor() {
               value={form.text}
               onChange={handleChange}
               placeholder="Enter quote"
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400"
             />
           </div>
 
@@ -73,7 +73,7 @@ export default function HomeQuoteSectionEditor() {
               value={form.reference}
               onChange={handleChange}
               placeholder="e.g. Mahatma Gandhi"
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400"
             />
           </div>
 
@@ -93,7 +93,7 @@ export default function HomeQuoteSectionEditor() {
 
           <div className="flex gap-2 absolute right-6 top-6">
             <button
-              className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-blue-600 hover:bg-blue-600 px-6 py-2 cursor-pointer text-white transition rounded-xl"
+              className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-white transition rounded-xl"
               onClick={handleSave}
               disabled={saving || !form.text}
             >
@@ -111,7 +111,7 @@ export default function HomeQuoteSectionEditor() {
             )}
 
             <button
-              className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-blue-600 hover:bg-blue-600 px-6 py-2 cursor-pointer text-blue-600 hover:text-white transition rounded-xl"
+              className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
               onClick={() => {
                 setEdit(false)
                 setForm(quote || { text: "", reference: "", theme: "inspiration" })
@@ -124,7 +124,7 @@ export default function HomeQuoteSectionEditor() {
       ) : (
         <div className="space-y-4">
           <button
-            className="absolute right-6 top-6 flex flex-row gap-2 items-center font-medium btn btn-primary border border-blue-600 hover:bg-blue-600 px-6 py-2 cursor-pointer text-blue-600 hover:text-white transition rounded-xl"
+            className="absolute right-6 top-6 flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
             onClick={() => setEdit(true)}
           >
             Edit Quote <TbEdit className="text-xl" />
@@ -137,7 +137,7 @@ export default function HomeQuoteSectionEditor() {
             {quote?.reference && (
               <div className="mt-2 text-sm text-gray-500 font-medium">- {quote.reference}</div>
             )}
-            <div className="mt-1 text-sm text-blue-600 font-semibold">Theme: {quote.theme}</div>
+            <div className="mt-1 text-sm text-violet-600 font-semibold">Theme: {quote.theme}</div>
           </div>
         </div>
       )}

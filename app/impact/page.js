@@ -84,7 +84,7 @@ export default function ImpactPage() {
 
         <button
           onClick={() => setShowAdd(true)}
-          className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-blue-600 hover:bg-blue-700 px-6 py-2 cursor-pointer text-white transition rounded-xl"
+          className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-700 px-6 py-2 cursor-pointer text-white transition rounded-xl"
         >
           <Plus size={16} /> Add Impact Story
         </button>
@@ -100,11 +100,11 @@ export default function ImpactPage() {
             const Icon = ICON_MAP[story.icon] || Users;
 
             return (
-              <div key={story._id} className="gap-1 bg-blue-50 rounded-xl p-4 border-2 border-blue-300 w-full min-h-full flex flex-col justify-between">
+              <div key={story._id} className="gap-1 bg-violet-50 rounded-xl p-4 border-2 border-violet-300 w-full min-h-full flex flex-col justify-between">
                 <div className='flex flex-row justify-between'>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="bg-blue-200 text-blue-600 rounded-full p-2 text-xs font-semibold">{story.initials}</span>
+                      <span className="bg-violet-200 text-violet-600 rounded-full p-2 text-xs font-semibold">{story.initials}</span>
                       <span className="font-semibold text-gray-700">{story.name}</span>
                     </div>
 
@@ -200,7 +200,7 @@ export default function ImpactPage() {
               type="submit"
               onClick={handleAdd}
               disabled={adding}
-              className="px-10 py-2 font-medium cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-xl"
+              className="px-10 py-2 font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white text-sm rounded-xl"
             >
               {adding ? 'Adding...' : 'Add'}
             </button>

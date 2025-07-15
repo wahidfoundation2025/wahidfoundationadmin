@@ -74,7 +74,7 @@ export default function VolunteerPositionsPage() {
                           <div className="flex items-center justify-center gap-4">
                             <button
                               onClick={() => setSelected(pos)}
-                              className="text-blue-600 hover:text-blue-800 p-1"
+                              className="text-violet-600 hover:text-violet-800 p-1"
                               title="View"
                             >
                               <Eye size={20} />

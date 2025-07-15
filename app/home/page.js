@@ -20,7 +20,7 @@ export default function HomeCMSPage() {
           <button
             key={section.key}
             onClick={() => setActiveSection(section.key)}
-            className={`text-left px-8 py-2 rounded-lg cursor-pointer font-semibold transition-all ${activeSection === section.key ? "bg-blue-600 text-white" : "hover:bg-blue-200 hover:text-blue-600"}`}
+            className={`text-left px-8 py-2 rounded-lg cursor-pointer font-semibold transition-all ${activeSection === section.key ? "bg-violet-600 text-white" : "hover:bg-violet-200 hover:text-violet-600"}`}
           >
             {section.name}
           </button>

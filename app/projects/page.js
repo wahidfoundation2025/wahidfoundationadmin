@@ -5,39 +5,9 @@ import { useRouter } from 'next/navigation'
 import { Trash2, Pencil, Eye, Plus } from 'lucide-react'
 import { FaAnglesLeft, FaAnglesRight } from 'react-icons/fa6'
 
-const Button = ({ children, onClick, variant = 'default', disabled = false, className = '' }) => {
-  const base = 'px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition'
-  const variants = {
-    default: 'bg-gray-800 text-white hover:bg-gray-700',
-    outline: 'border border-gray-300 text-gray-700 hover:bg-gray-100',
-    destructive: 'bg-red-600 text-white hover:bg-red-700',
-  }
-  return (
-    <button
-      className={`${base} ${variants[variant]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
-      onClick={onClick}
-      disabled={disabled}
-    >
-      {children}
-    </button>
-  )
-}
-
 const Input = (props) => (
   <input className="border px-3 py-2 rounded-md text-sm w-full" {...props} />
 )
-
-const Select = ({ value, onChange, children }) => (
-  <select
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-    className="border px-3 py-2 rounded-md text-sm w-full"
-  >
-    {children}
-  </select>
-)
-
-const SelectItem = ({ value, children }) => <option value={value}>{children}</option>
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState([])
@@ -78,7 +48,7 @@ export default function ProjectsPage() {
 
         <button
           onClick={() => router.push('/projects/create')}
-          className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-blue-600 hover:bg-blue-700 px-6 py-2 cursor-pointer text-white transition rounded-xl"
+          className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-700 px-6 py-2 cursor-pointer text-white transition rounded-xl"
         >
           <Plus size={16} /> Create Project
         </button>

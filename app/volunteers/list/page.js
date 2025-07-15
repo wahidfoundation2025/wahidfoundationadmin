@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import { Eye } from 'lucide-react'
+import { FaAnglesLeft, FaAnglesRight } from 'react-icons/fa6'
 
 export default function VolunteerListPage() {
   const [volunteers, setVolunteers] = useState([])
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const rowsPerPage = 10
 
   useEffect(() => {
     fetchVolunteers()
@@ -20,52 +23,88 @@ export default function VolunteerListPage() {
     setLoading(false)
   }
 
+  const totalVolunteers = volunteers.length
+  const totalPages = Math.ceil(totalVolunteers / rowsPerPage)
+  const paginatedVolunteers = volunteers.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  )
+
   return (
-    <div className="min-h-screen w-full bg-gray-100 py-10 px-0">
+    <div className="bg-white p-6 rounded-2xl min-h-full w-full">
       <div className="w-full px-0">
-        <h1 className="text-4xl font-extrabold mb-2 text-gray-900 text-center">Volunteers</h1>
+        <h1 className="text-4xl font-extrabold mb-2  text-center">Volunteers</h1>
         <p className="text-lg text-gray-600 mb-8 text-center">
           View all submitted volunteer applications.
         </p>
+
         <div className="w-full">
           {loading ? (
             <div className="text-center py-10 text-gray-500">Loading...</div>
-          ) : volunteers.length === 0 ? (
+          ) : paginatedVolunteers.length === 0 ? (
             <div className="text-center py-10 text-gray-500">No volunteers found.</div>
           ) : (
             <div className="overflow-x-auto w-full">
-              <table className="min-w-full border bg-white rounded shadow">
-                <thead>
-                  <tr className="bg-gray-200 text-gray-700">
-                    <th className="py-3 px-4 border">Name</th>
-                    <th className="py-3 px-4 border">Email</th>
-                    <th className="py-3 px-4 border">Phone</th>
-                    <th className="py-3 px-4 border">Skills</th>
-                    <th className="py-3 px-4 border">Availability</th>
-                    <th className="py-3 px-4 border text-center">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {volunteers.map((vol) => (
-                    <tr key={vol._id} className="border-b hover:bg-gray-50">
-                      <td className="py-2 px-4 border">{vol.name}</td>
-                      <td className="py-2 px-4 border">{vol.email}</td>
-                      <td className="py-2 px-4 border">{vol.phone}</td>
-                      <td className="py-2 px-4 border">{vol.skills}</td>
-                      <td className="py-2 px-4 border">{vol.availability}</td>
-                      <td className="py-2 px-4 border text-center">
-                        <button
-                          onClick={() => setSelected(vol)}
-                          className="text-blue-600 hover:text-blue-800 p-1"
-                          title="View"
+              <div className="bg-white border border-gray-300 rounded-xl shadow overflow-hidden">
+                <table className="w-full text-sm table-auto text-left">
+                  <thead className="bg-gray-200 text-gray-700 font-semibold border-b border-gray-300">
+                    <tr>
+                      {['Name', 'Email', 'Phone', 'Skills', 'Availability', 'Actions'].map((heading, idx) => (
+                        <th
+                          key={idx}
+                          className={`py-3 px-4 text-nowrap font-medium ${idx === 0 ? 'rounded-tl-xl' : idx === 5 ? 'rounded-tr-xl text-right' : ''}`}
                         >
-                          <Eye size={20} />
-                        </button>
-                      </td>
+                          {heading}
+                        </th>
+                      ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="text-gray-800">
+                    {paginatedVolunteers.map((vol) => (
+                      <tr key={vol._id} className="border-b border-gray-300 last:border-none">
+                        <td className="py-3 px-4">{vol.name}</td>
+                        <td className="py-3 px-4">{vol.email}</td>
+                        <td className="py-3 px-4">{vol.phone}</td>
+                        <td className="py-3 px-4">{vol.skills}</td>
+                        <td className="py-3 px-4">{vol.availability}</td>
+                        <td className="py-3 px-4 text-right">
+                          <button
+                            onClick={() => setSelected(vol)}
+                            className="text-violet-600 hover:bg-violet-200 rounded-3xl p-2 cursor-pointer transition"
+                            title="View"
+                          >
+                            <Eye size={16} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Pagination */}
+              <div className="flex items-center justify-between px-4 py-3 bg-white text-sm text-gray-700 rounded-b-xl mt-4">
+                <div>
+                  Showing {Math.min((currentPage - 1) * rowsPerPage + 1, totalVolunteers)} to{' '}
+                  {Math.min(currentPage * rowsPerPage, totalVolunteers)} of {totalVolunteers} entries
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="p-2.5 border border-gray-300 hover:bg-gray-200 rounded-xl disabled:opacity-50 disabled:cursor-default disabled:bg-white"
+                  >
+                    <FaAnglesLeft />
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="p-2.5 border border-gray-300 hover:bg-gray-200 rounded-xl disabled:opacity-50 disabled:cursor-default disabled:bg-white"
+                  >
+                    <FaAnglesRight />
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -73,35 +112,47 @@ export default function VolunteerListPage() {
 
       {/* Popup Modal */}
       {selected && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-8 relative">
-            <button
-              onClick={() => setSelected(null)}
-              className="absolute top-2 right-3 text-gray-500 hover:text-black text-2xl"
-              aria-label="Close"
-            >
-              &times;
-            </button>
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">{selected.name}</h2>
-            <div className="mb-2">
-              <span className="font-semibold text-gray-700">Email:</span> {selected.email}
+        <div className="bg-white border border-gray-300 rounded-2xl p-6 w-full relative">
+          <button
+            onClick={() => setSelected(null)}
+            className="absolute top-3 right-4 text-gray-500 hover:text-black text-3xl cursor-pointer"
+            aria-label="Close"
+          >
+            &times;
+          </button>
+
+          <h2 className="text-xl font-semibold mb-6">Volunteer Details</h2>
+
+          <div className="grid grid-cols-2 gap-6 mb-4">
+            <div>
+              <p className="text-sm font-medium text-gray-700 mb-1">Name</p>
+              <p>{selected.name}</p>
             </div>
-            <div className="mb-2">
-              <span className="font-semibold text-gray-700">Phone:</span> {selected.phone}
+            <div>
+              <p className="text-sm font-medium text-gray-700 mb-1">Email</p>
+              <p>{selected.email}</p>
             </div>
-            <div className="mb-2">
-              <span className="font-semibold text-gray-700">Skills:</span> {selected.skills}
+            <div>
+              <p className="text-sm font-medium text-gray-700 mb-1">Phone</p>
+              <p>{selected.phone}</p>
             </div>
-            <div className="mb-2">
-              <span className="font-semibold text-gray-700">Availability:</span> {selected.availability}
+            <div>
+              <p className="text-sm font-medium text-gray-700 mb-1">Skills</p>
+              <p>{selected.skills}</p>
             </div>
-            <div className="mb-2">
-              <span className="font-semibold text-gray-700">Message:</span>
-              <div className="mt-1 text-gray-700">{selected.message}</div>
+            <div>
+              <p className="text-sm font-medium text-gray-700 mb-1">Availability</p>
+              <p>{selected.availability}</p>
             </div>
-            <div className="text-xs text-gray-400 mt-4">
-              Submitted: {selected.createdAt ? new Date(selected.createdAt).toLocaleString() : ''}
-            </div>
+          </div>
+
+          <div className="mb-4">
+            <p className="text-sm font-medium text-gray-700 mb-1">Message</p>
+            <p className="whitespace-pre-line">{selected.message}</p>
+          </div>
+
+          <div className="text-xs text-gray-600 mt-4">
+            Submitted: {selected.createdAt ? new Date(selected.createdAt).toLocaleString() : ''}
           </div>
         </div>
       )}

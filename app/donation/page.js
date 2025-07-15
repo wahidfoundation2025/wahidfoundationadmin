@@ -77,7 +77,7 @@ export default function DonationPage() {
                       <td className="px-4 py-2 border">{getProjectName(donation.projectId)}</td>
                       <td className="px-4 py-2 border">
                         {donation.paymentId ? (
-                          <span className="text-blue-600 font-semibold">Success</span>
+                          <span className="text-violet-600 font-semibold">Success</span>
                         ) : (
                           <span className="text-red-600 font-semibold">Failed</span>
                         )}

@@ -206,7 +206,7 @@ export default function EditProjectPage({ params }) {
         <div className="md:col-span-2">
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-medium flex items-center justify-center"
+            className="w-full bg-violet-600 hover:bg-violet-700 text-white py-2 rounded font-medium flex items-center justify-center"
             disabled={submitting}
           >
             {submitting && <Loader2 className="animate-spin w-5 h-5 mr-2" />} Save Changes

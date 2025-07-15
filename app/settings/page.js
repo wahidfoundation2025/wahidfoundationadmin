@@ -157,7 +157,7 @@ export default function SettingsPage() {
                       <td className="py-3 px-2 text-sm text-gray-900 bg-white">
                         <button
                           onClick={() => openEditModal(user)}
-                          className="ml-4 cursor-pointer text-xl text-gray-700 hover:text-blue-600"
+                          className="ml-4 cursor-pointer text-xl text-gray-700 hover:text-violet-600"
                           title="Edit user"
                         >
                           <TbEdit />
@@ -251,14 +251,14 @@ export default function SettingsPage() {
                 <button
                   type="button"
                   onClick={() => setEditingUser(null)}
-                  className="px-6 py-2 font-medium cursor-pointer border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors text-sm rounded-xl"
+                  className="px-6 py-2 font-medium cursor-pointer border border-violet-600 text-violet-600 hover:bg-violet-600 hover:text-white transition-colors text-sm rounded-xl"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   onClick={handleUpdate}
-                  className="px-6 py-2 font-medium cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-xl"
+                  className="px-6 py-2 font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white text-sm rounded-xl"
                 >
                   Save
                 </button>
@@ -320,7 +320,7 @@ export default function SettingsPage() {
                 <button
                   type="submit"
                   onClick={handleAddSubmit}
-                  className="px-10 py-2 font-medium cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-xl"
+                  className="px-10 py-2 font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white text-sm rounded-xl"
                 >
                   Add
                 </button>
