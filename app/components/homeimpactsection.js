@@ -96,7 +96,7 @@ export default function HomeImpactSectionEditor() {
           <div className="flex flex-row gap-2 items-center justify-between w-full">
             <label className="text-xl font-semibold">Impact Stats</label>
             <button
-              className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-500 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+              className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-blue-600 hover:bg-blue-500 px-6 py-2 cursor-pointer text-blue-600 hover:text-white transition rounded-xl"
               onClick={handleAddStat} type="button"
             >
               Add Stat
@@ -139,14 +139,14 @@ export default function HomeImpactSectionEditor() {
 
           <div className="flex gap-2 absolute right-6 top-6">
             <button
-              className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-white transition rounded-xl"
+              className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-blue-600 hover:bg-blue-600 px-6 py-2 cursor-pointer text-white transition rounded-xl"
               onClick={handleSave}
               disabled={saving}
             >
               {saving ? "Saving..." : "Save"}
             </button>
             <button
-              className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+              className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-blue-600 hover:bg-blue-600 px-6 py-2 cursor-pointer text-blue-600 hover:text-white transition rounded-xl"
               onClick={() => { setEdit(false); setForm(data) }}
             >
               Cancel
@@ -155,7 +155,7 @@ export default function HomeImpactSectionEditor() {
         </div>
       ) : (
         <div className="px-2 mt-6 space-y-6">
-          <button className="absolute right-6 top-6 flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl" onClick={() => setEdit(true)}>
+          <button className="absolute right-6 top-6 flex flex-row gap-2 items-center font-medium btn btn-primary border border-blue-600 hover:bg-blue-600 px-6 py-2 cursor-pointer text-blue-600 hover:text-white transition rounded-xl" onClick={() => setEdit(true)}>
             Edit Impact <TbEdit className="text-xl" />
           </button>
 

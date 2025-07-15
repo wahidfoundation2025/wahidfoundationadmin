@@ -159,7 +159,7 @@ export default function HomeHeroSectionEditor() {
             <div className="flex flex-row gap-2 items-center justify-between w-full">
               <label className="text-xl font-semibold">Cards</label>
               <button
-                className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-500 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+                className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-blue-600 hover:bg-blue-500 px-6 py-2 cursor-pointer text-blue-600 hover:text-white transition rounded-xl"
                 onClick={handleAddCard} type="button"
               >
                 Add Card
@@ -168,7 +168,7 @@ export default function HomeHeroSectionEditor() {
 
             <div className="flex gap-2 max-w-full overflow-x-auto">
               {(form.cards || []).map((card, idx) => (
-                <div key={idx} className="flex min-w-[250px] max-w-[300px] flex-col gap-4 items-center border border-gray-200 p-4 mb-3 rounded-xl bg-gray-50">
+                <div key={idx} className="flex min-w-[250px] max-w-[300px] flex-col gap-4 items-center border-2 border-blue-300 p-4 mb-3 rounded-xl bg-blue-50">
                   <div className="flex flex-row gap-2 items-center justify-between w-full">
                     <select
                       value={card.icon || ''}
@@ -223,14 +223,14 @@ export default function HomeHeroSectionEditor() {
 
           <div className="flex gap-2 absolute right-6 top-6">
             <button
-              className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-white  transition rounded-xl"
+              className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-blue-600 hover:bg-blue-600 px-6 py-2 cursor-pointer text-white  transition rounded-xl"
               onClick={handleSave}
               disabled={saving}
             >
               {saving ? "Saving..." : "Save"}
             </button>
             <button
-              className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+              className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-blue-600 hover:bg-blue-600 px-6 py-2 cursor-pointer text-blue-600 hover:text-white transition rounded-xl"
               onClick={() => { setEdit(false); setForm(data) }}
             >
               Cancel
@@ -239,7 +239,7 @@ export default function HomeHeroSectionEditor() {
         </div>
       ) : (
         <div className="px-2 mt-6 space-y-6">
-          <button className="absolute right-6 top-6 flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl" onClick={() => setEdit(true)}>
+          <button className="absolute right-6 top-6 flex flex-row gap-2 items-center font-medium btn btn-primary border border-blue-600 hover:bg-blue-600 px-6 py-2 cursor-pointer text-blue-600 hover:text-white transition rounded-xl" onClick={() => setEdit(true)}>
             Edit Hero <TbEdit className="text-xl" />
           </button>
 
@@ -267,19 +267,19 @@ export default function HomeHeroSectionEditor() {
             <div className="flex gap-6 mt-4">
               {data.stats && (
                 <>
-                  <div className="bg-white border border-gray-400 rounded-lg px-3 py-2">
+                  <div className="border-2 border-blue-400 bg-blue-50 rounded-lg px-3 py-2">
                     <span className="font-semibold">
                       {data.stats.perDay?.label}{": "}
                     </span>
                     {data.stats.perDay?.value}
                   </div>
-                  <div className="bg-white border border-gray-400 rounded-lg px-3 py-2">
+                  <div className="border-2 border-blue-400 bg-blue-50 rounded-lg px-3 py-2">
                     <span className="font-semibold">
                       {data.stats.livesChanged?.label}{": "}
                     </span>
                     {data.stats.livesChanged?.value}
                   </div>
-                  <div className="bg-white border border-gray-400 rounded-lg px-3 py-2">
+                  <div className="border-2 border-blue-400 bg-blue-50 rounded-lg px-3 py-2">
                     <span className="font-semibold">
                       {data.stats.states?.label}{": "}
                     </span>
@@ -301,7 +301,7 @@ export default function HomeHeroSectionEditor() {
                 return (
                   <div
                     key={idx}
-                    className="flex-shrink-0 min-w-[250px] max-w-[300px] border border-gray-200 p-4 rounded-xl bg-gray-50 flex flex-col gap-3"
+                    className="flex-shrink-0 min-w-[250px] max-w-[300px] border-2 border-blue-300 p-4 rounded-xl bg-blue-50 flex flex-col gap-3"
                   >
                     {/* Icon & Name */}
                     <div className="flex items-center justify-between">

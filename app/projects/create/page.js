@@ -241,7 +241,7 @@ export default function CreateProjectPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-10 py-2 font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white text-base rounded-xl flex items-center gap-2"
+                className="px-10 py-2 font-medium cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-base rounded-xl flex items-center gap-2"
               >
                 {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
                 Create Project

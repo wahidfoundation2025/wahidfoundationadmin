@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { GraduationCap, Heart, Users, Calculator, Trash2, Plus } from 'lucide-react'
+import { TbTrash } from 'react-icons/tb'
 
 const ICON_MAP = {
   GraduationCap,
@@ -78,99 +79,134 @@ export default function ImpactPage() {
 
   return (
     <div className="bg-white p-6 rounded-2xl min-h-full">
-      <div className="w-full max-w-5xl mx-auto bg-white p-8 rounded shadow">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
-          <h1 className="text-3xl font-semibold text-gray-800">Impact Stories</h1>
-          <button
-            onClick={() => setShowAdd(true)}
-            className="flex items-center gap-2 bg-black text-white px-5 py-2 rounded font-semibold hover:bg-gray-800 transition"
-          >
-            <Plus size={20} /> Add Impact Story
-          </button>
-        </div>
-        {loading ? (
-          <div className="text-center py-10 text-gray-500">Loading...</div>
-        ) : stories.length === 0 ? (
-          <div className="text-center py-10 text-gray-500">No stories found.</div>
-        ) : (
-          <div className="space-y-6">
-            {stories.map((story) => {
-              const Icon = ICON_MAP[story.icon] || Users
-              return (
-                <div key={story._id} className="flex items-start gap-4 bg-gray-50 rounded p-4 shadow-sm w-full">
-                  <div className="flex-shrink-0">
-                    <Icon className="w-10 h-10 text-gray-700" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-gray-700 mb-2">"{story.quote}"</p>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold mb-6">Impact Stories</h1>
+
+        <button
+          onClick={() => setShowAdd(true)}
+          className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-blue-600 hover:bg-blue-700 px-6 py-2 cursor-pointer text-white transition rounded-xl"
+        >
+          <Plus size={16} /> Add Impact Story
+        </button>
+      </div>
+
+      {loading ? (
+        <div className="text-center py-10 text-gray-500">Loading...</div>
+      ) : stories.length === 0 ? (
+        <div className="text-center py-10 text-gray-500">No stories found.</div>
+      ) : (
+        <div className="space-y-6 grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
+          {stories.map((story) => {
+            const Icon = ICON_MAP[story.icon] || Users;
+
+            return (
+              <div key={story._id} className="gap-1 bg-blue-50 rounded-xl p-4 border-2 border-blue-300 w-full min-h-full flex flex-col justify-between">
+                <div className='flex flex-row justify-between'>
+                  <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-900">{story.name}</span>
-                      <span className="text-gray-500 text-sm">({story.location})</span>
-                      <span className="bg-gray-200 text-gray-700 rounded-full px-2 py-1 text-xs font-semibold ml-2">{story.initials}</span>
+                      <span className="bg-blue-200 text-blue-600 rounded-full p-2 text-xs font-semibold">{story.initials}</span>
+                      <span className="font-semibold text-gray-700">{story.name}</span>
                     </div>
+
+                    <span className="text-gray-500 text-sm">({story.location})</span>
+
                     <div className="text-xs text-gray-400 mt-1">
                       {story.createdAt ? new Date(story.createdAt).toLocaleString() : ''}
                     </div>
+
+                    <p className="text-gray-700 mt-2">"{story.quote}"</p>
                   </div>
+
+                  <Icon className="min-w-6 h-6 text-gray-700" />
+                </div>
+
+                <div className="flex flex-row gap-2 items-center justify-end w-full">
                   <button
+                    className="btn btn-sm btn-error ml-2 text-red-500 cursor-pointer hover:bg-red-100 rounded-full p-2.5"
                     onClick={() => handleDelete(story._id)}
-                    className="text-red-600 hover:text-red-800 p-2"
-                    disabled={deleting === story._id}
-                    title="Delete"
+                    type="button"
                   >
-                    <Trash2 size={20} />
+                    <TbTrash className="text-xl" />
                   </button>
                 </div>
-              )
-            })}
-          </div>
-        )}
-      </div>
-
-
-      {showAdd && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-8 relative">
-            <button
-              onClick={() => setShowAdd(false)}
-              className="absolute top-2 right-3 text-gray-500 hover:text-black text-2xl"
-              aria-label="Close"
-            >
-              &times;
-            </button>
-            <form onSubmit={handleAdd} className="space-y-5">
-              <h2 className="text-xl font-semibold mb-2 text-gray-800">Add Impact Story</h2>
-              <div>
-                <label className="block mb-1 font-medium">Quote</label>
-                <textarea name="quote" value={form.quote} onChange={handleFormChange} required className="w-full border rounded px-3 py-2" />
               </div>
-              <div>
-                <label className="block mb-1 font-medium">Name</label>
-                <input name="name" value={form.name} onChange={handleFormChange} required className="w-full border rounded px-3 py-2" />
-              </div>
-              <div>
-                <label className="block mb-1 font-medium">Location</label>
-                <input name="location" value={form.location} onChange={handleFormChange} required className="w-full border rounded px-3 py-2" />
-              </div>
-              <div>
-                <label className="block mb-1 font-medium">Initials</label>
-                <input name="initials" value={form.initials} onChange={handleFormChange} required className="w-full border rounded px-3 py-2" />
-              </div>
-              <div>
-                <label className="block mb-1 font-medium">Icon</label>
-                <select name="icon" value={form.icon} onChange={handleFormChange} className="w-full border rounded px-3 py-2">
-                  {ICONS.map((icon) => (
-                    <option key={icon.value} value={icon.value}>{icon.label}</option>
-                  ))}
-                </select>
-              </div>
-              <button type="submit" disabled={adding} className="w-full bg-black text-white py-2 rounded font-semibold">
-                {adding ? 'Adding...' : 'Add Story'}
-              </button>
-            </form>
-          </div>
+            )
+          })}
         </div>
       )}
+
+      <div className="bg-white border border-gray-300 rounded-xl p-6 w-full mt-10">
+        <h2 className="font-semibold text-lg mb-4">Add Impact Story</h2>
+
+        <div className="flex flex-col gap-y-4">
+          <div className="grid grid-cols-2 gap-4 w-full">
+            <div className="col-span-2">
+              <label className="block text-sm font-medium mb-1">Quote</label>
+              <textarea
+                name="quote"
+                value={form.quote}
+                onChange={handleFormChange}
+                required
+                className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Name</label>
+              <input
+                name="name"
+                value={form.name}
+                onChange={handleFormChange}
+                required
+                className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Location</label>
+              <input
+                name="location"
+                value={form.location}
+                onChange={handleFormChange}
+                required
+                className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Initials</label>
+              <input
+                name="initials"
+                value={form.initials}
+                onChange={handleFormChange}
+                required
+                className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Icon</label>
+              <select
+                name="icon"
+                value={form.icon}
+                onChange={handleFormChange}
+                className="p-2.5 text-sm w-full border border-gray-300 rounded-xl appearance-none cursor-pointer"
+              >
+                {ICONS.map((icon) => (
+                  <option key={icon.value} value={icon.value}>{icon.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              onClick={handleAdd}
+              disabled={adding}
+              className="px-10 py-2 font-medium cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-xl"
+            >
+              {adding ? 'Adding...' : 'Add'}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
