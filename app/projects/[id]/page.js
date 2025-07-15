@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation'
+import { notFound } from 'next/navigation';
 
 async function getProject(id) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/projects/${id}`, {
@@ -14,79 +14,112 @@ export default async function ProjectDetailPage({ params }) {
   if (!project) return notFound();
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-6">
-      <h1 className="text-4xl font-semibold mb-6">{project.title}</h1>
+    <div className="min-h-full w-full bg-white p-6 rounded-2xl">
+      <h1 className="text-3xl font-bold mb-8">{project.title}</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div className="bg-white rounded-lg shadow p-4">
-          <p><strong>Status:</strong> {project.status}</p>
-          <p><strong>Category:</strong> {project.category || 'N/A'}</p>
-          <p><strong>Location:</strong> {project.location || 'N/A'}</p>
-          <p><strong>Total Required:</strong> ₹{project.totalRequired?.toLocaleString()}</p>
-          <p><strong>Collected:</strong> ₹{project.collected?.toLocaleString()}</p>
+      {/* Project Overview Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-300 p-6 space-y-3">
+          <h2 className="text-lg font-semibold mb-2">Project Info</h2>
+          <InfoRow label="Status" value={project.status} />
+          <InfoRow label="Category" value={project.category || 'N/A'} />
+          <InfoRow label="Location" value={project.location || 'N/A'} />
+          <InfoRow label="Total Required" value={`₹${project.totalRequired?.toLocaleString()}`} />
+          <InfoRow label="Collected" value={`₹${project.collected?.toLocaleString()}`} />
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <p><strong>Beneficiaries:</strong> {project.beneficiaries || 0}</p>
-          <p><strong>Completion:</strong> {project.completion || 0}%</p>
-          <p><strong>Days Left:</strong> {project.daysLeft || 'N/A'}</p>
-          <p><strong>Zakat Eligible:</strong> {project.zakat_eligible ? 'Yes' : 'No'}</p>
-          <p><strong>Interest Eligible:</strong> {project.interest_earnings_eligible ? 'Yes' : 'No'}</p>
-        </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div className="bg-white rounded-lg shadow p-4">
-          <h2 className="text-lg font-semibold mb-2">Donation</h2>
-          <p><strong>Donation Frequency:</strong> {project.donationFrequency}</p>
-          <p><strong>Min Donation Amount:</strong> ₹{project.minDonationAmount}</p>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-300 p-6 space-y-3">
+          <h2 className="text-lg font-semibold mb-2">Stats</h2>
+          <InfoRow label="Beneficiaries" value={project.beneficiaries || 0} />
+          <InfoRow label="Completion" value={`${project.completion || 0}%`} />
+          <InfoRow label="Days Left" value={project.daysLeft || 'N/A'} />
+          <InfoRow label="Zakat Eligible" value={project.zakat_eligible ? 'Yes' : 'No'} />
+          <InfoRow label="Interest Eligible" value={project.interest_earnings_eligible ? 'Yes' : 'No'} />
         </div>
-        
-        <div className="bg-white rounded-lg shadow p-4">
+
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-300 p-6 space-y-3">
+          <h2 className="text-lg font-semibold mb-2">Donation Info</h2>
+          <InfoRow label="Min Donation Amount" value={`₹${project.minDonationAmount}`} />
+          <InfoRow label="Donation Frequency" value={project.donationFrequency} />
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-300 p-6 space-y-3">
           <h2 className="text-lg font-semibold mb-2">Project Manager</h2>
-          <p><strong>Name:</strong> {project.projectManager?.name || 'N/A'}</p>
-          <p><strong>Email:</strong> {project.projectManager?.email || 'N/A'}</p>
-          <p><strong>Phone:</strong> {project.projectManager?.phone || 'N/A'}</p>
+          <InfoRow label="Name" value={project.projectManager?.name || 'N/A'} />
+          <InfoRow label="Email" value={project.projectManager?.email || 'N/A'} />
+          <InfoRow label="Phone" value={project.projectManager?.phone || 'N/A'} />
         </div>
       </div>
 
+      {/* Main Image */}
       {project.mainImage && (
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">Main Image</h2>
-          <img src={project.mainImage} alt="Main" className="w-full max-w-4xl rounded-md shadow" />
-        </div>
+        <Section title="Main Image">
+          <img
+            src={project.mainImage}
+            alt="Main Project"
+            className="rounded-xl shadow border border-gray-300 max-w-full max-h-[400px] object-cover"
+          />
+        </Section>
       )}
 
+      {/* Photo Gallery */}
       {project.photoGallery?.length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">Photo Gallery</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <Section title="Photo Gallery">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {project.photoGallery.map((url, idx) => (
-              <img key={idx} src={url} alt={`Gallery ${idx}`} className="w-full h-40 object-cover rounded shadow" />
+              <img
+                key={idx}
+                src={url}
+                alt={`Gallery ${idx}`}
+                className="w-full h-40 object-cover rounded-xl border border-gray-300 shadow-sm transition"
+              />
             ))}
           </div>
-        </div>
+        </Section>
       )}
 
+      {/* Description */}
       {project.description && (
-        <div className="mb-6 bg-white rounded-lg shadow p-4">
-          <h2 className="text-xl font-semibold mb-2">Description</h2>
-          <p className="text-gray-800">{project.description}</p>
-        </div>
+        <Section title="Description">
+          <p className="text-gray-800 leading-relaxed">{project.description}</p>
+        </Section>
       )}
 
+      {/* Overview */}
       {project.overview && (
-        <div className="mb-6 bg-white rounded-lg shadow p-4">
-          <h2 className="text-xl font-semibold mb-2">Overview</h2>
-          <p className="text-gray-800">{project.overview}</p>
-        </div>
+        <Section title="Overview">
+          <p className="text-gray-800 leading-relaxed">{project.overview}</p>
+        </Section>
       )}
 
+      {/* YouTube Video */}
       {project.youtubeIframe && (
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">Video</h2>
-          <div className="aspect-video w-full max-w-3xl mx-auto" dangerouslySetInnerHTML={{ __html: project.youtubeIframe }} />
-        </div>
+        <Section title="Project Video">
+          <div
+            className="aspect-video w-full max-w-4xl mx-auto rounded-xl overflow-hidden shadow"
+            dangerouslySetInnerHTML={{ __html: project.youtubeIframe }}
+          />
+        </Section>
       )}
+    </div>
+  );
+}
+
+// Helper components
+function InfoRow({ label, value }) {
+  return (
+    <div className="flex justify-between text-sm text-gray-700">
+      <span className="font-medium">{label}:</span>
+      <span>{value}</span>
+    </div>
+  );
+}
+
+function Section({ title, children }) {
+  return (
+    <div className="mb-10">
+      <h2 className="text-2xl font-semibold mb-4">{title}</h2>
+      {children}
     </div>
   );
 }

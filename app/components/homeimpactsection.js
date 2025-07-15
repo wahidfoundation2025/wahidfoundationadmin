@@ -83,12 +83,12 @@ export default function HomeImpactSectionEditor() {
         <div className="space-y-6 mt-6 px-2">
           <div className="flex flex-col gap-2">
             <label className="text-xl font-semibold">Title</label>
-            <input name="title" value={form.title || ""} onChange={handleChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            <input name="title" value={form.title || ""} onChange={handleChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400" />
           </div>
 
           <div className="flex flex-col gap-2">
             <label className="text-xl font-semibold">Subtitle</label>
-            <input name="subtitle" value={form.subtitle || ""} onChange={handleChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            <input name="subtitle" value={form.subtitle || ""} onChange={handleChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400" />
           </div>
 
           <hr className="text-gray-300 my-8" />
@@ -188,7 +188,7 @@ export default function HomeImpactSectionEditor() {
                       {stat.title || "No Title"}
                     </div>
 
-                    <div className="text-blue-700 text-sm">{stat.value || "No Value"}</div>
+                    <div className="text-violet-700 text-sm">{stat.value || "No Value"}</div>
 
                     <div className="text-gray-600 text-sm">{stat.description || "No Description"}</div>
 

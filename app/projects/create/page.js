@@ -111,94 +111,143 @@ export default function CreateProjectPage() {
   };
 
   return (
-    <div className="w-full px-4 py-6">
-      <h1 className="text-3xl font-semibold mb-6">Create New Project</h1>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          <input name="title" placeholder="Title" onChange={handleChange} className="w-full p-2 border rounded" required />
-          <textarea name="description" placeholder="Description" onChange={handleChange} className="w-full p-2 border rounded" required />
-          <input name="category" placeholder="Category" onChange={handleChange} className="w-full p-2 border rounded" />
-          <input name="location" placeholder="Location" onChange={handleChange} className="w-full p-2 border rounded" />
-          <input name="totalRequired" type="number" placeholder="Total Required" onChange={handleChange} className="w-full p-2 border rounded" />
-          <input name="collected" type="number" placeholder="Collected" onChange={handleChange} className="w-full p-2 border rounded" />
-          <input name="beneficiaries" type="number" placeholder="Beneficiaries" onChange={handleChange} className="w-full p-2 border rounded" />
-          <input name="completion" type="number" placeholder="Completion %" onChange={handleChange} className="w-full p-2 border rounded" />
-          <input name="daysLeft" type="number" placeholder="Days Left" onChange={handleChange} className="w-full p-2 border rounded" />
-          <select name="status" value={form.status} onChange={handleChange} className="w-full p-2 border rounded">
-            <option value="Active">Active</option>
-            <option value="Completed">Completed</option>
-            <option value="Upcoming">Upcoming</option>
-             <option value="Draft">Draft</option>
-          </select>
+    <div className="min-h-full w-full bg-white p-6 rounded-2xl">
+      <h1 className="text-2xl font-bold mb-6">Create New Project</h1>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Title</label>
+              <input name="title" placeholder="Enter project title" onChange={handleChange} className="p-2.5 text-sm w-full border border-gray-300 rounded-xl" required />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Description</label>
+              <textarea name="description" placeholder="Enter project description" onChange={handleChange} className="p-2.5 text-sm w-full border border-gray-300 rounded-xl" required />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Category</label>
+              <input name="category" placeholder="Enter category" onChange={handleChange} className="p-2.5 text-sm w-full border border-gray-300 rounded-xl" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Location</label>
+              <input name="location" placeholder="Enter location" onChange={handleChange} className="p-2.5 text-sm w-full border border-gray-300 rounded-xl" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Total Required</label>
+              <input name="totalRequired" type="number" placeholder="Enter required amount" onChange={handleChange} className="p-2.5 text-sm w-full border border-gray-300 rounded-xl" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Collected</label>
+              <input name="collected" type="number" placeholder="Amount collected so far" onChange={handleChange} className="p-2.5 text-sm w-full border border-gray-300 rounded-xl" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Beneficiaries</label>
+              <input name="beneficiaries" type="number" placeholder="No. of beneficiaries" onChange={handleChange} className="p-2.5 text-sm w-full border border-gray-300 rounded-xl" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Completion %</label>
+              <input name="completion" type="number" placeholder="Completion percentage" onChange={handleChange} className="p-2.5 text-sm w-full border border-gray-300 rounded-xl" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Days Left</label>
+              <input name="daysLeft" type="number" placeholder="Days left to complete" onChange={handleChange} className="p-2.5 text-sm w-full border border-gray-300 rounded-xl" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Status</label>
+              <select name="status" value={form.status} onChange={handleChange} className="p-2.5 text-sm w-full border border-gray-300 rounded-xl">
+                <option value="Active">Active</option>
+                <option value="Completed">Completed</option>
+                <option value="Upcoming">Upcoming</option>
+                <option value="Draft">Draft</option>
+              </select>
+            </div>
 
-          <div className="space-y-2">
-            <label>Main Image</label>
-            <button
-              type="button"
-              onClick={() => document.getElementById('mainImageInput').click()}
-              className="bg-gray-200 px-4 py-1 rounded"
-            >
-              {uploadingMain ? <Loader2 className="animate-spin" /> : 'Upload Main Image'}
-            </button>
-            <input id="mainImageInput" type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e)} />
-            {imagePreview && <img src={imagePreview} className="w-40 h-40 object-cover rounded" />}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">Main Image</label>
+              <button
+                type="button"
+                onClick={() => document.getElementById('mainImageInput').click()}
+                className="cursor-pointer bg-gray-100 px-4 py-2 rounded-xl border border-gray-300 text-sm"
+              >
+                {uploadingMain ? <Loader2 className="animate-spin w-4 h-4" /> : 'Upload Main Image'}
+              </button>
+              <input id="mainImageInput" type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e)} />
+              {imagePreview && <img src={imagePreview} className="w-40 h-40 object-cover rounded-xl border border-gray-200" />}
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">Photo Gallery</label>
+              <button
+                type="button"
+                onClick={() => document.getElementById('galleryInput').click()}
+                className="cursor-pointer bg-gray-100 px-4 py-2 rounded-xl border border-gray-300 text-sm"
+              >
+                {uploadingGallery ? <Loader2 className="animate-spin w-4 h-4" /> : 'Upload Gallery Images'}
+              </button>
+              <input id="galleryInput" type="file" multiple accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, true)} />
+              <div className="flex flex-wrap gap-2">
+                {galleryPreviews.map((url, i) => (
+                  <img key={i} src={url} className="w-24 h-24 object-cover rounded-xl border border-gray-200" />
+                ))}
+              </div>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <label>Photo Gallery</label>
-            <button
-              type="button"
-              onClick={() => document.getElementById('galleryInput').click()}
-              className="bg-gray-200 px-4 py-1 rounded"
-            >
-              {uploadingGallery ? <Loader2 className="animate-spin" /> : 'Upload Gallery Images'}
-            </button>
-            <input id="galleryInput" type="file" multiple accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, true)} />
-            <div className="flex flex-wrap gap-2">
-              {galleryPreviews.map((url, i) => (
-                <img key={i} src={url} className="w-24 h-24 object-cover rounded" />
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">YouTube iframe embed</label>
+              <input name="youtubeIframe" placeholder="Paste YouTube iframe embed here" onChange={handleChange} className="p-2.5 text-sm w-full border border-gray-300 rounded-xl" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Overview</label>
+              <textarea name="overview" placeholder="Enter detailed overview" onChange={handleChange} className="p-2.5 text-sm w-full border border-gray-300 rounded-xl" />
+            </div>
+            <h2 className="font-semibold text-sm">Project Manager</h2>
+            <input name="projectManager.name" placeholder="Manager name" onChange={handleChange} className="p-2.5 text-sm w-full border border-gray-300 rounded-xl" />
+            <input name="projectManager.email" placeholder="Manager email" onChange={handleChange} className="p-2.5 text-sm w-full border border-gray-300 rounded-xl" />
+            <input name="projectManager.phone" placeholder="Manager phone" onChange={handleChange} className="p-2.5 text-sm w-full border border-gray-300 rounded-xl" />
+
+            <h2 className="font-semibold text-sm">Donation Options</h2>
+            <div className="flex flex-wrap gap-4">
+              {form.donationOptions.map((option, index) => (
+                <label key={index} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    className="custom-checkbox"
+                    name={`donationOptions.${index}`}
+                    checked={option.isEnabled}
+                    onChange={handleChange}
+                  />
+                  <span>{option.type}</span>
+                </label>
               ))}
             </div>
-          </div>
-        </div>
 
-        <div className="space-y-4">
-          <input name="youtubeIframe" placeholder="YouTube iframe embed" onChange={handleChange} className="w-full p-2 border rounded" />
-          <textarea name="overview" placeholder="Overview" onChange={handleChange} className="w-full p-2 border rounded" />
-
-          <h2 className="font-semibold">Project Manager</h2>
-          <input name="projectManager.name" placeholder="Name" onChange={handleChange} className="w-full p-2 border rounded" />
-          <input name="projectManager.email" placeholder="Email" onChange={handleChange} className="w-full p-2 border rounded" />
-          <input name="projectManager.phone" placeholder="Phone" onChange={handleChange} className="w-full p-2 border rounded" />
-
-          <h2 className="font-semibold">Donation Options</h2>
-          {form.donationOptions.map((option, index) => (
-            <div key={index} className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                name={`donationOptions.${index}`}
-                checked={option.isEnabled}
-                onChange={handleChange}
-              />
-              <label>{option.type}</label>
+            <div>
+              <label className="block text-sm font-medium mb-1">Minimum Donation Amount</label>
+              <input name="minDonationAmount" type="number" placeholder="Enter minimum amount" onChange={handleChange} className="p-2.5 text-sm w-full border border-gray-300 rounded-xl" />
             </div>
-          ))}
 
-          <input name="minDonationAmount" type="number" placeholder="Minimum Donation Amount" onChange={handleChange} className="w-full p-2 border rounded" />
-          <select name="donationFrequency" value={form.donationFrequency} onChange={handleChange} className="w-full p-2 border rounded">
-            <option>One Time</option>
-            <option>Monthly</option>
-            <option>Yearly</option>
-          </select>
+            <div>
+              <label className="block text-sm font-medium mb-1">Donation Frequency</label>
+              <select name="donationFrequency" value={form.donationFrequency} onChange={handleChange} className="p-2.5 text-sm w-full border border-gray-300 rounded-xl">
+                <option>One Time</option>
+                <option>Monthly</option>
+                <option>Yearly</option>
+              </select>
+            </div>
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2"
-          >
-            {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
-            Create Project
-          </button>
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                disabled={submitting}
+                className="px-10 py-2 font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white text-base rounded-xl flex items-center gap-2"
+              >
+                {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
+                Create Project
+              </button>
+            </div>
+          </div>
         </div>
       </form>
     </div>

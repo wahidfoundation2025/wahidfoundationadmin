@@ -62,7 +62,7 @@ export default function HomeQuoteSectionEditor() {
               value={form.text}
               onChange={handleChange}
               placeholder="Enter quote"
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400"
             />
           </div>
 
@@ -73,7 +73,7 @@ export default function HomeQuoteSectionEditor() {
               value={form.reference}
               onChange={handleChange}
               placeholder="e.g. Mahatma Gandhi"
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400"
             />
           </div>
 
@@ -137,7 +137,7 @@ export default function HomeQuoteSectionEditor() {
             {quote?.reference && (
               <div className="mt-2 text-sm text-gray-500 font-medium">- {quote.reference}</div>
             )}
-            <div className="mt-1 text-sm text-blue-600 font-semibold">Theme: {quote.theme}</div>
+            <div className="mt-1 text-sm text-violet-600 font-semibold">Theme: {quote.theme}</div>
           </div>
         </div>
       )}

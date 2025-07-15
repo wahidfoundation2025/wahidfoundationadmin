@@ -120,7 +120,7 @@ export default function SettingsPage() {
       <h1 className="text-2xl font-bold mb-6">Settings - User Management</h1>
 
       <div className="overflow-x-auto w-full pb-4">
-        <div className="bg-white w-full border border-gray-300 shadow rounded-xl overflow-auto">
+        <div className="bg-white w-full border border-gray-300 shadow rounded-xl overflow-x-auto">
           <table className="w-full table-auto text-left">
             <thead className="bg-gray-200 text-gray-700 border-b border-gray-300 text-sm font-semibold">
               <tr>
@@ -157,10 +157,10 @@ export default function SettingsPage() {
                       <td className="py-3 px-2 text-sm text-gray-900 bg-white">
                         <button
                           onClick={() => openEditModal(user)}
-                          className="ml-4 cursor-pointer text-xl text-gray-700 hover:text-blue-600"
+                          className="ml-4 cursor-pointer text-violet-600 p-2 rounded-full hover:bg-violet-100"
                           title="Edit user"
                         >
-                          <TbEdit />
+                          <TbEdit size={20} />
                         </button>
                       </td>
                     </tr>

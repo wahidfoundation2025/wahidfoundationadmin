@@ -107,17 +107,17 @@ export default function HomeHeroSectionEditor() {
         <div className="space-y-6 mt-6 px-2">
           <div className="flex flex-col gap-2">
             <label className="text-xl font-semibold">Title</label>
-            <input name="title" value={form.title || ""} onChange={handleChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            <input name="title" value={form.title || ""} onChange={handleChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400" />
           </div>
 
           <div className="flex flex-col gap-2">
             <label className="text-xl font-semibold">Subtitle</label>
-            <input name="subtitle" value={form.subtitle || ""} onChange={handleChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            <input name="subtitle" value={form.subtitle || ""} onChange={handleChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400" />
           </div>
 
           <div className="flex flex-col gap-2">
             <label className="text-xl font-semibold">CTA Text</label>
-            <input name="ctaText" value={form.ctaText || ""} onChange={handleChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            <input name="ctaText" value={form.ctaText || ""} onChange={handleChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400" />
           </div>
 
           <hr className="text-gray-300 my-8" />
@@ -168,7 +168,7 @@ export default function HomeHeroSectionEditor() {
 
             <div className="flex gap-2 max-w-full overflow-x-auto">
               {(form.cards || []).map((card, idx) => (
-                <div key={idx} className="flex min-w-[250px] max-w-[300px] flex-col gap-4 items-center border border-gray-200 p-4 mb-3 rounded-xl bg-gray-50">
+                <div key={idx} className="flex min-w-[250px] max-w-[300px] flex-col gap-4 items-center border-2 border-violet-300 p-4 mb-3 rounded-xl bg-violet-50">
                   <div className="flex flex-row gap-2 items-center justify-between w-full">
                     <select
                       value={card.icon || ''}
@@ -267,19 +267,19 @@ export default function HomeHeroSectionEditor() {
             <div className="flex gap-6 mt-4">
               {data.stats && (
                 <>
-                  <div className="bg-white border border-gray-400 rounded-lg px-3 py-2">
+                  <div className="border-2 border-violet-300 bg-violet-50 rounded-lg px-3 py-2">
                     <span className="font-semibold">
                       {data.stats.perDay?.label}{": "}
                     </span>
                     {data.stats.perDay?.value}
                   </div>
-                  <div className="bg-white border border-gray-400 rounded-lg px-3 py-2">
+                  <div className="border-2 border-violet-300 bg-violet-50 rounded-lg px-3 py-2">
                     <span className="font-semibold">
                       {data.stats.livesChanged?.label}{": "}
                     </span>
                     {data.stats.livesChanged?.value}
                   </div>
-                  <div className="bg-white border border-gray-400 rounded-lg px-3 py-2">
+                  <div className="border-2 border-violet-300 bg-violet-50 rounded-lg px-3 py-2">
                     <span className="font-semibold">
                       {data.stats.states?.label}{": "}
                     </span>
@@ -301,7 +301,7 @@ export default function HomeHeroSectionEditor() {
                 return (
                   <div
                     key={idx}
-                    className="flex-shrink-0 min-w-[250px] max-w-[300px] border border-gray-200 p-4 rounded-xl bg-gray-50 flex flex-col gap-3"
+                    className="flex-shrink-0 min-w-[250px] max-w-[300px] border-2 border-violet-300 p-4 rounded-xl bg-violet-50 flex flex-col gap-3"
                   >
                     {/* Icon & Name */}
                     <div className="flex items-center justify-between">
@@ -337,7 +337,7 @@ export default function HomeHeroSectionEditor() {
 
           <>
             <span className="text-xl font-semibold">Secondary CTA:</span>
-            <span className="block mt-2">{data.secondaryCTA?.text} <span className="text-blue-600">({data.secondaryCTA?.link})</span></span>
+            <span className="block mt-2">{data.secondaryCTA?.text} <span className="text-violet-600">({data.secondaryCTA?.link})</span></span>
           </>
         </div>
       )}
