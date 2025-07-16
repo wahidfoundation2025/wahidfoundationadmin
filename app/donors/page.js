@@ -47,7 +47,7 @@ export default function DonorsPage() {
 
   return (
     <div className="min-h-full w-full bg-white p-6 rounded-2xl">
-      <h1 className="text-2xl font-bold mb-6">Donors</h1>
+      <h1 className="text-2xl font-bold">Donors</h1>
 
       <div className="bg-white border border-gray-300 rounded-xl shadow overflow-x-auto">
         <table className="w-full text-sm table-auto text-left">

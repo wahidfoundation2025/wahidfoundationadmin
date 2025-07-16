@@ -112,7 +112,7 @@ export default function CreateProjectPage() {
 
   return (
     <div className="min-h-full w-full bg-white p-6 rounded-2xl">
-      <h1 className="text-2xl font-bold mb-6">Create New Project</h1>
+      <h1 className="text-2xl font-bold">Create New Project</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-4">

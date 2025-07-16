@@ -117,7 +117,7 @@ export default function SettingsPage() {
 
   return (
     <div className="bg-white p-6 rounded-2xl min-h-full">
-      <h1 className="text-2xl font-bold mb-6">Settings - User Management</h1>
+      <h1 className="text-2xl font-bold">Settings - User Management</h1>
 
       <div className="overflow-x-auto w-full pb-4">
         <div className="bg-white w-full border border-gray-300 shadow rounded-xl overflow-x-auto">

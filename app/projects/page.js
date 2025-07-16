@@ -44,8 +44,8 @@ export default function ProjectsPage() {
 
   return (
     <div className='min-h-full w-full bg-white p-6 rounded-2xl'>
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold mb-6">Projects</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Projects</h1>
 
         <button
           onClick={() => router.push('/projects/create')}

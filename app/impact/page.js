@@ -79,8 +79,8 @@ export default function ImpactPage() {
 
   return (
     <div className="bg-white p-6 rounded-2xl min-h-full">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold mb-6">Impact Stories</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Impact Stories</h1>
 
         <button
           onClick={() => setShowAdd(true)}
