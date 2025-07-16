@@ -3,13 +3,14 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
+import { IoIosCloseCircle } from "react-icons/io";
 
 export default function CreateProjectPage() {
   const router = useRouter();
   const [form, setForm] = useState({
     title: '',
     description: '',
-    category: '',
+    category: [],
     location: '',
     totalRequired: '',
     collected: 0,
@@ -144,13 +145,44 @@ export default function CreateProjectPage() {
               <label className="block text-sm font-medium mb-1">Category</label>
               <select
                 name="category"
-                onChange={handleChange}
+                onChange={(e) => {
+                  const selected = Array.from(e.target.selectedOptions).map(opt => opt.value);
+                  setForm(prev => ({
+                    ...prev,
+                    category: Array.from(new Set([...prev.category, ...selected])),
+                  }));
+                }}
                 className="p-2.5 text-sm w-full border border-gray-300 rounded-xl appearance-none cursor-pointer"
               >
                 {categories.map((cat, indx) => (
                   <option value={cat.name} key={indx}>{cat.name}</option>
                 ))}
               </select>
+
+              {form.category.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {form.category.map((cat) => (
+                    <span
+                      key={cat}
+                      className="bg-violet-100 border border-violet-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
+                    >
+                      {cat}
+                      <button
+                        type="button"
+                        className="cursor-pointer hover:text-red-500 transition-colors"
+                        onClick={() =>
+                          setForm(prev => ({
+                            ...prev,
+                            category: prev.category.filter(c => c !== cat),
+                          }))
+                        }
+                      >
+                        <IoIosCloseCircle size={18} />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Location</label>
