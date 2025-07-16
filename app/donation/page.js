@@ -46,7 +46,6 @@ export default function DonationPage() {
         Track and manage donation entries across all projects.
       </p>
 
-
       <div className='overflow-x-auto'>
         <table className="w-full text-sm table-auto text-left">
           <thead className="bg-gray-200 text-gray-700 font-semibold border-b border-gray-300">

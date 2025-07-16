@@ -1,8 +1,7 @@
 "use client"
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Plus, Trash2 } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { TbEdit } from 'react-icons/tb'
 import { FaCheck } from 'react-icons/fa6'
 import { FcCancel } from "react-icons/fc";
@@ -13,7 +12,6 @@ export default function CategoriesPage() {
   const [editData, setEditData] = useState({ name: '', description: '' })
   const [newCategory, setNewCategory] = useState({ name: '', description: '' })
   const [adding, setAdding] = useState(false)
-  const router = useRouter()
 
   async function fetchCategories() {
     const res = await fetch('/api/categories')
