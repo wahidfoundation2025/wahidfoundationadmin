@@ -11,12 +11,21 @@ export default function CategoriesPage() {
   const [editingId, setEditingId] = useState(null)
   const [editData, setEditData] = useState({ name: '', description: '' })
   const [newCategory, setNewCategory] = useState({ name: '', description: '' })
-  const [adding, setAdding] = useState(false)
+  const [adding, setAdding] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   async function fetchCategories() {
-    const res = await fetch('/api/categories')
-    const data = await res.json()
-    setCategories(data)
+    try {
+      setLoading(true);
+
+      const res = await fetch('/api/categories')
+      const data = await res.json()
+      setCategories(data)
+    } catch (error) {
+      setLoading(false)
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -64,74 +73,78 @@ export default function CategoriesPage() {
         <h1 className="text-2xl font-bold">Categories</h1>
       </div>
 
-      <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
-        {categories.map((cat) => (
-          <div
-            key={cat._id}
-            className="flex justify-between items-end bg-violet-50 border-2 border-violet-300 p-3 rounded-xl"
-          >
-            <div className="w-full">
-              {editingId === cat._id ? (
-                <>
-                  <input
-                    value={editData.name}
-                    onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                    className="w-full mb-2 p-2 rounded-lg border border-gray-300"
-                  />
-                  <input
-                    value={editData.description}
-                    onChange={(e) => setEditData({ ...editData, description: e.target.value })}
-                    className="w-full p-2 rounded-lg border border-gray-300"
-                  />
-                </>
-              ) : (
-                <>
-                  <h2 className="font-semibold text-lg">{cat.name}</h2>
-                  <p className="text-sm text-gray-500">{cat.description}</p>
-                </>
-              )}
-            </div>
+      {loading ?
+        <div className="text-center py-10 text-gray-500">Loading...</div>
+        : <div className="grid md:grid-cols-3 grid-cols-1 gap-4 w-full">
+          {categories.map((cat) => (
+            <div
+              key={cat._id}
+              className="flex justify-between items-end bg-violet-50 border-2 border-violet-300 p-3 rounded-xl"
+            >
+              <div className="w-full">
+                {editingId === cat._id ? (
+                  <>
+                    <input
+                      value={editData.name}
+                      onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                      className="w-full mb-2 p-2 rounded-lg border border-gray-300"
+                    />
+                    <input
+                      value={editData.description}
+                      onChange={(e) => setEditData({ ...editData, description: e.target.value })}
+                      className="w-full p-2 rounded-lg border border-gray-300"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <h2 className="font-semibold text-lg">{cat.name}</h2>
+                    <p className="text-sm text-gray-500">{cat.description}</p>
+                  </>
+                )}
+              </div>
 
-            <div className="space-x-2 ml-4 flex-shrink-0">
-              {editingId === cat._id ? (
-                <>
-                  <button
-                    onClick={() => saveEdit(cat._id)}
-                    className="text-green-600 hover:bg-green-200 rounded-3xl p-2 cursor-pointer transition"
-                    title="Save"
-                  >
-                    <FaCheck size={20} />
-                  </button>
-                  <button
-                    onClick={() => setEditingId("")}
-                    className="text-red-600 hover:bg-red-200 rounded-3xl p-2 cursor-pointer transition"
-                    title="Cancel"
-                  >
-                    <FcCancel size={20} />
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={() => startEditing(cat)}
-                    className="text-violet-600 hover:bg-violet-200 rounded-3xl p-2 cursor-pointer transition"
-                    title="Edit"
-                  >
-                    <TbEdit size={20} />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(cat._id)}
-                    className="text-red-600 hover:bg-red-200 rounded-3xl p-2 cursor-pointer transition"
-                    title="Delete"
-                  >
-                    <Trash2 size={20} />
-                  </button>
-                </>
-              )}
+              <div className="space-x-2 ml-4 flex-shrink-0">
+                {editingId === cat._id ? (
+                  <>
+                    <button
+                      onClick={() => saveEdit(cat._id)}
+                      className="text-green-600 hover:bg-green-200 rounded-3xl p-2 cursor-pointer transition"
+                      title="Save"
+                    >
+                      <FaCheck size={20} />
+                    </button>
+                    <button
+                      onClick={() => setEditingId("")}
+                      className="text-red-600 hover:bg-red-200 rounded-3xl p-2 cursor-pointer transition"
+                      title="Cancel"
+                    >
+                      <FcCancel size={20} />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => startEditing(cat)}
+                      className="text-violet-600 hover:bg-violet-200 rounded-3xl p-2 cursor-pointer transition"
+                      title="Edit"
+                    >
+                      <TbEdit size={20} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(cat._id)}
+                      className="text-red-600 hover:bg-red-200 rounded-3xl p-2 cursor-pointer transition"
+                      title="Delete"
+                    >
+                      <Trash2 size={20} />
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))
+          }
+        </div>
+      }
 
       {/* Add Category Form */}
       <div className="bg-white border border-gray-300 rounded-xl p-6 w-full mt-10">
