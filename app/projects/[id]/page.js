@@ -107,10 +107,19 @@ export default async function ProjectDetailPage({ params }) {
 
 // Helper components
 function InfoRow({ label, value }) {
+  console.log(value)
   return (
     <div className="flex justify-between text-sm text-gray-700">
       <span className="font-medium">{label}:</span>
-      <span>{value}</span>
+
+      <div>
+        {value.length > 0 && typeof value !== 'string'
+          ? value.map((val) => (
+            <span key={val}>{val}, </span>
+          ))
+          : <span>{value}</span>
+        }
+      </div>
     </div>
   );
 }
