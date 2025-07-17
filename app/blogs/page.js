@@ -38,7 +38,7 @@ export default function BlogListPage() {
         </Link>
       </div>
 
-      <div className="grid md:grid-cols-3 grid-cols-1">
+      <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
         {blogs.map(blog => (
           <div key={blog._id} className="border-2 border-violet-300 bg-violet-50 p-4 rounded-xl gap-4">
             <div className="flex gap-3">

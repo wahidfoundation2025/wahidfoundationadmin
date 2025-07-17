@@ -95,7 +95,7 @@ export default function EditBlogPage() {
       <div className='flex flex-col gap-2 mb-6'>
         <label className='font-medium block mb-1'>Profile Photo</label>
 
-        {image && <img src={image} alt="preview" className="mb-6 h-60 w-60 rounded-full border-2 border-gray-300" />}
+        {image && <img src={image} alt="preview" className="mb-6 h-40 w-40 rounded-full border-2 border-gray-300 object-contain" />}
 
         <input
           type="file"
