@@ -4,6 +4,8 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
+import { Plus, Trash2 } from 'lucide-react';
+import { TbEdit } from 'react-icons/tb';
 
 export default function BlogListPage() {
   const [blogs, setBlogs] = useState([]);
@@ -23,34 +25,52 @@ export default function BlogListPage() {
   }
 
   return (
-    <div className="p-4 max-w-5xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">All Blogs</h1>
-      <Link href="/blogeditor" className="bg-green-600 text-white px-4 py-2 rounded">
-        + Create New Blog
-      </Link>
-      <div className="mt-6 space-y-4">
+    <div className="bg-white p-6 rounded-2xl min-h-full w-full">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">All Blogs</h1>
+
+        <Link href="/blogeditor">
+          <button
+            className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-700 px-6 py-2 cursor-pointer text-white transition rounded-xl"
+          >
+            <Plus size={16} /> Create New Blog
+          </button>
+        </Link>
+      </div>
+
+      <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
         {blogs.map(blog => (
-          <div key={blog._id} className="border p-4 rounded shadow-sm flex gap-4">
-            {blog.imageUrl && (
-              <img src={blog.imageUrl} alt="" className="w-32 h-20 object-cover rounded" />
-            )}
-            <div className="flex-1">
-              <h2 className="text-xl font-semibold">{blog.title}</h2>
-              <p className="text-gray-600 text-sm">{new Date(blog.createdAt).toLocaleString()}</p>
-              <div className="mt-2 flex gap-2">
-                <Link
-                  href={`/blogs/${blog._id}/edit`}
-                  className="text-blue-600 hover:underline"
-                >
-                  ✏️ Edit
-                </Link>
-                <button
-                  onClick={() => handleDelete(blog._id)}
-                  className="text-red-600 hover:underline"
-                >
-                  🗑️ Delete
-                </button>
+          <div key={blog._id} className="border-2 border-violet-300 bg-violet-50 p-4 rounded-xl gap-4">
+            <div className="flex gap-3">
+              {blog.imageUrl && (
+                <img src={blog.imageUrl} alt="" className="w-20 h-20 object-cover rounded-full" />
+              )}
+
+              <div>
+                <h2 className="text-xl font-semibold">{blog.title}</h2>
+                <p className="text-gray-500 text-sm mt-2">{new Date(blog.createdAt).toLocaleString()}</p>
               </div>
+            </div>
+
+            <div className="mt-2 flex justify-end gap-4">
+              <Link
+                href={`/blogs/${blog._id}/edit`}
+              >
+                <button
+                  className="text-violet-600 hover:bg-violet-200 rounded-3xl p-2 cursor-pointer transition"
+                  title="Edit"
+                >
+                  <TbEdit size={20} />
+                </button>
+              </Link>
+
+              <button
+                onClick={() => handleDelete(blog._id)}
+                className="text-red-600 hover:bg-red-200 rounded-3xl p-2 cursor-pointer transition"
+                title="Delete"
+              >
+                <Trash2 size={20} />
+              </button>
             </div>
           </div>
         ))}
