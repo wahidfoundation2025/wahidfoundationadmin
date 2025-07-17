@@ -6,7 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import axios from 'axios';
 
-// use react-quill-new
+// rich text editor
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 import 'react-quill-new/dist/quill.snow.css';
 
@@ -20,41 +20,67 @@ export default function EditBlogPage() {
   const [image, setImage] = useState(null);
   const [youtubeUrl, setYoutubeUrl] = useState('');
 
+  // fetch blog data
   useEffect(() => {
     async function fetchBlog() {
-      const res = await axios.get(`/api/blogs/${blogId}`);
-      const blog = res.data;
-      setTitle(blog.title);
-      setContent(blog.content);
-      setImage(blog.imageUrl);
-      setYoutubeUrl(blog.youtubeUrl || '');
+      try {
+        const res = await axios.get(`/api/blogs/${blogId}`);
+        const blog = res.data;
+        setTitle(blog.title);
+        setContent(blog.content);
+        setImage(blog.imageUrl);
+        setYoutubeUrl(blog.youtubeUrl || '');
+      } catch (err) {
+        console.error('Error loading blog:', err);
+      }
     }
     fetchBlog();
   }, [blogId]);
 
+  // ✅ handle image upload (same as CreateBlogPage)
   async function handleImageUpload(e) {
     const file = e.target.files[0];
+    if (!file) return;
+
     const data = new FormData();
     data.append('file', file);
-    data.append('upload_preset', '<your-cloudinary-preset>');
 
-    const res = await fetch('https://api.cloudinary.com/v1_1/<your-cloud-name>/image/upload', {
-      method: 'POST',
-      body: data,
-    });
-    const uploaded = await res.json();
-    setImage(uploaded.secure_url);
+    try {
+      // call your /api/upload route (which uploads to Cloudinary)
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: data,
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        alert(errorData.error || 'Upload failed');
+        return;
+      }
+
+      const uploaded = await res.json();
+      setImage(uploaded.url); // ✅ update preview
+    } catch (err) {
+      console.error('Upload failed', err);
+      alert('Upload failed');
+    }
   }
 
+  // ✅ save blog
   async function handleSave() {
-    await axios.put(`/api/blogs/${blogId}`, {
-      title,
-      content,
-      imageUrl: image,
-      youtubeUrl,
-    });
-    alert('Blog updated!');
-    router.push('/blogs');
+    try {
+      await axios.put(`/api/blogs/${blogId}`, {
+        title,
+        content,
+        imageUrl: image,
+        youtubeUrl,
+      });
+      alert('Blog updated!');
+      router.push('/blogs');
+    } catch (err) {
+      console.error('Update failed', err);
+      alert('Could not update blog');
+    }
   }
 
   return (
@@ -64,15 +90,16 @@ export default function EditBlogPage() {
 
         <button
           onClick={handleSave}
-          className="font-medium btn btn-primary border bg-violet-600 hover:bg-violet-700 px-6 py-2 cursor-pointer text-white transition rounded-xl"
+          className="font-medium border bg-violet-600 hover:bg-violet-700 px-6 py-2 text-white rounded-xl transition"
         >
           Save Changes
         </button>
       </div>
 
-      <div className='flex flex-row gap-3 mb-6'>
-        <div className='flex-1'>
-          <label className='font-medium block mb-1'>Heading</label>
+      {/* Title + YouTube Row */}
+      <div className="flex flex-row gap-3 mb-6">
+        <div className="flex-1">
+          <label className="font-medium block mb-1">Heading</label>
           <input
             className="border p-2 w-full rounded-xl border-gray-300"
             placeholder="Title"
@@ -82,7 +109,7 @@ export default function EditBlogPage() {
         </div>
 
         <div className="flex-1">
-          <label className='font-medium block mb-1'>YouTube Link</label>
+          <label className="font-medium block mb-1">YouTube Link</label>
           <input
             className="border p-2 w-full rounded-xl border-gray-300"
             placeholder="YouTube URL"
@@ -92,18 +119,31 @@ export default function EditBlogPage() {
         </div>
       </div>
 
-      <div className='flex flex-col gap-2 mb-6'>
-        <label className='font-medium block mb-1'>Profile Photo</label>
+      {/* ✅ Image Upload */}
+      <div className="flex flex-col gap-2 mb-6">
+        <label className="font-medium block mb-1">Blog Image</label>
 
-        {image && <img src={image} alt="preview" className="mb-6 h-40 w-40 rounded-full border-2 border-gray-300 object-contain" />}
+        {image && (
+          <img
+            src={image}
+            alt="preview"
+            className="mb-6 h-40 w-40 rounded-full border-2 border-gray-300 object-cover"
+          />
+        )}
 
         <input
           type="file"
           onChange={handleImageUpload}
-          className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-violet-100 file:text-violet-700 hover:file:bg-violet-200 transition-all cursor-pointer"
+          className="block w-full text-sm text-gray-700
+            file:mr-4 file:py-2 file:px-4
+            file:rounded-lg file:border-0
+            file:text-sm file:font-semibold
+            file:bg-violet-100 file:text-violet-700
+            hover:file:bg-violet-200 transition-all cursor-pointer"
         />
       </div>
 
+      {/* Content Editor */}
       <ReactQuill
         value={content}
         onChange={setContent}
