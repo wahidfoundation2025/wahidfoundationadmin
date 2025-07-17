@@ -58,14 +58,51 @@ export default function EditBlogPage() {
   }
 
   return (
-    <div className="p-4 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Edit Blog</h1>
-      <input
-        className="border p-2 w-full mb-4"
-        placeholder="Title"
-        value={title}
-        onChange={e => setTitle(e.target.value)}
-      />
+    <div className="bg-white p-6 min-h-full rounded-2xl">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Edit Blog</h1>
+
+        <button
+          onClick={handleSave}
+          className="font-medium btn btn-primary border bg-violet-600 hover:bg-violet-700 px-6 py-2 cursor-pointer text-white transition rounded-xl"
+        >
+          Save Changes
+        </button>
+      </div>
+
+      <div className='flex flex-row gap-3 mb-6'>
+        <div className='flex-1'>
+          <label className='font-medium block mb-1'>Heading</label>
+          <input
+            className="border p-2 w-full rounded-xl border-gray-300"
+            placeholder="Title"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+          />
+        </div>
+
+        <div className="flex-1">
+          <label className='font-medium block mb-1'>YouTube Link</label>
+          <input
+            className="border p-2 w-full rounded-xl border-gray-300"
+            placeholder="YouTube URL"
+            value={youtubeUrl}
+            onChange={e => setYoutubeUrl(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className='flex flex-col gap-2 mb-6'>
+        <label className='font-medium block mb-1'>Profile Photo</label>
+
+        {image && <img src={image} alt="preview" className="mb-6 h-60 w-60 rounded-full border-2 border-gray-300" />}
+
+        <input
+          type="file"
+          onChange={handleImageUpload}
+          className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-violet-100 file:text-violet-700 hover:file:bg-violet-200 transition-all cursor-pointer"
+        />
+      </div>
 
       <ReactQuill
         value={content}
@@ -81,23 +118,6 @@ export default function EditBlogPage() {
           ],
         }}
       />
-
-      <input type="file" onChange={handleImageUpload} className="mb-4" />
-      {image && <img src={image} alt="preview" className="mb-4 max-h-60" />}
-
-      <input
-        className="border p-2 w-full mb-4"
-        placeholder="YouTube URL"
-        value={youtubeUrl}
-        onChange={e => setYoutubeUrl(e.target.value)}
-      />
-
-      <button
-        onClick={handleSave}
-        className="bg-blue-600 text-white px-4 py-2 rounded"
-      >
-        Save Changes
-      </button>
     </div>
   );
 }
