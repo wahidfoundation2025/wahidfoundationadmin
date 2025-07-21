@@ -1,4 +1,3 @@
-// app/blogs/page.js
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -9,11 +8,18 @@ import { TbEdit } from 'react-icons/tb';
 
 export default function BlogListPage() {
   const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true); // ✅ New loading state
 
   useEffect(() => {
     async function fetchBlogs() {
-      const res = await axios.get('/api/blogs');
-      setBlogs(res.data);
+      try {
+        const res = await axios.get('/api/blogs');
+        setBlogs(res.data);
+      } catch (error) {
+        console.error('Error fetching blogs:', error);
+      } finally {
+        setLoading(false); // ✅ Stop loading once data is fetched
+      }
     }
     fetchBlogs();
   }, []);
@@ -38,44 +44,50 @@ export default function BlogListPage() {
         </Link>
       </div>
 
-      <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
-        {blogs.map(blog => (
-          <div key={blog._id} className="border-2 border-violet-300 bg-violet-50 p-4 rounded-xl gap-4">
-            <div className="flex gap-3">
-              {blog.imageUrl && (
-                <img src={blog.imageUrl} alt="" className="w-20 h-20 object-cover rounded-full" />
-              )}
+      {/* ✅ Show Loading Indicator */}
+      {loading ? (
+        <div className="text-center py-10 text-gray-500">Loading...</div>
+      ) : (
+        <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
+          {blogs.map(blog => (
+            <div key={blog._id} className="border-2 border-violet-300 bg-violet-50 p-4 rounded-xl gap-4">
+              <div className="flex gap-3">
+                {blog.imageUrl && (
+                  <img src={blog.imageUrl} alt="" className="w-20 h-20 object-cover rounded-full" />
+                )}
 
-              <div>
-                <h2 className="text-xl font-semibold">{blog.title}</h2>
-                <p className="text-gray-500 text-sm mt-2">{new Date(blog.createdAt).toLocaleString()}</p>
+                <div>
+                  <h2 className="text-xl font-semibold">{blog.title}</h2>
+                  <p className="text-gray-500 text-sm mt-2">{new Date(blog.createdAt).toLocaleString()}</p>
+                </div>
+              </div>
+
+              <div className="mt-2 flex justify-end gap-4">
+                <Link href={`/blogs/${blog._id}/edit`}>
+                  <button
+                    className="text-violet-600 hover:bg-violet-200 rounded-3xl p-2 cursor-pointer transition"
+                    title="Edit"
+                  >
+                    <TbEdit size={20} />
+                  </button>
+                </Link>
+
+                <button
+                  onClick={() => handleDelete(blog._id)}
+                  className="text-red-600 hover:bg-red-200 rounded-3xl p-2 cursor-pointer transition"
+                  title="Delete"
+                >
+                  <Trash2 size={20} />
+                </button>
               </div>
             </div>
+          ))}
 
-            <div className="mt-2 flex justify-end gap-4">
-              <Link
-                href={`/blogs/${blog._id}/edit`}
-              >
-                <button
-                  className="text-violet-600 hover:bg-violet-200 rounded-3xl p-2 cursor-pointer transition"
-                  title="Edit"
-                >
-                  <TbEdit size={20} />
-                </button>
-              </Link>
-
-              <button
-                onClick={() => handleDelete(blog._id)}
-                className="text-red-600 hover:bg-red-200 rounded-3xl p-2 cursor-pointer transition"
-                title="Delete"
-              >
-                <Trash2 size={20} />
-              </button>
-            </div>
-          </div>
-        ))}
-        {blogs.length === 0 && <p>No blogs found.</p>}
-      </div>
+          {!blogs.length && (
+            <div className="text-center py-10 text-gray-400">No blogs found.</div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
