@@ -9,6 +9,7 @@ import axios from 'axios';
 // rich text editor
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 import 'react-quill-new/dist/quill.snow.css';
+import { IoIosCloseCircle } from 'react-icons/io';
 
 export default function EditBlogPage() {
   const params = useParams();
@@ -20,19 +21,18 @@ export default function EditBlogPage() {
   const [image, setImage] = useState(null);
   const [youtubeUrl, setYoutubeUrl] = useState('');
 
-  // fetch blog data
+  const [categories, setCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
   useEffect(() => {
     async function fetchBlog() {
-      try {
-        const res = await axios.get(`/api/blogs/${blogId}`);
-        const blog = res.data;
-        setTitle(blog.title);
-        setContent(blog.content);
-        setImage(blog.imageUrl);
-        setYoutubeUrl(blog.youtubeUrl || '');
-      } catch (err) {
-        console.error('Error loading blog:', err);
-      }
+      const res = await axios.get(`/api/blogs/${blogId}`);
+      const blog = res.data;
+      setTitle(blog.title);
+      setContent(blog.content);
+      setImage(blog.imageUrl);
+      setYoutubeUrl(blog.youtubeUrl || '');
+      setSelectedCategories(blog.categories ?? [])
     }
     fetchBlog();
   }, [blogId]);
@@ -68,20 +68,26 @@ export default function EditBlogPage() {
 
   // ✅ save blog
   async function handleSave() {
-    try {
-      await axios.put(`/api/blogs/${blogId}`, {
-        title,
-        content,
-        imageUrl: image,
-        youtubeUrl,
-      });
-      alert('Blog updated!');
-      router.push('/blogs');
-    } catch (err) {
-      console.error('Update failed', err);
-      alert('Could not update blog');
-    }
+    await axios.put(`/api/blogs/${blogId}`, {
+      title,
+      content,
+      imageUrl: image,
+      youtubeUrl,
+      categories: selectedCategories
+    });
+    alert('Blog updated!');
+    router.push('/blogs');
   }
+
+  async function fetchCategories() {
+    const res = await fetch('/api/categories')
+    const data = await res.json()
+    setCategories(data)
+  }
+
+  useEffect(() => {
+    fetchCategories()
+  }, []);
 
   return (
     <div className="bg-white p-6 min-h-full rounded-2xl">
@@ -119,9 +125,46 @@ export default function EditBlogPage() {
         </div>
       </div>
 
-      {/* ✅ Image Upload */}
-      <div className="flex flex-col gap-2 mb-6">
-        <label className="font-medium block mb-1">Blog Image</label>
+      <div className='mb-6 w-1/2'>
+        <label className="block text-sm font-medium mb-1">Category</label>
+        <select
+          name="category"
+          onChange={(e) => {
+            const selected = Array.from(e.target.selectedOptions).map(opt => opt.value);
+            setSelectedCategories(prev => ([...new Set([...prev, ...selected])]));
+          }}
+          className="p-2.5 text-sm w-full border border-gray-300 rounded-xl appearance-none cursor-pointer"
+        >
+          {categories.map((cat, indx) => (
+            <option value={cat.name} key={indx}>{cat.name}</option>
+          ))}
+        </select>
+
+        {selectedCategories.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-2">
+            {selectedCategories.map((cat) => (
+              <span
+                key={cat}
+                className="bg-violet-100 border border-violet-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
+              >
+                {cat}
+                <button
+                  type="button"
+                  className="cursor-pointer hover:text-red-500 transition-colors"
+                  onClick={() =>
+                    setSelectedCategories(prev => (prev.filter(c => c !== cat)))
+                  }
+                >
+                  <IoIosCloseCircle size={18} />
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className='flex flex-col gap-2 mb-6'>
+        <label className='font-medium block mb-1'>Profile Photo</label>
 
         {image && (
           <img

@@ -1,18 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import axios from 'axios';
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 import 'react-quill-new/dist/quill.snow.css';
 import { useRouter } from 'next/navigation';
+import { IoIosCloseCircle } from 'react-icons/io';
 
 export default function CreateBlogPage() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState(''); // HTML
   const [image, setImage] = useState(null);
   const [youtubeUrl, setYoutubeUrl] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
 
   const router = useRouter();
 
@@ -41,7 +44,7 @@ export default function CreateBlogPage() {
 
   async function handleSubmit() {
     try {
-      await axios.post('/api/blogs', { title, content, imageUrl: image, youtubeUrl });
+      await axios.post('/api/blogs', { title, content, imageUrl: image, youtubeUrl, categories: selectedCategories });
 
       alert('Blog saved!');
       router.push('/blogs');
@@ -49,6 +52,16 @@ export default function CreateBlogPage() {
       alert("Couldn't Save Blog!");
     }
   }
+
+  async function fetchCategories() {
+    const res = await fetch('/api/categories')
+    const data = await res.json()
+    setCategories(data)
+  }
+
+  useEffect(() => {
+    fetchCategories()
+  }, []);
 
   return (
     <div className="bg-white p-6 min-h-full rounded-2xl">
@@ -84,6 +97,44 @@ export default function CreateBlogPage() {
             onChange={e => setYoutubeUrl(e.target.value)}
           />
         </div>
+      </div>
+
+      <div className='mb-6 w-1/2'>
+        <label className="block text-sm font-medium mb-1">Category</label>
+        <select
+          name="category"
+          onChange={(e) => {
+            const selected = Array.from(e.target.selectedOptions).map(opt => opt.value);
+            setSelectedCategories(prev => ([...new Set([...prev, ...selected])]));
+          }}
+          className="p-2.5 text-sm w-full border border-gray-300 rounded-xl appearance-none cursor-pointer"
+        >
+          {categories.map((cat, indx) => (
+            <option value={cat.name} key={indx}>{cat.name}</option>
+          ))}
+        </select>
+
+        {selectedCategories.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-2">
+            {selectedCategories.map((cat) => (
+              <span
+                key={cat}
+                className="bg-violet-100 border border-violet-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
+              >
+                {cat}
+                <button
+                  type="button"
+                  className="cursor-pointer hover:text-red-500 transition-colors"
+                  onClick={() =>
+                    setSelectedCategories(prev => (prev.filter(c => c !== cat)))
+                  }
+                >
+                  <IoIosCloseCircle size={18} />
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Image Upload */}

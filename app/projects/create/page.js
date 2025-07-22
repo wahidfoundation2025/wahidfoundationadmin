@@ -128,9 +128,19 @@ export default function CreateProjectPage() {
 
   return (
     <div className="min-h-full w-full bg-white p-6 rounded-2xl">
-      <h1 className="text-2xl font-bold mb-6">Create New Project</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Create New Project</h1>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+        <button
+          onClick={handleSubmit}
+          className="px-10 py-2 font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white text-base rounded-xl flex items-center gap-2"
+          disabled={submitting}
+        >
+          {submitting && <Loader2 className="w-4 h-4 animate-spin" />} Save Changes
+        </button>
+      </div>
+
+      <div className="flex flex-col gap-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-4">
             <div>
@@ -292,20 +302,9 @@ export default function CreateProjectPage() {
                 <option>Yearly</option>
               </select>
             </div>
-
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                disabled={submitting}
-                className="px-10 py-2 font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white text-base rounded-xl flex items-center gap-2"
-              >
-                {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
-                Create Project
-              </button>
-            </div>
           </div>
         </div>
-      </form>
+      </div>
     </div>
   );
 }
