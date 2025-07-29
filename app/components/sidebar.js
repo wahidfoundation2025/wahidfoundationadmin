@@ -7,15 +7,11 @@ import {
   Menu, X, LogOut, ChevronDown, ChevronUp, Users, LayoutDashboard, FolderKanban,
   Handshake, BookOpen, Settings as SettingsIcon, Database
 } from 'lucide-react';
-import {
-  SignedIn,
-  UserButton,
-  useUser,
-} from '@clerk/nextjs';
+import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
-import Logo from "../../public/logo.png"
+import Logo from '../../public/logo.png';
 import { TbCategory } from 'react-icons/tb';
-import { RiPagesLine } from "react-icons/ri";
+import { RiPagesLine } from 'react-icons/ri';
 
 const cmsNavItems = [
   { name: 'Home', key: 'dashboard', href: '/home', icon: <LayoutDashboard size={18} /> },
@@ -41,7 +37,8 @@ export default function Sidebar({ children }) {
   const [loading, setLoading] = useState(false);
 
   const pathname = usePathname();
-  const { user } = useUser();
+  const { data: session } = useSession();
+  const user = session?.user;
 
   const getNavClass = (href) =>
     pathname === href
@@ -53,8 +50,7 @@ export default function Sidebar({ children }) {
   const fetchAccess = async () => {
     try {
       setLoading(true);
-
-      const res = await fetch(`/api/users/${encodeURIComponent(user.primaryEmailAddress.emailAddress)}`);
+      const res = await fetch(`/api/users/${encodeURIComponent(user.email)}`);
       if (!res.ok) throw new Error('Access fetch failed');
       const data = await res.json();
       setAccess(data.access || []);
@@ -66,7 +62,7 @@ export default function Sidebar({ children }) {
   };
 
   useEffect(() => {
-    if (user?.primaryEmailAddress?.emailAddress) {
+    if (user?.email) {
       fetchAccess();
     }
   }, [user]);
@@ -75,15 +71,15 @@ export default function Sidebar({ children }) {
 
   return (
     <div className="flex flex-col h-screen overflow-y-auto normal-case">
-      <NavBar />
+      <NavBar user={user} />
 
       <div className='flex flex-row h-[90dvh]'>
         <aside className="hidden md:flex flex-col gap-2 min-w-[20%] p-6 bg-white text-black">
           {loading
             ? <div className='flex flex-col gap-2'>
-              {[Array.from({ length: 5 }).map((_, indx) => (
-                <div key={indx} className='w-full h-10 rounded-xl bg-gray-200'> </div>
-              ))]}
+              {[...Array(5)].map((_, index) => (
+                <div key={index} className='w-full h-10 rounded-xl bg-gray-200'></div>
+              ))}
             </div>
             : <>
               {show('dashboard') && (
@@ -156,7 +152,6 @@ export default function Sidebar({ children }) {
           </button>
         </div>
 
-        {/* Main content */}
         <main className="flex-1 p-6 bg-gray-100 w-full max-h-screen overflow-y-auto">
           {children}
         </main>
@@ -165,24 +160,25 @@ export default function Sidebar({ children }) {
   );
 }
 
-const NavBar = () => {
+const NavBar = ({ user }) => {
   return (
     <nav className='flex items-center justify-between w-full p-4 px-12 border-b border-gray-200 h-[10dvh]'>
-      {Logo
-        ? <div className='flex flex-row gap-3 items-center'>
-          <Image src={Logo} alt="Wahid" height={40} />
-          <h1 className="text-xl font-semibold">WAHID</h1>
-        </div>
-        : <h1 className="text-xl font-semibold">WAHID</h1>}
+      <div className='flex flex-row gap-3 items-center'>
+        <Image src={Logo} alt="Wahid" height={40} />
+        <h1 className="text-xl font-semibold">WAHID</h1>
+      </div>
 
-      <SignedIn>
+      {user && (
         <div className='flex flex-row gap-4 items-center'>
-          <UserButton afterSignOutUrl="/sign-in" showName />
-          <button className="cursor-pointer hover:bg-red-200 rounded-full p-2.5 border border-gray-300 transition hover:border-red-300">
+          <p className="font-medium">{user.name}</p>
+          <button
+            onClick={() => signOut({ callbackUrl: '/login' })}
+            className="cursor-pointer hover:bg-red-200 rounded-full p-2.5 border border-gray-300 transition hover:border-red-300"
+          >
             <LogOut size={16} />
           </button>
         </div>
-      </SignedIn>
+      )}
     </nav>
-  )
-}
+  );
+};
