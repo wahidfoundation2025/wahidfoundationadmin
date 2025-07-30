@@ -12,6 +12,7 @@ import Image from 'next/image';
 import Logo from '../../public/logo.png';
 import { TbCategory } from 'react-icons/tb';
 import { RiPagesLine } from 'react-icons/ri';
+import { VscLayoutPanelJustify } from "react-icons/vsc";
 
 const cmsNavItems = [
   { name: 'Home', key: 'dashboard', href: '/home', icon: <LayoutDashboard size={18} /> },
@@ -20,6 +21,7 @@ const cmsNavItems = [
   { name: 'Volunteers', key: 'cms', href: '/volunteers/list', icon: <Users size={18} /> },
   { name: 'Blogs', key: 'blogs', href: '/blogs', icon: <RiPagesLine size={18} /> },
   { name: 'Categories', key: 'categories', href: '/categories', icon: <TbCategory size={18} /> },
+  { name: 'Footer', key: 'footer', href: '/footer', icon: <VscLayoutPanelJustify size={18} /> },
 ];
 
 const navItems = [
@@ -74,7 +76,7 @@ export default function Sidebar({ children }) {
       <NavBar user={user} />
 
       <div className='flex flex-row h-[90dvh]'>
-        <aside className="hidden md:flex flex-col gap-2 min-w-[20%] p-6 bg-white text-black">
+        <aside className="hidden md:flex flex-col gap-2 min-w-[250px] w-[20%] p-6 bg-white text-black">
           {loading
             ? <div className='flex flex-col gap-2'>
               {[...Array(5)].map((_, index) => (
