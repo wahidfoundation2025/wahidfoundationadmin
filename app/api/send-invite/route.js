@@ -1,48 +1,63 @@
-import { dbConnect } from "@/lib/dbConnect";
-import User from "@/lib/models/user"; // Adjust this path if needed
+import { NextResponse } from 'next/server';
+import nodemailer from 'nodemailer';
+import Invite from '@/lib/models/invite';
+import  { dbConnect }from '@/lib/dbConnect';
 
 export async function POST(req) {
-  const { email, role, access } = await req.json();
-
-  await dbConnect();
-
   try {
-    // Invite via Clerk
-    const res = await fetch('https://api.clerk.com/v1/invitations', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
-        'Content-Type': 'application/json',
+    await dbConnect();
+
+    const body = await req.json();
+    console.log("📥 Incoming Invite Payload:", JSON.stringify(body, null, 2));
+
+    const { email, role, access } = body;
+
+    if (!email || !role) {
+      console.log("❌ Missing email or role");
+      return NextResponse.json({ error: 'Email and role are required' }, { status: 400 });
+    }
+
+    if (!Array.isArray(access)) {
+      console.log("❌ Access is not an array:", access);
+      return NextResponse.json({ error: 'Access must be an array' }, { status: 422 });
+    }
+
+    const existing = await Invite.findOne({ email });
+    if (existing) {
+      console.log("⚠️ Email already invited:", email);
+      return NextResponse.json({ error: 'Email already invited' }, { status: 409 });
+    }
+
+    const invite = await Invite.create({ email, role, access });
+    console.log("✅ Invite saved to DB:", invite);
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
       },
-      body: JSON.stringify({
-        email_address: email,
-        redirect_url: 'https://wahidfoundationadmin.vercel.app/signup',
-      }),
     });
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      return new Response(JSON.stringify({ message: data.message || 'Failed to invite' }), {
-        status: res.status,
-      });
-    }
-
-    // Save user in MongoDB
-    const existingUser = await User.findOne({ email });
-
-    if (!existingUser) {
-      await User.create({ email, role, access });
-    }
-
-    return new Response(JSON.stringify({ message: 'Invite sent and user saved.', data }), {
-      status: 200,
+    const result = await transporter.sendMail({
+      from: '"Wahid Admin" <no-reply@wahid.org.in>',
+      to: email,
+      subject: 'You are invited to WahidAdmin Dashboard',
+      html: `
+        <h2>You've been invited to WahidAdmin</h2>
+        <p>You were invited to join the admin dashboard with role: <b>${role}</b></p>
+        <p><a href="${process.env.NEXT_PUBLIC_BASE_URL}/login">Click here to sign in</a> using your Google account</p>
+      `,
     });
 
-  } catch (error) {
-    console.error('Invite error:', error);
-    return new Response(JSON.stringify({ message: 'Server error' }), {
-      status: 500,
-    });
+    console.log("📤 Email sent:", result.messageId);
+
+    return NextResponse.json({ success: true, invite });
+  } catch (err) {
+    console.error('❌ Invite Error:', err.message);
+    console.error(err.stack);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
