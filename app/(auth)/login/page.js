@@ -4,6 +4,8 @@ import { signIn, useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
+import Logo from '../../../public/logo.png';
+import Image from "next/image";
 
 export default function LoginPage() {
   const { data: session, status } = useSession();
@@ -18,8 +20,10 @@ export default function LoginPage() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md bg-black/40">
       <div className="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-sm text-center animate-fade-in">
-        <h2 className="text-3xl font-bold mb-8 text-gray-800">Welcome to WahidAdmin</h2>
-        <p className="text-sm text-gray-500 mb-6">Please sign in to continue</p>
+        <Image src={Logo} className=" w-16 mb-4 mx-auto" />
+
+        <h2 className="text-3xl font-bold mb-6 text-gray-800">Welcome to <br /> Wahid Admin Panel</h2>
+        <p className="text-sm text-gray-500 mb-2">Please sign in to continue</p>
 
         <button
           onClick={() => signIn("google")}
