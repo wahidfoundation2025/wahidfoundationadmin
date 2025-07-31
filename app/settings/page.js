@@ -88,31 +88,39 @@ export default function SettingsPage() {
   }
 
   async function handleAddSubmit() {
-    try {
-      const res = await fetch('/api/send-invite', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newUserData),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.message || 'Failed to send invite');
-
-      setNewUserData({
-        name: '',
-        email: '',
-        role: '',
-        access: [],
-      });
-    } catch (err) {
-      console.log('error in adding user: ', err);
-      alert("Failed to Invite");
-    }
+  const payload = {
+    email: newUserData.email,
+    role: newUserData.role,
+    access: newUserData.access,
   };
 
+  console.log("📤 Sending invite payload:", payload); // 👈 Log here
+
+  try {
+    const res = await fetch('/api/send-invite', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.message);
+
+    setNewUserData({
+      name: '',
+      email: '',
+      role: '',
+      access: [],
+    });
+    alert("Invite sent successfully!");
+  } catch (err) {
+    console.error('❌ Error in adding user:', err);
+    alert("Failed to invite user");
+  }
+}
   if (loading) return <div className="p-10 text-center">Loading users...</div>;
 
   return (
