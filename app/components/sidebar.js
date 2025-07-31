@@ -73,7 +73,7 @@ export default function Sidebar({ children }) {
 
   return (
     <div className="flex flex-col h-screen overflow-y-auto normal-case">
-      <NavBar user={user} />
+      <NavBar user={user} setIsOpen={setIsOpen} isOpen={isOpen} />
 
       <div className='flex flex-row h-[90dvh]'>
         <aside className="hidden md:flex flex-col gap-2 min-w-[250px] w-[20%] p-6 bg-white text-black">
@@ -148,13 +148,90 @@ export default function Sidebar({ children }) {
           }
         </aside>
 
-        <div className="md:hidden fixed top-4 left-4 z-50">
+        {/* Mobile Menu Button */}
+        <div className="md:hidden fixed top-5 left-3">
           <button onClick={() => setIsOpen(!isOpen)} className="text-gray-800">
-            {isOpen ? <X size={28} /> : <Menu size={28} />}
+            {isOpen && <Menu size={28} />}
           </button>
         </div>
 
-        <main className="flex-1 p-6 bg-gray-100 w-full max-h-screen overflow-y-auto">
+        {/* Mobile Sidebar */}
+        <div className={`fixed top-0 left-0 h-full w-64 bg-white shadow-md z-40 p-6 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:hidden`}>
+          <div className="flex justify-between items-center mb-4">
+            <Image src={Logo} alt="Logo" className="h-8 w-auto" />
+            <button onClick={() => setIsOpen(false)}>
+              <X size={24} />
+            </button>
+          </div>
+
+          {loading
+            ? <div className='flex flex-col gap-2'>
+              {[...Array(5)].map((_, index) => (
+                <div key={index} className='w-full h-10 rounded-xl bg-gray-200'></div>
+              ))}
+            </div>
+            : <div className='flex flex-col gap-2'>
+              {show('dashboard') && (
+                <Link href="/" onClick={() => setIsOpen(false)}>
+                  <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition ${getNavClass('/')}`}>
+                    {navItems[0].icon} {navItems[0].name}
+                  </div>
+                </Link>
+              )}
+
+              {show('cms') && (
+                <>
+                  <button
+                    onClick={() => setCmsDropdown(v => !v)}
+                    className={`flex hover:bg-violet-200 items-center justify-between gap-2 w-full rounded-lg px-3 py-2 font-medium transition ${isCmsActive ? 'text-violet-700 bg-violet-200' : ''}`}
+                  >
+                    <div className='flex items-center gap-2'>
+                      {navItems[1].icon} CMS
+                    </div>
+                    {cmsDropdown || isCmsActive ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                  </button>
+                  {(cmsDropdown || isCmsActive) && (
+                    <div className="ml-6 flex flex-col gap-0.5">
+                      {cmsNavItems.map(item => (
+                        <Link key={item.name} href={item.href} onClick={() => setIsOpen(false)}>
+                          <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg p-2 cursor-pointer transition ${pathname.startsWith(item.href) ? 'text-violet-700 bg-violet-200 font-medium' : ''}`}>
+                            {item.icon} {item.name}
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+
+              {show('donations') && (
+                <Link href="/donation" onClick={() => setIsOpen(false)}>
+                  <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass('/donation')}`}>
+                    {navItems[2].icon} {navItems[2].name}
+                  </div>
+                </Link>
+              )}
+
+              {show('donors') && (
+                <Link href="/donors" onClick={() => setIsOpen(false)}>
+                  <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass('/donors')}`}>
+                    {navItems[3].icon} {navItems[3].name}
+                  </div>
+                </Link>
+              )}
+
+              {show('settings') && (
+                <Link href="/settings" onClick={() => setIsOpen(false)}>
+                  <div className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass('/settings')}`}>
+                    {navItems[4].icon} {navItems[4].name}
+                  </div>
+                </Link>
+              )}
+            </div>
+          }
+        </div>
+
+        <main className="flex-1 sm:p-6 p-4 bg-gray-100 w-full max-h-screen overflow-y-auto">
           {children}
         </main>
       </div>
@@ -162,12 +239,18 @@ export default function Sidebar({ children }) {
   );
 }
 
-const NavBar = ({ user }) => {
+const NavBar = ({ user, isOpen, setIsOpen }) => {
   return (
-    <nav className='flex items-center justify-between w-full p-4 px-12 border-b border-gray-200 h-[10dvh]'>
+    <nav className='flex items-center justify-between w-full p-4 sm:px-12 border-b border-gray-200 h-[10dvh]'>
       <div className='flex flex-row gap-3 items-center'>
+        <div className="md:hidden">
+          <button onClick={() => setIsOpen(!isOpen)} className="text-gray-800">
+            <Menu size={28} />
+          </button>
+        </div>
+
         <Image src={Logo} alt="Wahid" height={40} />
-        <h1 className="text-xl font-semibold">WAHID</h1>
+        <h1 className="text-xl font-semibold sm:block hidden">WAHID</h1>
       </div>
 
       {user && (

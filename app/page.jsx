@@ -121,8 +121,8 @@ export default function DashboardPage() {
         {stats.map((stat, index) => (
           <div
             key={index}
-            className='flex flex-1 flex-col gap-3 border-[1px] border-gray-300 rounded-xl p-4'          >
-            <div className={`${stat.bg} w-fit p-2.5 rounded-xl`}>{stat.icon}</div>
+            className='flex flex-1 sm:flex-col flex-row gap-3 border-[1px] border-gray-300 rounded-xl sm:p-4 p-3'          >
+            <div className={`${stat.bg} flex justify-center items-center w-14 sm:w-fit p-2.5 rounded-xl`}>{stat.icon}</div>
             <div>
               <h2 className="text-sm font-medium">{stat.title}</h2>
               <p className="text-3xl font-semibold">{stat.value}</p>
