@@ -231,7 +231,7 @@ export default function Sidebar({ children }) {
           }
         </div>
 
-        <main className="flex-1 sm:p-6 p-4 bg-gray-100 w-full max-h-screen overflow-y-auto">
+        <main className="flex-1 sm:p-6 p-0 bg-gray-100 w-full max-h-screen overflow-y-auto">
           {children}
         </main>
       </div>

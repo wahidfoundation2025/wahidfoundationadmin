@@ -127,16 +127,16 @@ export default function CreateProjectPage() {
   }, []);
 
   return (
-    <div className="min-h-full w-full bg-white p-6 rounded-2xl">
+    <div className="min-h-full w-full bg-white p-4 sm:p-6 sm:rounded-2xl">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Create New Project</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">Create New Project</h1>
 
         <button
           onClick={handleSubmit}
-          className="px-10 py-2 font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white text-base rounded-xl flex items-center gap-2"
+          className="px-4 sm:px-10 py-2 text-sm sm:text-base font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white rounded-xl flex items-center gap-2"
           disabled={submitting}
         >
-          {submitting && <Loader2 className="w-4 h-4 animate-spin" />} Save Changes
+          {submitting && <Loader2 className="w-4 h-4 animate-spin" />} Save
         </button>
       </div>
 

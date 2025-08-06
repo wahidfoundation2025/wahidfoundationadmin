@@ -82,35 +82,35 @@ export default function HomeImpactSectionEditor() {
       {edit ? (
         <div className="space-y-6 mt-6 px-2">
           <div className="flex flex-col gap-2">
-            <label className="text-xl font-semibold">Title</label>
+            <label className="text-base ms:text-xl font-semibold">Title</label>
             <input name="title" value={form.title || ""} onChange={handleChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400" />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-xl font-semibold">Subtitle</label>
+            <label className="text-base ms:text-xl font-semibold">Subtitle</label>
             <input name="subtitle" value={form.subtitle || ""} onChange={handleChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400" />
           </div>
 
           <hr className="text-gray-300 my-8" />
 
-          <div className="flex flex-row gap-2 items-center justify-between w-full">
-            <label className="text-xl font-semibold">Impact Stats</label>
+          <div className="flex flex-row gap-2 mb-4 items-center justify-between w-full">
+            <label className="text-base ms:text-xl font-semibold">Impact Stats</label>
             <button
-              className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-500 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+              className="flex flex-row text-sm sm:text-base gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-500 px-4 sm:px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
               onClick={handleAddStat} type="button"
             >
               Add Stat
             </button>
           </div>
 
-          <div className="flex gap-2 max-w-full overflow-x-auto">
+          <div className="flex sm:flex-row flex-col gap-2 max-w-full overflow-x-auto">
             {(form.stats || []).map((stat, idx) => (
-              <div key={idx} className="flex min-w-[300px] max-w-[320px] flex-col gap-3 items-center border border-gray-200 p-4 rounded-xl bg-gray-50">
+              <div key={idx} className="flex min-w-full sm:min-w-[300px] max-w-fit sm:max-w-[320px] flex-col gap-3 items-center border border-gray-200 p-4 rounded-xl bg-gray-50">
                 <div className="flex items-center justify-between w-full gap-2">
                   <select
                     value={stat.icon || ''}
                     onChange={e => handleStatChange(idx, 'icon', e.target.value)}
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-32 bg-white"
+                    className="border border-gray-300 rounded-lg px-3 py-2 flex-1 bg-white"
                   >
                     <option value="">Select Icon</option>
                     <option value="Calendar">📅 Calendar</option>
@@ -137,16 +137,16 @@ export default function HomeImpactSectionEditor() {
             ))}
           </div>
 
-          <div className="flex gap-2 absolute right-6 top-6">
+          <div className="flex gap-2 absolute right-3 sm:right-6 top-3 sm:top-6">
             <button
-              className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-white transition rounded-xl"
+              className="flex flex-row text-sm sm:text-base gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-600 px-4 ms:px-6 py-2 cursor-pointer text-white transition rounded-xl"
               onClick={handleSave}
               disabled={saving}
             >
               {saving ? "Saving..." : "Save"}
             </button>
             <button
-              className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+              className="flex flex-row text-sm sm:text-base gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 px-4 ms:px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
               onClick={() => { setEdit(false); setForm(data) }}
             >
               Cancel
@@ -155,30 +155,34 @@ export default function HomeImpactSectionEditor() {
         </div>
       ) : (
         <div className="px-2 mt-6 space-y-6">
-          <button className="absolute right-6 top-6 flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl" onClick={() => setEdit(true)}>
-            Edit Impact <TbEdit className="text-xl" />
+          <button
+            className="absolute text-sm sm:text-base right-3 sm:right-4 top-3 sm:top-4 flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 sm:px-6 px-4 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+            onClick={() => setEdit(true)}
+          >
+            Edit Impact
+             <TbEdit className="text-xl" />
           </button>
 
           <div className="flex flex-col gap-2">
-            <span className="text-xl font-semibold">Title:</span>
-            <span className="block text-lg">{data.title}</span>
+            <span className="text-base ms:text-xl font-semibold">Title:</span>
+            <span className="block text-base ms:text-sm">{data.title}</span>
           </div>
 
           <div className="flex flex-col gap-2">
-            <span className="text-xl font-semibold">Subtitle:</span>
+            <span className="text-base ms:text-xl font-semibold">Subtitle:</span>
             <span className="block">{data.subtitle}</span>
           </div>
 
           <hr className="text-gray-300 my-8" />
 
           <div>
-            <span className="text-xl font-semibold block mb-2">Impact Stats:</span>
+            <span className="text-base ms:text-xl font-semibold block mb-4">Impact Stats:</span>
 
-            <div className="flex gap-4 overflow-x-auto">
+            <div className="flex sm:flex-row flex-col gap-4 sm:overflow-x-auto">
               {(data.stats || []).map((stat, idx) => {
                 const Icon = ICON_MAP[stat.icon] || null
                 return (
-                  <div key={idx} className="flex-shrink-0 min-w-[250px] max-w-[300px] border border-gray-200 p-4 rounded-xl bg-gray-50 flex flex-col gap-3">
+                  <div key={idx} className="flex-shrink-0 min-w-full sm:min-w-[250px] max-w-full sm:max-w-[300px] border border-gray-200 p-4 rounded-xl bg-gray-50 flex flex-col gap-3">
                     <div className="flex items-center justify-between">
                       <div className="text-sm text-gray-500">{stat.icon || "No Icon"}</div>
                       {Icon}
