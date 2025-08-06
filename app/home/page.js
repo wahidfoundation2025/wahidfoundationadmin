@@ -35,12 +35,12 @@ export default function HomeCMSPage() {
   }, []);
 
   return (
-    <div className="min-h-full bg-white p-6 rounded-2xl relative">
+    <div className="min-h-full bg-white ms:p-6 p-4 sm:rounded-2xl relative">
       <div className="sm:hidden flex">
         <button
           ref={buttonRef}
           onClick={() => setShowDropdown((prev) => !prev)}
-          className="text-xl cursor-pointer hover:bg-black hover:text-white p-2 transition-colors rounded-full"
+          className="text-xl cursor-pointer hover:bg-black hover:text-white p-1 transition-colors rounded-full"
         >
           <BsThreeDotsVertical />
         </button>
@@ -48,7 +48,7 @@ export default function HomeCMSPage() {
         {showDropdown &&
           <div
             ref={dropdownRef}
-            className="flex flex-col absolute top-14 left-12 gap-1 bg-white border border-gray-300 p-2 rounded-2xl rounded-tl-none shadow-2xs"
+            className="flex flex-col absolute top-12 left-10 gap-1 bg-white border border-gray-300 p-2 rounded-2xl rounded-tl-none shadow-2xs"
           >
             {sections.map((section) => (
               <button
@@ -57,7 +57,7 @@ export default function HomeCMSPage() {
                   setActiveSection(section.key)
                   setShowDropdown(false)
                 }}
-                className={`text-left px-8 py-2 rounded-lg cursor-pointer font-semibold transition-all ${activeSection === section.key ? "bg-violet-600 text-white" : "hover:bg-violet-200 hover:text-violet-600"}`}
+                className={`text-left text-sm px-6 py-1.5 rounded-lg cursor-pointer font-semibold transition-all ${activeSection === section.key ? "bg-violet-600 text-white" : "hover:bg-violet-200 hover:text-violet-600"}`}
               >
                 {section.name}
               </button>
@@ -66,12 +66,12 @@ export default function HomeCMSPage() {
         }
       </div>
 
-      <nav className="flex-row gap-2 sm:flex hidden">
+      <nav className="flex-row gap-1 sm:flex hidden">
         {sections.map((section) => (
           <button
             key={section.key}
             onClick={() => setActiveSection(section.key)}
-            className={`text-left px-8 py-2 rounded-lg cursor-pointer font-semibold transition-all ${activeSection === section.key ? "bg-violet-600 text-white" : "hover:bg-violet-200 hover:text-violet-600"}`}
+            className={`text-left px-6 py-2 rounded-lg cursor-pointer font-semibold transition-all ${activeSection === section.key ? "bg-violet-600 text-white" : "hover:bg-violet-200 hover:text-violet-600"}`}
           >
             {section.name}
           </button>

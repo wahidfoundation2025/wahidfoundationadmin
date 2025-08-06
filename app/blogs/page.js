@@ -31,15 +31,15 @@ export default function BlogListPage() {
   }
 
   return (
-    <div className="bg-white p-6 rounded-2xl min-h-full w-full">
+    <div className="bg-white p-4 sm:p-6 sm:rounded-2xl min-h-full w-full">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">All Blogs</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">All Blogs</h1>
 
         <Link href="/blogeditor">
           <button
-            className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-700 px-6 py-2 cursor-pointer text-white transition rounded-xl"
+            className="flex flex-row text-sm sm:text-base gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-700 px-4 sm:px-6 py-2 cursor-pointer text-white transition rounded-xl"
           >
-            <Plus size={16} /> Create New Blog
+            <Plus size={16} /> Create New
           </button>
         </Link>
       </div>

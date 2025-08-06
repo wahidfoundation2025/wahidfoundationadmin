@@ -124,8 +124,8 @@ export default function SettingsPage() {
   if (loading) return <div className="p-10 text-center">Loading users...</div>;
 
   return (
-    <div className="bg-white p-6 rounded-2xl min-h-full">
-      <h1 className="text-2xl font-bold mb-6">Settings - User Management</h1>
+    <div className="bg-white p-4 sm:p-6 sm:rounded-2xl min-h-full">
+      <h1 className="text-xl sm:text-2xl font-bold mb-6">Settings - User Management</h1>
 
       <div className="overflow-x-auto w-full pb-4">
         <div className="bg-white w-full border border-gray-300 shadow rounded-xl overflow-x-auto">
@@ -203,12 +203,12 @@ export default function SettingsPage() {
       </div>
 
       {/* Edit/Add Form Section */}
-      <div className="mt-6 border border-gray-300 rounded-xl p-6">
+      <div className="mt-4 border border-gray-300 rounded-xl p-5 sm:p-6">
         {editingUser ? (
           <>
             <h2 className="font-semibold text-lg mb-4">Edit User</h2>
             <div className="flex flex-col gap-y-4">
-              <div className="grid grid-cols-2 gap-4 w-full">
+              <div className="grid sm:grid-cols-2 gap-2 sm:gap-4 w-full">
                 <div>
                   <label className="block text-sm font-medium mb-1">Email</label>
                   <input
@@ -277,7 +277,7 @@ export default function SettingsPage() {
           <>
             <h2 className="font-semibold text-lg mb-4">Add New User</h2>
             <div className="flex flex-col gap-y-4">
-              <div className="grid grid-cols-2 gap-4 w-full">
+              <div className="grid sm:grid-cols-2  gap-2 sm:gap-4 w-full">
                 <div>
                   <label className="block text-sm font-medium mb-1">Email</label>
                   <input
