@@ -70,7 +70,7 @@ export default function CategoriesPage() {
   return (
     <div className="p-6 bg-white rounded-2xl min-h-full w-full">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Categories</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">Categories</h1>
       </div>
 
       {loading ?
@@ -147,7 +147,7 @@ export default function CategoriesPage() {
       }
 
       {/* Add Category Form */}
-      <div className="bg-white border border-gray-300 rounded-xl p-6 w-full mt-10">
+      <div className="bg-white border border-gray-300 rounded-xl p-6 w-full">
         <h2 className="font-semibold text-lg mb-4">Add Category</h2>
 
         <form onSubmit={handleAdd} className="flex flex-col gap-y-4">

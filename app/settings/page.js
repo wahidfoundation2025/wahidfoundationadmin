@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { TbEdit } from "react-icons/tb";
 import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
+import { TbTrash } from 'react-icons/tb';
 
 export default function SettingsPage() {
   const [users, setUsers] = useState([]);
@@ -21,7 +22,25 @@ export default function SettingsPage() {
     role: '',
     access: [],
   });
+async function handleDeleteUser(email) {
+  const confirmed = confirm(`Are you sure you want to delete the user ${email}?`);
+  if (!confirmed) return;
 
+  try {
+    const res = await fetch(`/api/users/${encodeURIComponent(email)}`, {
+      method: 'DELETE',
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message);
+
+    alert('User deleted successfully');
+    fetchUsers(); // Refresh list
+  } catch (err) {
+    console.error('Error deleting user:', err);
+    alert('Failed to delete user');
+  }
+}
   const ACCESS_OPTIONS = ["dashboard", "donations", "settings", "cms", "donors"];
   const [loading, setLoading] = useState(true);
 
@@ -124,8 +143,8 @@ export default function SettingsPage() {
   if (loading) return <div className="p-10 text-center">Loading users...</div>;
 
   return (
-    <div className="bg-white p-6 rounded-2xl min-h-full">
-      <h1 className="text-2xl font-bold mb-6">Settings - User Management</h1>
+    <div className="bg-white p-4 sm:p-6 sm:rounded-2xl min-h-full">
+      <h1 className="text-xl sm:text-2xl font-bold mb-6">Settings - User Management</h1>
 
       <div className="overflow-x-auto w-full pb-4">
         <div className="bg-white w-full border border-gray-300 shadow rounded-xl overflow-x-auto">
@@ -170,6 +189,13 @@ export default function SettingsPage() {
                         >
                           <TbEdit size={20} />
                         </button>
+                        <button
+    onClick={() => handleDeleteUser(user.email)}
+    className="ml-2 cursor-pointer text-red-600 p-2 rounded-full hover:bg-red-100"
+    title="Delete user"
+  >
+    <TbTrash size={20} />
+  </button>
                       </td>
                     </tr>
                   );
@@ -203,12 +229,12 @@ export default function SettingsPage() {
       </div>
 
       {/* Edit/Add Form Section */}
-      <div className="mt-6 border border-gray-300 rounded-xl p-6">
+      <div className="mt-4 border border-gray-300 rounded-xl p-5 sm:p-6">
         {editingUser ? (
           <>
             <h2 className="font-semibold text-lg mb-4">Edit User</h2>
             <div className="flex flex-col gap-y-4">
-              <div className="grid grid-cols-2 gap-4 w-full">
+              <div className="grid sm:grid-cols-2 gap-2 sm:gap-4 w-full">
                 <div>
                   <label className="block text-sm font-medium mb-1">Email</label>
                   <input
@@ -277,7 +303,7 @@ export default function SettingsPage() {
           <>
             <h2 className="font-semibold text-lg mb-4">Add New User</h2>
             <div className="flex flex-col gap-y-4">
-              <div className="grid grid-cols-2 gap-4 w-full">
+              <div className="grid sm:grid-cols-2  gap-2 sm:gap-4 w-full">
                 <div>
                   <label className="block text-sm font-medium mb-1">Email</label>
                   <input

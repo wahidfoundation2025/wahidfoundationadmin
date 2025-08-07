@@ -56,7 +56,7 @@ export default function HomeQuoteSectionEditor() {
       {(edit || !quote) ? (
         <div className="space-y-6">
           <div className="flex flex-col gap-2">
-            <label className="text-xl font-semibold">Quote Text</label>
+            <label className="sm:text-xl font-semibold">Quote Text</label>
             <input
               name="text"
               value={form.text}
@@ -67,7 +67,7 @@ export default function HomeQuoteSectionEditor() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-xl font-semibold">Reference</label>
+            <label className="sm:text-xl font-semibold">Reference</label>
             <input
               name="reference"
               value={form.reference}
@@ -78,7 +78,7 @@ export default function HomeQuoteSectionEditor() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-xl font-semibold">Theme</label>
+            <label className="sm:text-xl font-semibold">Theme</label>
             <select
               name="theme"
               value={form.theme}
@@ -91,18 +91,18 @@ export default function HomeQuoteSectionEditor() {
             </select>
           </div>
 
-          <div className="flex gap-2 absolute right-6 top-6">
+          <div className="flex gap-2 absolute right-3 sm:right-4 top-3 sm:top-4">
             <button
-              className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-white transition rounded-xl"
+              className="flex flex-row text-sm sm:text-base gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-600 px-4 ms:px-6 py-2 cursor-pointer text-white transition rounded-xl"
               onClick={handleSave}
               disabled={saving || !form.text}
             >
-              {saving ? "Saving..." : quote ? "Update Quote" : "Add Quote"}
+              {saving ? "Saving..." : quote ? "Update" : "Add Quote"}
             </button>
 
             {quote && (
               <button
-                className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-red-600 hover:bg-red-600 px-6 py-2 cursor-pointer text-red-600 hover:text-white transition rounded-xl"
+                className="flex flex-row text-sm sm:text-base gap-2 items-center font-medium btn btn-primary border border-red-600 hover:bg-red-600 px-4 ms:px-6 py-2 cursor-pointer text-red-600 hover:text-white transition rounded-xl"
                 onClick={handleDelete}
                 disabled={saving}
               >
@@ -111,7 +111,7 @@ export default function HomeQuoteSectionEditor() {
             )}
 
             <button
-              className="flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+              className="flex flex-row text-sm sm:text-base gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 px-4 ms:px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
               onClick={() => {
                 setEdit(false)
                 setForm(quote || { text: "", reference: "", theme: "inspiration" })
@@ -124,16 +124,16 @@ export default function HomeQuoteSectionEditor() {
       ) : (
         <div className="space-y-4">
           <button
-            className="absolute right-6 top-6 flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+            className="absolute text-sm sm:text-base right-3 sm:right-4 top-3 sm:top-4 flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 sm:px-6 px-4 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
             onClick={() => setEdit(true)}
           >
             Edit Quote <TbEdit className="text-xl" />
           </button>
 
-          <div className="text-xl font-semibold">Quote:</div>
+          <div className="text-base sm:text-xl font-semibold">Quote:</div>
 
           <div className="border border-gray-300 rounded-xl px-4 py-3 bg-gray-50 text-gray-800">
-            <div className="text-lg italic">"{quote?.text}"</div>
+            <div className="text-sm sm:text-lg italic">"{quote?.text}"</div>
             {quote?.reference && (
               <div className="mt-2 text-sm text-gray-500 font-medium">- {quote.reference}</div>
             )}

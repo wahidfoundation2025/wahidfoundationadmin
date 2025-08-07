@@ -1,5 +1,6 @@
 import { dbConnect } from '@/lib/dbConnect';
 import User from '@/lib/models/user';
+import Invite from '@/lib/models/invite';
 
 export const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -84,22 +85,27 @@ export async function DELETE(_, { params }) {
   try {
     const email = decodeURIComponent(params.email);
 
-    const deleted = await User.findOneAndDelete({ email });
+    const deletedUser = await User.findOneAndDelete({ email });
+    const deletedInvite = await Invite.findOneAndDelete({ email });
 
-    if (!deleted) {
-      return new Response(JSON.stringify({ message: 'User not found' }), {
+    if (!deletedUser && !deletedInvite) {
+      return new Response(JSON.stringify({ message: 'User not found in both collections' }), {
         status: 404,
         headers: corsHeaders,
       });
     }
 
-    return new Response(JSON.stringify({ message: 'User deleted successfully' }), {
+    return new Response(JSON.stringify({
+      message: 'User and/or invite deleted successfully',
+      userDeleted: !!deletedUser,
+      inviteDeleted: !!deletedInvite,
+    }), {
       status: 200,
       headers: corsHeaders,
     });
   } catch (error) {
     console.error('DELETE error:', error);
-    return new Response(JSON.stringify({ message: 'Failed to delete user' }), {
+    return new Response(JSON.stringify({ message: 'Failed to delete user/invite' }), {
       status: 500,
       headers: corsHeaders,
     });

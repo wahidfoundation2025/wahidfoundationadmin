@@ -31,10 +31,10 @@ export default function VolunteerListPage() {
   )
 
   return (
-    <div className="bg-white p-6 rounded-2xl min-h-full w-full">
+    <div className="bg-white p-4 sm:p-6 sm:rounded-2xl min-h-full w-full">
       <div className="w-full">
-        <h1 className="text-2xl font-bold mb-2">Volunteers</h1>
-        <p className="text-lg text-gray-600 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold mb-2">Volunteers</h1>
+        <p className="text-base sm:text-lg text-gray-600 mb-6">
           View all submitted volunteer applications.
         </p>
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { GraduationCap, Heart, Users, Calculator, Trash2, Plus } from 'lucide-react'
 import { TbTrash } from 'react-icons/tb'
 
@@ -30,7 +30,9 @@ export default function ImpactPage() {
     initials: '',
     icon: ICONS[0].value,
   })
-  const [adding, setAdding] = useState(false)
+  const [adding, setAdding] = useState(false);
+
+  const formRef = useRef(null);
 
   useEffect(() => {
     fetchStories();
@@ -77,16 +79,24 @@ export default function ImpactPage() {
     fetchStories()
   }
 
+  function handleScrollToForm() {
+    setShowAdd(true);
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  }
+
   return (
-    <div className="bg-white p-6 rounded-2xl min-h-full">
+    <div className="bg-white sm:p-6 p-4 sm:rounded-2xl min-h-full">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Impact Stories</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">Impact Stories</h1>
 
         <button
-          onClick={() => setShowAdd(true)}
-          className="flex flex-row gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-700 px-6 py-2 cursor-pointer text-white transition rounded-xl"
+          onClick={handleScrollToForm}
+          className="flex flex-row text-sm sm:text-base gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-700 px-4 sm:px-6 py-2 cursor-pointer text-white transition rounded-xl"
         >
-          <Plus size={16} /> Add Impact Story
+          <Plus size={16} /> Add
+          <span className='sm:block hidden'> Impact Story</span>
         </button>
       </div>
 
@@ -95,7 +105,7 @@ export default function ImpactPage() {
       ) : stories.length === 0 ? (
         <div className="text-center py-10 text-gray-500">No stories found.</div>
       ) : (
-        <div className="space-y-6 grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
+        <div className="space-y-6 grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-2 grid-cols-1 gap-4">
           {stories.map((story) => {
             const Icon = ICON_MAP[story.icon] || Users;
 
@@ -135,11 +145,11 @@ export default function ImpactPage() {
         </div>
       )}
 
-      <div className="bg-white border border-gray-300 rounded-xl p-6 w-full mt-10">
+      <div ref={formRef}  className="bg-white border border-gray-300 rounded-xl ms:p-6 p-5 w-full mt-4 sm:mt-10">
         <h2 className="font-semibold text-lg mb-4">Add Impact Story</h2>
 
         <div className="flex flex-col gap-y-4">
-          <div className="grid grid-cols-2 gap-4 w-full">
+          <div className="grid sm:grid-cols-2 gap-2 sm:gap-4 w-full">
             <div className="col-span-2">
               <label className="block text-sm font-medium mb-1">Quote</label>
               <textarea
@@ -150,7 +160,7 @@ export default function ImpactPage() {
                 className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
               />
             </div>
-            <div>
+            <div className='sm:col-span-1 col-span-2'>
               <label className="block text-sm font-medium mb-1">Name</label>
               <input
                 name="name"
@@ -160,7 +170,7 @@ export default function ImpactPage() {
                 className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
               />
             </div>
-            <div>
+            <div className='sm:col-span-1 col-span-2'>
               <label className="block text-sm font-medium mb-1">Location</label>
               <input
                 name="location"
@@ -170,7 +180,7 @@ export default function ImpactPage() {
                 className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
               />
             </div>
-            <div>
+            <div className='sm:col-span-1 col-span-2'>
               <label className="block text-sm font-medium mb-1">Initials</label>
               <input
                 name="initials"
@@ -180,7 +190,7 @@ export default function ImpactPage() {
                 className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
               />
             </div>
-            <div>
+            <div className='sm:col-span-1 col-span-2'>
               <label className="block text-sm font-medium mb-1">Icon</label>
               <select
                 name="icon"
