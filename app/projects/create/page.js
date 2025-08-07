@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { IoIosCloseCircle } from "react-icons/io";
+import withAccessControl from '@/lib/withAccessControl';
 
-export default function CreateProjectPage() {
+function CreateProjectPage() {
   const router = useRouter();
   const [form, setForm] = useState({
     title: '',
@@ -308,3 +309,6 @@ export default function CreateProjectPage() {
     </div>
   );
 }
+
+export default withAccessControl(CreateProjectPage, "cms");
+

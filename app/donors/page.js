@@ -1,9 +1,10 @@
 "use client"
 import { useEffect, useState } from 'react'
-import { UserButton } from '@clerk/nextjs'
 import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
+import withAccessControl from '@/lib/withAccessControl';
 
-export default function DonorsPage() {
+
+function DonorsPage() {
   const [donors, setDonors] = useState([])
   const [projects, setProjects] = useState([])
   const [donations, setDonations] = useState([])
@@ -134,3 +135,5 @@ export default function DonorsPage() {
     </div>
   )
 }
+
+export default withAccessControl(DonorsPage, "donors"); 

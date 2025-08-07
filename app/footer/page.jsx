@@ -1,5 +1,6 @@
 'use client'
 
+import withAccessControl from '@/lib/withAccessControl';
 import { Loader2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { TbEdit } from 'react-icons/tb';
@@ -412,4 +413,4 @@ const Footer = () => {
     )
 }
 
-export default Footer
+export default withAccessControl(Footer, "cms")

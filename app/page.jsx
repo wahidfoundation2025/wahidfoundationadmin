@@ -12,11 +12,12 @@ import {
   Legend,
 } from 'chart.js'
 import { Bar, Pie } from 'react-chartjs-2'
+import withAccessControl from '@/lib/withAccessControl'
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend)
 
-export default function DashboardPage() {
+function DashboardPage() {
   const [summary, setSummary] = useState({
     activeCount: 0,
     completedCount: 0,
@@ -147,3 +148,5 @@ export default function DashboardPage() {
     </div>
   )
 }
+
+export default withAccessControl(DashboardPage, "dashboard");

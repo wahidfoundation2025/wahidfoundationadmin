@@ -3,8 +3,9 @@
 import { use, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Loader2, Trash2 } from 'lucide-react'
+import withAccessControl from '@/lib/withAccessControl';
 
-export default function EditProjectPage(props) {
+function EditProjectPage(props) {
   const { id } = use(props.params);
   const router = useRouter()
 
@@ -246,3 +247,5 @@ export default function EditProjectPage(props) {
     </div>
   )
 }
+
+export default withAccessControl(EditProjectPage, "cms");

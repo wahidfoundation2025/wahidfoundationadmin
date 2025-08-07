@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import withAccessControl from '@/lib/withAccessControl';
 
 async function getProject(id) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/projects/${id}`, {
@@ -9,7 +10,7 @@ async function getProject(id) {
   return res.json();
 }
 
-export default async function ProjectDetailPage({ params }) {
+async function ProjectDetailPage({ params }) {
   const project = await getProject(params.id);
   if (!project) return notFound();
 
@@ -104,6 +105,8 @@ export default async function ProjectDetailPage({ params }) {
     </div>
   );
 }
+
+export default withAccessControl(ProjectDetailPage, "cms");
 
 // Helper components
 function InfoRow({ label, value }) {

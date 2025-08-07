@@ -4,6 +4,7 @@ import HomeHeroSectionEditor from "../components/homeherosection"
 import HomeImpactSectionEditor from "../components/homeimpactsection"
 import HomeQuoteSectionEditor from "../components/homequotesection"
 import { BsThreeDotsVertical } from "react-icons/bs";
+import withAccessControl from "@/lib/withAccessControl"
 
 const sections = [
   { name: "Hero", key: "hero" },
@@ -11,7 +12,7 @@ const sections = [
   { name: "Tag", key: "tag" },
 ]
 
-export default function HomeCMSPage() {
+function HomeCMSPage() {
   const [activeSection, setActiveSection] = useState("hero");
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -94,3 +95,6 @@ export default function HomeCMSPage() {
     </div>
   )
 }
+
+export default withAccessControl(HomeCMSPage, "cms");
+

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { GraduationCap, Heart, Users, Calendar, Eye, Trash2 } from 'lucide-react'
+import withAccessControl from '@/lib/withAccessControl'
 
 const ICON_MAP = {
   GraduationCap: GraduationCap,
@@ -10,7 +11,7 @@ const ICON_MAP = {
   Calendar: Calendar,
 }
 
-export default function VolunteerPositionsPage() {
+function VolunteerPositionsPage() {
   const [positions, setPositions] = useState([])
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState(null)
@@ -128,6 +129,8 @@ export default function VolunteerPositionsPage() {
         </div>
       )
       }
-    </div >
+    </div>
   )
 }
+
+export default withAccessControl(VolunteerPositionsPage, "cms")

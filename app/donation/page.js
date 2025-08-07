@@ -1,9 +1,10 @@
 'use client'
 
+import withAccessControl from '@/lib/withAccessControl'
 import { useEffect, useState } from 'react'
 import { FaAnglesLeft, FaAnglesRight } from 'react-icons/fa6'
 
-export default function DonationPage() {
+function DonationPage() {
   const [donations, setDonations] = useState([])
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
@@ -133,3 +134,5 @@ export default function DonationPage() {
     </div>
   )
 }
+
+export default withAccessControl(DonationPage, "donations");

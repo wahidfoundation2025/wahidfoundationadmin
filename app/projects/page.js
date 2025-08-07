@@ -5,12 +5,13 @@ import { useRouter } from 'next/navigation'
 import { Trash2, Pencil, Eye, Plus } from 'lucide-react'
 import { FaAnglesLeft, FaAnglesRight } from 'react-icons/fa6'
 import { TbEdit } from 'react-icons/tb'
+import withAccessControl from '@/lib/withAccessControl'
 
 const Input = (props) => (
   <input className="border px-3 py-2 rounded-md text-sm w-full" {...props} />
 )
 
-export default function ProjectsPage() {
+function ProjectsPage() {
   const [projects, setProjects] = useState([])
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
@@ -153,3 +154,6 @@ export default function ProjectsPage() {
     </div>
   )
 }
+
+export default withAccessControl(ProjectsPage, "cms")
+

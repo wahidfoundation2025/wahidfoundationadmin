@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import withAccessControl from '@/lib/withAccessControl'
 
 const ICONS = [
   { label: 'Graduation Cap', value: 'GraduationCap' },
@@ -11,7 +12,7 @@ const ICONS = [
   { label: 'Calendar', value: 'Calendar' },
 ]
 
-export default function AddPositionPage() {
+function AddPositionPage() {
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -117,3 +118,5 @@ export default function AddPositionPage() {
     </div>
   )
 }
+
+export default withAccessControl(AddPositionPage, "cms");

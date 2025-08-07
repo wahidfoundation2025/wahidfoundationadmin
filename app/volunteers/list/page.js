@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react'
 import { Eye } from 'lucide-react'
 import { FaAnglesLeft, FaAnglesRight } from 'react-icons/fa6'
+import withAccessControl from '@/lib/withAccessControl'
 
-export default function VolunteerListPage() {
+function VolunteerListPage() {
   const [volunteers, setVolunteers] = useState([])
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState(null)
@@ -150,6 +151,9 @@ export default function VolunteerListPage() {
         </div>
       )
       }
-    </div >
+    </div>
   )
 }
+
+export default withAccessControl(VolunteerListPage, "cms");
+

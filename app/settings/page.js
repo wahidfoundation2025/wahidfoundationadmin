@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react';
 import { TbEdit } from "react-icons/tb";
 import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
+import withAccessControl from '@/lib/withAccessControl';
 
-export default function SettingsPage() {
+function SettingsPage() {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
 
@@ -88,39 +89,40 @@ export default function SettingsPage() {
   }
 
   async function handleAddSubmit() {
-  const payload = {
-    email: newUserData.email,
-    role: newUserData.role,
-    access: newUserData.access,
-  };
+    const payload = {
+      email: newUserData.email,
+      role: newUserData.role,
+      access: newUserData.access,
+    };
 
-  console.log("📤 Sending invite payload:", payload); // 👈 Log here
+    console.log("📤 Sending invite payload:", payload); // 👈 Log here
 
-  try {
-    const res = await fetch('/api/send-invite', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const res = await fetch('/api/send-invite', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (!res.ok) throw new Error(data.message);
+      if (!res.ok) throw new Error(data.message);
 
-    setNewUserData({
-      name: '',
-      email: '',
-      role: '',
-      access: [],
-    });
-    alert("Invite sent successfully!");
-  } catch (err) {
-    console.error('❌ Error in adding user:', err);
-    alert("Failed to invite user");
+      setNewUserData({
+        name: '',
+        email: '',
+        role: '',
+        access: [],
+      });
+      alert("Invite sent successfully!");
+    } catch (err) {
+      console.error('❌ Error in adding user:', err);
+      alert("Failed to invite user");
+    }
   }
-}
+
   if (loading) return <div className="p-10 text-center">Loading users...</div>;
 
   return (
@@ -340,3 +342,5 @@ export default function SettingsPage() {
     </div>
   );
 }
+
+export default withAccessControl(SettingsPage, "settings");

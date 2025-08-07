@@ -5,8 +5,9 @@ import Link from 'next/link';
 import axios from 'axios';
 import { Plus, Trash2 } from 'lucide-react';
 import { TbEdit } from 'react-icons/tb';
+import withAccessControl from '@/lib/withAccessControl';
 
-export default function BlogListPage() {
+function BlogListPage() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true); // ✅ New loading state
 
@@ -91,3 +92,5 @@ export default function BlogListPage() {
     </div>
   );
 }
+
+export default withAccessControl(BlogListPage, "cms");
