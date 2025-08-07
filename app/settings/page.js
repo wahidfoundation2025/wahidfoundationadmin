@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { TbEdit } from "react-icons/tb";
 import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
+import { TbTrash } from 'react-icons/tb';
 
 export default function SettingsPage() {
   const [users, setUsers] = useState([]);
@@ -21,7 +22,25 @@ export default function SettingsPage() {
     role: '',
     access: [],
   });
+async function handleDeleteUser(email) {
+  const confirmed = confirm(`Are you sure you want to delete the user ${email}?`);
+  if (!confirmed) return;
 
+  try {
+    const res = await fetch(`/api/users/${encodeURIComponent(email)}`, {
+      method: 'DELETE',
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message);
+
+    alert('User deleted successfully');
+    fetchUsers(); // Refresh list
+  } catch (err) {
+    console.error('Error deleting user:', err);
+    alert('Failed to delete user');
+  }
+}
   const ACCESS_OPTIONS = ["dashboard", "donations", "settings", "cms", "donors"];
   const [loading, setLoading] = useState(true);
 
@@ -170,6 +189,13 @@ export default function SettingsPage() {
                         >
                           <TbEdit size={20} />
                         </button>
+                        <button
+    onClick={() => handleDeleteUser(user.email)}
+    className="ml-2 cursor-pointer text-red-600 p-2 rounded-full hover:bg-red-100"
+    title="Delete user"
+  >
+    <TbTrash size={20} />
+  </button>
                       </td>
                     </tr>
                   );
