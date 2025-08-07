@@ -5,8 +5,9 @@ import { Trash2 } from 'lucide-react'
 import { TbEdit } from 'react-icons/tb'
 import { FaCheck } from 'react-icons/fa6'
 import { FcCancel } from "react-icons/fc";
+import withAccessControl from '@/lib/withAccessControl';
 
-export default function CategoriesPage() {
+function CategoriesPage() {
   const [categories, setCategories] = useState([])
   const [editingId, setEditingId] = useState(null)
   const [editData, setEditData] = useState({ name: '', description: '' })
@@ -68,18 +69,18 @@ export default function CategoriesPage() {
   }
 
   return (
-    <div className="p-6 bg-white rounded-2xl min-h-full w-full">
+    <div className="p-4 sm:p-6 bg-white sm:rounded-2xl min-h-full w-full">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-xl sm:text-2xl font-bold">Categories</h1>
       </div>
 
       {loading ?
         <div className="text-center py-10 text-gray-500">Loading...</div>
-        : <div className="grid md:grid-cols-3 grid-cols-1 gap-4 w-full">
+        : <div className="grid lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-2 grid-cols-1 gap-4 w-full mb-6">
           {categories.map((cat) => (
             <div
               key={cat._id}
-              className="flex justify-between items-end bg-violet-50 border-2 border-violet-300 p-3 rounded-xl"
+              className="flex justify-between items-start bg-violet-50 border-2 border-violet-300 p-3 rounded-xl"
             >
               <div className="w-full">
                 {editingId === cat._id ? (
@@ -97,7 +98,7 @@ export default function CategoriesPage() {
                   </>
                 ) : (
                   <>
-                    <h2 className="font-semibold text-lg">{cat.name}</h2>
+                    <h2 className="font-semibold sm:text-lg">{cat.name}</h2>
                     <p className="text-sm text-gray-500">{cat.description}</p>
                   </>
                 )}
@@ -187,3 +188,5 @@ export default function CategoriesPage() {
     </div>
   )
 }
+
+export default withAccessControl(CategoriesPage, "cms");

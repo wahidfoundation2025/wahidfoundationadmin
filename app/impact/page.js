@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { GraduationCap, Heart, Users, Calculator, Trash2, Plus } from 'lucide-react'
 import { TbTrash } from 'react-icons/tb'
+import withAccessControl from '@/lib/withAccessControl'
 
 const ICON_MAP = {
   GraduationCap,
@@ -18,7 +19,7 @@ const ICONS = [
   { label: 'Calculator', value: 'Calculator' },
 ]
 
-export default function ImpactPage() {
+function ImpactPage() {
   const [stories, setStories] = useState([])
   const [loading, setLoading] = useState(true)
   const [showAdd, setShowAdd] = useState(false)
@@ -145,7 +146,7 @@ export default function ImpactPage() {
         </div>
       )}
 
-      <div ref={formRef}  className="bg-white border border-gray-300 rounded-xl ms:p-6 p-5 w-full mt-4 sm:mt-10">
+      <div ref={formRef} className="bg-white border border-gray-300 rounded-xl ms:p-6 p-5 w-full mt-4 sm:mt-10">
         <h2 className="font-semibold text-lg mb-4">Add Impact Story</h2>
 
         <div className="flex flex-col gap-y-4">
@@ -220,3 +221,5 @@ export default function ImpactPage() {
     </div>
   )
 }
+
+export default withAccessControl(ImpactPage, "cms");

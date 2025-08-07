@@ -10,8 +10,9 @@ import axios from 'axios';
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 import 'react-quill-new/dist/quill.snow.css';
 import { IoIosCloseCircle } from 'react-icons/io';
+import withAccessControl from '@/lib/withAccessControl';
 
-export default function EditBlogPage() {
+function EditBlogPage() {
   const params = useParams();
   const router = useRouter();
   const blogId = params.id;
@@ -204,3 +205,5 @@ export default function EditBlogPage() {
     </div>
   );
 }
+
+export default withAccessControl(EditBlogPage, "cms");

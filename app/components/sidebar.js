@@ -241,7 +241,7 @@ export default function Sidebar({ children }) {
 
 const NavBar = ({ user, isOpen, setIsOpen }) => {
   return (
-    <nav className='flex items-center justify-between w-full p-4 sm:px-12 border-b border-gray-200 h-[10dvh]'>
+    <nav className='flex items-center justify-between w-full p-4 sm:px-12 border-b bg-white text-black border-gray-200 h-[10dvh]'>
       <div className='flex flex-row gap-3 items-center'>
         <div className="md:hidden">
           <button onClick={() => setIsOpen(!isOpen)} className="text-gray-800">
