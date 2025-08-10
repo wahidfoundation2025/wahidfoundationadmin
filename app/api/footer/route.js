@@ -15,6 +15,21 @@ export async function OPTIONS() {
   });
 }
 
+export async function PUT(req) {
+  console.log("PUT Footer Settings");
+  await dbConnect();
+  const body = await req.json();
+  const existing = await FooterSettings.findOne({});
+
+  if (!existing) {
+    return NextResponse.json({ error: 'Footer not found' }, { status: 404 });
+  }
+
+  const updated = await FooterSettings.findOneAndUpdate({}, body, { new: true });
+  return NextResponse.json(updated, {
+    headers: { 'Access-Control-Allow-Origin': '*' },
+  });
+}
 // GET Footer Settings (singleton)
 export async function GET() {
   await dbConnect();
