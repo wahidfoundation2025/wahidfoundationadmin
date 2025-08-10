@@ -1,8 +1,9 @@
 'use client'
 
-import { use, useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Loader2, Trash2 } from 'lucide-react'
+import { use, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Loader2, Trash2 } from 'lucide-react';
+import { IoIosCloseCircle } from "react-icons/io";
 
 export default function EditProjectPage(props) {
   const { id } = use(props.params);
@@ -17,7 +18,7 @@ export default function EditProjectPage(props) {
     title: '',
     description: '',
     status: 'Active',
-    category: '',
+    category: [],
     location: '',
     totalRequired: '',
     collected: '',
@@ -35,7 +36,7 @@ export default function EditProjectPage(props) {
     overview: '',
     youtubeIframe: '',
   })
-
+const [categories, setCategories] = useState([]);
   useEffect(() => {
     async function fetchProject() {
       const res = await fetch(`/api/projects/${id}`)
@@ -106,6 +107,15 @@ export default function EditProjectPage(props) {
       alert('Failed to update project')
     }
   }
+  async function fetchCategories() {
+    const res = await fetch("/api/categories");
+    const data = await res.json();
+    setCategories(data);
+  }
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   if (loading) return <p className="p-4">Loading...</p>
 
@@ -146,10 +156,57 @@ export default function EditProjectPage(props) {
               <textarea name="description" value={form.description} onChange={handleChange} rows={3} placeholder="Description" className="p-2.5 text-sm w-full border border-gray-300 rounded-xl" />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Category</label>
-              <input name="category" value={form.category} onChange={handleChange} placeholder="Category" className="p-2.5 text-sm w-full border border-gray-300 rounded-xl" />
-            </div>
+              <div>
+                          <label className="block text-sm font-medium mb-1">Category</label>
+                          <select
+                            name="category"
+                            onChange={(e) => {
+                              const selected = Array.from(e.target.selectedOptions).map(
+                                (opt) => opt.value
+                              );
+                              setForm((prev) => ({
+                                ...prev,
+                                category: Array.from(
+                                  new Set([...prev.category, ...selected])
+                                ),
+                              }));
+                            }}
+                            className="p-2.5 text-sm w-full border border-gray-300 rounded-xl appearance-none cursor-pointer"
+                          >
+                            <option value="" disabled selected>
+                              Choose category
+                            </option>
+                            {categories.map((cat, indx) => (
+                              <option value={cat.name} key={indx}>
+                                {cat.name}
+                              </option>
+                            ))}
+                          </select>
+                          {form.category.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {form.category.map((cat) => (
+                                <span
+                                  key={cat}
+                                  className="bg-violet-100 border border-violet-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
+                                >
+                                  {cat}
+                                  <button
+                                    type="button"
+                                    className="cursor-pointer hover:text-red-500 transition-colors"
+                                    onClick={() =>
+                                      setForm((prev) => ({
+                                        ...prev,
+                                        category: prev.category.filter((c) => c !== cat),
+                                      }))
+                                    }
+                                  >
+                                    <IoIosCloseCircle size={18} />
+                                  </button>
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
 
             <div>
               <label className="block text-sm font-medium mb-1">Location</label>

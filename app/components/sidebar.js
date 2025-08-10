@@ -381,20 +381,22 @@ const NavBar = ({ user, isOpen, setIsOpen, role }) => {
         <h1 className="text-xl font-semibold sm:block hidden">WAHID</h1>
       </div>
 
-      {user && (
-        <div className="flex flex-row gap-4 items-center">
-          <div className="text-right">
-            <p className="font-medium">{user.name}</p>
-            <p className="text-xs text-gray-500">{role}</p>
-          </div>
-          <button
-            onClick={() => signOut({ callbackUrl: "/login" })}
-            className="cursor-pointer hover:bg-red-200 rounded-full p-2.5 border border-gray-300 transition hover:border-red-300"
-          >
-            <LogOut size={16} />
-          </button>
-        </div>
-      )}
+     {user && (
+  <div className="flex flex-row gap-4 items-center">
+    <Link href="/profile" className="flex items-center gap-4 cursor-pointer">
+      <div className="text-right">
+        <p className="font-medium">{user.name}</p>
+        <p className="text-xs text-gray-500">{role}</p>
+      </div>
+    </Link>
+    <button
+      onClick={() => signOut({ callbackUrl: "/login" })}
+      className="cursor-pointer hover:bg-red-200 rounded-full p-2.5 border border-gray-300 transition hover:border-red-300"
+    >
+      <LogOut size={16} />
+    </button>
+  </div>
+)}
     </nav>
   );
 };

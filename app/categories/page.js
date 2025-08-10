@@ -1,30 +1,31 @@
 "use client"
 
-import { useEffect, useState } from 'react'
-import { Trash2 } from 'lucide-react'
-import { TbEdit } from 'react-icons/tb'
-import { FaCheck } from 'react-icons/fa6'
-import { FcCancel } from "react-icons/fc";
+import { useEffect, useState } from "react"
+import { Trash2 } from "lucide-react"
+import { TbEdit } from "react-icons/tb"
+import { FaPlus, FaCheck } from "react-icons/fa6"
+import { FcCancel } from "react-icons/fc"
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState([])
-  const [editingId, setEditingId] = useState(null)
-  const [editData, setEditData] = useState({ name: '', description: '' })
-  const [newCategory, setNewCategory] = useState({ name: '', description: '' })
-  const [adding, setAdding] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
+
+  const [modalOpen, setModalOpen] = useState(false)
+  const [modalType, setModalType] = useState("add") // "add" | "edit"
+  const [formData, setFormData] = useState({ name: "", description: "" })
+  const [editId, setEditId] = useState(null)
+  const [saving, setSaving] = useState(false)
 
   async function fetchCategories() {
     try {
-      setLoading(true);
-
-      const res = await fetch('/api/categories')
+      setLoading(true)
+      const res = await fetch("/api/categories")
       const data = await res.json()
       setCategories(data)
     } catch (error) {
-      setLoading(false)
+      console.error(error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
@@ -33,157 +34,140 @@ export default function CategoriesPage() {
   }, [])
 
   async function handleDelete(id) {
-    if (!confirm('Delete this category?')) return
-    await fetch(`/api/categories/${id}`, { method: 'DELETE' })
+    if (!confirm("Delete this category?")) return
+    await fetch(`/api/categories/${id}`, { method: "DELETE" })
     fetchCategories()
   }
 
-  function startEditing(cat) {
-    setEditingId(cat._id)
-    setEditData({ name: cat.name, description: cat.description || '' })
+  function openAddModal() {
+    setFormData({ name: "", description: "" })
+    setModalType("add")
+    setModalOpen(true)
   }
 
-  async function saveEdit(id) {
-    await fetch(`/api/categories/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(editData),
-    })
-    setEditingId(null)
-    setEditData({ name: '', description: '' })
-    fetchCategories()
+  function openEditModal(cat) {
+    setFormData({ name: cat.name, description: cat.description || "" })
+    setEditId(cat._id)
+    setModalType("edit")
+    setModalOpen(true)
   }
 
-  async function handleAdd(e) {
+  async function handleSave(e) {
     e.preventDefault()
-    setAdding(true)
-    await fetch('/api/categories', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newCategory)
-    })
-    setNewCategory({ name: '', description: '' })
-    setAdding(false)
+    setSaving(true)
+
+    if (modalType === "add") {
+      await fetch("/api/categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
+    } else if (modalType === "edit" && editId) {
+      await fetch(`/api/categories/${editId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
+    }
+
+    setSaving(false)
+    setModalOpen(false)
     fetchCategories()
   }
 
   return (
-    <div className="p-6 bg-white rounded-2xl min-h-full w-full">
+    <div className="p-6 bg-white rounded-2xl min-h-screen w-full">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-xl sm:text-2xl font-bold">Categories</h1>
+        <button
+          onClick={openAddModal}
+          className="flex items-center gap-2 px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl"
+        >
+          <FaPlus />
+          Add Category
+        </button>
       </div>
 
-      {loading ?
+      {loading ? (
         <div className="text-center py-10 text-gray-500">Loading...</div>
-        : <div className="grid md:grid-cols-3 grid-cols-1 gap-4 w-full">
+      ) : (
+        <div className="grid md:grid-cols-3 grid-cols-1 gap-4 w-full">
           {categories.map((cat) => (
             <div
               key={cat._id}
-              className="flex justify-between items-end bg-violet-50 border-2 border-violet-300 p-3 rounded-xl"
+              className="flex justify-between items-start bg-violet-50 border-2 border-violet-300 p-3 rounded-xl"
             >
-              <div className="w-full">
-                {editingId === cat._id ? (
-                  <>
-                    <input
-                      value={editData.name}
-                      onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                      className="w-full mb-2 p-2 rounded-lg border border-gray-300"
-                    />
-                    <input
-                      value={editData.description}
-                      onChange={(e) => setEditData({ ...editData, description: e.target.value })}
-                      className="w-full p-2 rounded-lg border border-gray-300"
-                    />
-                  </>
-                ) : (
-                  <>
-                    <h2 className="font-semibold text-lg">{cat.name}</h2>
-                    <p className="text-sm text-gray-500">{cat.description}</p>
-                  </>
-                )}
+              <div>
+                <h2 className="font-semibold text-lg">{cat.name}</h2>
+                <p className="text-sm text-gray-500">{cat.description}</p>
               </div>
 
               <div className="space-x-2 ml-4 flex-shrink-0">
-                {editingId === cat._id ? (
-                  <>
-                    <button
-                      onClick={() => saveEdit(cat._id)}
-                      className="text-green-600 hover:bg-green-200 rounded-3xl p-2 cursor-pointer transition"
-                      title="Save"
-                    >
-                      <FaCheck size={20} />
-                    </button>
-                    <button
-                      onClick={() => setEditingId("")}
-                      className="text-red-600 hover:bg-red-200 rounded-3xl p-2 cursor-pointer transition"
-                      title="Cancel"
-                    >
-                      <FcCancel size={20} />
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => startEditing(cat)}
-                      className="text-violet-600 hover:bg-violet-200 rounded-3xl p-2 cursor-pointer transition"
-                      title="Edit"
-                    >
-                      <TbEdit size={20} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(cat._id)}
-                      className="text-red-600 hover:bg-red-200 rounded-3xl p-2 cursor-pointer transition"
-                      title="Delete"
-                    >
-                      <Trash2 size={20} />
-                    </button>
-                  </>
-                )}
+                <button
+                  onClick={() => openEditModal(cat)}
+                  className="text-violet-600 hover:bg-violet-200 rounded-3xl p-2 transition"
+                  title="Edit"
+                >
+                  <TbEdit size={20} />
+                </button>
+                <button
+                  onClick={() => handleDelete(cat._id)}
+                  className="text-red-600 hover:bg-red-200 rounded-3xl p-2 transition"
+                  title="Delete"
+                >
+                  <Trash2 size={20} />
+                </button>
               </div>
             </div>
-          ))
-          }
+          ))}
         </div>
-      }
+      )}
 
-      {/* Add Category Form */}
-      <div className="bg-white border border-gray-300 rounded-xl p-6 w-full">
-        <h2 className="font-semibold text-lg mb-4">Add Category</h2>
-
-        <form onSubmit={handleAdd} className="flex flex-col gap-y-4">
-          <div className="grid grid-cols-2 gap-4 w-full">
-            <div className="col-span-2">
-              <label className="block text-sm font-medium mb-1">Name</label>
-              <input
-                name="name"
-                value={newCategory.name}
-                onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
-                required
-                className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
-              />
-            </div>
-            <div className="col-span-2">
-              <label className="block text-sm font-medium mb-1">Description</label>
-              <textarea
-                name="description"
-                value={newCategory.description}
-                onChange={(e) => setNewCategory({ ...newCategory, description: e.target.value })}
-                className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
-              />
-            </div>
+      {/* Modal */}
+      {modalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-white/30 z-50">
+          <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
+            <h2 className="text-xl font-bold mb-4">
+              {modalType === "add" ? "Add Category" : "Edit Category"}
+            </h2>
+            <form onSubmit={handleSave} className="flex flex-col gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Name</label>
+                <input
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  required
+                  className="p-2.5 w-full border border-gray-300 rounded-xl"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Description</label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="p-2.5 w-full border border-gray-300 rounded-xl"
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setModalOpen(false)}
+                  className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg"
+                >
+                  {saving ? "Saving..." : "Save"}
+                </button>
+              </div>
+            </form>
           </div>
-
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              disabled={adding}
-              className="px-10 py-2 font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white text-sm rounded-xl"
-            >
-              {adding ? 'Adding...' : 'Add'}
-            </button>
-          </div>
-        </form>
-      </div>
+        </div>
+      )}
     </div>
   )
 }
