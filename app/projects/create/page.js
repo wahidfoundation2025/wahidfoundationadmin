@@ -236,6 +236,7 @@ export default function CreateProjectPage() {
               <input
                 name="totalRequired"
                 type="number"
+                min="0"
                 placeholder="Enter required amount"
                 onChange={handleChange}
                 className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
@@ -248,6 +249,7 @@ export default function CreateProjectPage() {
               <input
                 name="collected"
                 type="number"
+                min="0"
                 placeholder="Amount collected so far"
                 onChange={handleChange}
                 className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
@@ -259,6 +261,7 @@ export default function CreateProjectPage() {
               </label>
               <input
                 name="beneficiaries"
+                min="0"
                 type="number"
                 placeholder="No. of beneficiaries"
                 onChange={handleChange}
@@ -272,6 +275,7 @@ export default function CreateProjectPage() {
               <input
                 name="completion"
                 type="number"
+                min="0"
                 placeholder="Completion percentage"
                 onChange={handleChange}
                 className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
@@ -284,6 +288,7 @@ export default function CreateProjectPage() {
               <input
                 name="daysLeft"
                 type="number"
+                min="0"
                 placeholder="Days left to complete"
                 onChange={handleChange}
                 className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
@@ -305,7 +310,7 @@ export default function CreateProjectPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium">Main Image</label>
+              <label className="block text-sm font-medium">Main Image (1440  X 750) or (1440 X 800)</label>
               <button
                 type="button"
                 onClick={() =>
@@ -335,7 +340,7 @@ export default function CreateProjectPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium">Photo Gallery</label>
+              <label className="block text-sm font-medium">Photo Gallery (450  X 350)</label>
               <button
                 type="button"
                 onClick={() => document.getElementById("galleryInput").click()}
@@ -379,15 +384,6 @@ export default function CreateProjectPage() {
                 className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Overview</label>
-              <textarea
-                name="overview"
-                placeholder="Enter detailed overview"
-                onChange={handleChange}
-                className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
-              />
-            </div>
             <h2 className="font-semibold text-sm">Project Manager</h2>
             <input
               name="projectManager.name"
@@ -422,35 +418,6 @@ export default function CreateProjectPage() {
                   <span>{option.type}</span>
                 </label>
               ))}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Minimum Donation Amount
-              </label>
-              <input
-                name="minDonationAmount"
-                type="number"
-                placeholder="Enter minimum amount"
-                onChange={handleChange}
-                className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Donation Frequency
-              </label>
-              <select
-                name="donationFrequency"
-                value={form.donationFrequency}
-                onChange={handleChange}
-                className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
-              >
-                <option>One Time</option>
-                <option>Monthly</option>
-                <option>Yearly</option>
-              </select>
             </div>
           </div>
         </div>
