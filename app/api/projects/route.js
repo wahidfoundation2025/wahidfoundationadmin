@@ -7,37 +7,41 @@ export async function GET(req) {
 
   const url = new URL(req.url);
   const search = url.searchParams.get("search") || "";
-  const status = url.searchParams.get("status");
+  const donationType = url.searchParams.get("donation_type"); // new filter
   const page = parseInt(url.searchParams.get("page") || "1");
   const limit = parseInt(url.searchParams.get("limit") || "10");
 
+  // Base query: must be Active
   const query = {
+    status: "Active",
     ...(search && { title: { $regex: search, $options: "i" } }),
-    ...(status && { status }),
+    ...(donationType && { "donationOptions.type": donationType }),
   };
 
   const [totalCount, activeCount, completedCount, projects] = await Promise.all([
     Project.countDocuments(query),
     Project.countDocuments({ status: "Active" }),
-    Project.countDocuments({ status: "Completed" }), // ✅ fix typo
+    Project.countDocuments({ status: "Completed" }),
     Project.find(query).skip((page - 1) * limit).limit(limit),
   ]);
 
-  return new Response(JSON.stringify({
-    projects,
-    totalPages: Math.ceil(totalCount / limit),
-    totalCount,
-    activeCount,
-    completedCount,
-  }), {
-    status: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Content-Type": "application/json",
-    },
-  });
+  return new Response(
+    JSON.stringify({
+      projects,
+      totalPages: Math.ceil(totalCount / limit),
+      totalCount,
+      activeCount,
+      completedCount,
+    }),
+    {
+      status: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+    }
+  );
 }
-
 // POST New Project
 export async function POST(req) {
   try {
