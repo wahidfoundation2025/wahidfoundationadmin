@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.42.0",
     "@clerk/nextjs": "^6.23.2",
     "@pdf-lib/fontkit": "^1.1.1",
     "axios": "^1.10.0",
