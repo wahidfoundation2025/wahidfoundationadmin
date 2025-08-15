@@ -1,4 +1,6 @@
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { Pencil } from 'lucide-react';
 
 async function getProject(id) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/projects/${id}`, {
@@ -15,7 +17,16 @@ export default async function ProjectDetailPage({ params }) {
 
   return (
     <div className="min-h-full w-full bg-white p-6 rounded-2xl">
-      <h1 className="text-3xl font-bold mb-8">{project.title}</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">{project.title}</h1>
+        <Link
+          href={`/projects/${params.id}/edit`}
+          className="p-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl flex items-center gap-2"
+        >
+          <Pencil className="w-5 h-5" />
+          <span className="text-sm font-medium">Edit</span>
+        </Link>
+      </div>
 
       {/* Project Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
@@ -26,6 +37,7 @@ export default async function ProjectDetailPage({ params }) {
           <InfoRow label="Location" value={project.location || 'N/A'} />
           <InfoRow label="Total Required" value={`₹${project.totalRequired?.toLocaleString()}`} />
           <InfoRow label="Collected" value={`₹${project.collected?.toLocaleString()}`} />
+          <InfoRow label="Slug" value={project.slug || 'N/A'} />
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-300 p-6 space-y-3">
@@ -41,6 +53,12 @@ export default async function ProjectDetailPage({ params }) {
           <h2 className="text-lg font-semibold mb-2">Donation Info</h2>
           <InfoRow label="Min Donation Amount" value={`₹${project.minDonationAmount}`} />
           <InfoRow label="Donation Frequency" value={project.donationFrequency} />
+          <InfoRow
+            label="Donation Options"
+            value={project.donationOptions
+              ?.filter((opt) => opt.isEnabled)
+              .map((opt) => opt.type) || 'N/A'}
+          />
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-300 p-6 space-y-3">
@@ -101,24 +119,125 @@ export default async function ProjectDetailPage({ params }) {
           />
         </Section>
       )}
+
+      {/* OG Metadata */}
+      {project.og && (project.og.title || project.og.description || project.og.image || project.og.url) && (
+        <Section title="OG Metadata">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-300 p-6 space-y-3">
+            <InfoRow label="Title" value={project.og.title || 'N/A'} />
+            <InfoRow label="Description" value={project.og.description || 'N/A'} />
+            {project.og.image && (
+              <div>
+                <span className="block text-sm font-medium mb-1">Image:</span>
+                <img
+                  src={project.og.image}
+                  alt="OG Image"
+                  className="w-40 h-40 object-cover rounded-xl border border-gray-200"
+                />
+              </div>
+            )}
+            <InfoRow label="URL" value={project.og.url || 'N/A'} />
+          </div>
+        </Section>
+      )}
+
+      {/* Impact */}
+      {project.impact?.length > 0 && (
+        <Section title="Impact">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {project.impact.map((imp, idx) => (
+              <div key={idx} className="bg-white rounded-2xl shadow-sm border border-gray-300 p-6 space-y-3">
+                <div className="flex items-center gap-2">
+                  {imp.icon && (
+                    <img
+                      src={imp.icon}
+                      alt={`${imp.title} Icon`}
+                      className="w-8 h-8 object-cover rounded-full"
+                    />
+                  )}
+                  <h3 className="text-lg font-semibold">{imp.title}</h3>
+                </div>
+                <InfoRow label="Type" value={imp.type} />
+                <InfoRow label="Description" value={imp.description} />
+              </div>
+            ))}
+          </div>
+        </Section>
+      )}
+
+      {/* Schemes */}
+      {project.scheme?.length > 0 && (
+        <Section title="Schemes">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {project.scheme.map((sch, idx) => (
+              <div key={idx} className="bg-white rounded-2xl shadow-sm border border-gray-300 p-6 space-y-3">
+                <h3 className="text-lg font-semibold">{sch.name}</h3>
+                <InfoRow label="Description" value={sch.description || 'N/A'} />
+                <InfoRow
+                  label="Link"
+                  value={
+                    sch.link ? (
+                      <a href={sch.link} className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">
+                        {sch.link}
+                      </a>
+                    ) : (
+                      'N/A'
+                    )
+                  }
+                />
+              </div>
+            ))}
+          </div>
+        </Section>
+      )}
+
+      {/* Updates */}
+      {project.updates?.length > 0 && (
+        <Section title="Updates">
+          <div className="space-y-4">
+            {project.updates.map((upd, idx) => (
+              <div key={idx} className="bg-white rounded-2xl shadow-sm border border-gray-300 p-6 space-y-3">
+                <h3 className="text-lg font-semibold">{upd.version}</h3>
+                <InfoRow label="Date" value={new Date(upd.date).toLocaleDateString()} />
+                <InfoRow label="Content" value={upd.content} />
+              </div>
+            ))}
+          </div>
+        </Section>
+      )}
+
+      {/* SEO Metadata */}
+      {(project.metatitle || project.metadescription || project.target_keywords?.length > 0) && (
+        <Section title="SEO Metadata">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-300 p-6 space-y-3">
+            <InfoRow label="Meta Title" value={project.metatitle || 'N/A'} />
+            <InfoRow label="Meta Description" value={project.metadescription || 'N/A'} />
+            <InfoRow label="Target Keywords" value={project.target_keywords || 'N/A'} />
+          </div>
+        </Section>
+      )}
     </div>
   );
 }
 
 // Helper components
 function InfoRow({ label, value }) {
-  console.log(value)
   return (
     <div className="flex justify-between text-sm text-gray-700">
       <span className="font-medium">{label}:</span>
-
       <div>
-        {value.length > 0 && typeof value !== 'string'
-          ? value.map((val) => (
-            <span key={val}>{val}, </span>
+        {Array.isArray(value) && value.length > 0 ? (
+          value.map((val, idx) => (
+            <span key={idx}>
+              {val}
+              {idx < value.length - 1 ? ', ' : ''}
+            </span>
           ))
-          : <span>{value}</span>
-        }
+        ) : typeof value === 'string' || typeof value === 'number' ? (
+          <span>{value}</span>
+        ) : (
+          <span>{value || 'N/A'}</span>
+        )}
       </div>
     </div>
   );
