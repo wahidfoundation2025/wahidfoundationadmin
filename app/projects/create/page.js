@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { IoIosCloseCircle } from "react-icons/io";
+import Image from "next/image";
 
 export default function CreateProjectPage() {
   const router = useRouter();
@@ -63,7 +64,7 @@ export default function CreateProjectPage() {
   const [impactIconPreview, setImpactIconPreview] = useState("");
   const [categories, setCategories] = useState([]);
   const [newImpact, setNewImpact] = useState({ type: "Direct", title: "", description: "", icon: "" });
-  const [newScheme, setNewScheme] = useState({ name: "", description: "", link: "" });
+  const [newScheme, setNewScheme] = useState(`{ name: "", description: "", link: "" }`);
   const [newUpdate, setNewUpdate] = useState({ version: "", content: "", date: new Date().toISOString().split("T")[0] });
   const [newKeyword, setNewKeyword] = useState("");
 
@@ -211,6 +212,9 @@ export default function CreateProjectPage() {
     fetchCategories();
   }, []);
 
+  console.log(form.impact);
+
+
   return (
     <div className="min-h-full w-full bg-white p-4 sm:p-6 sm:rounded-2xl">
       <div className="flex justify-between items-center mb-6">
@@ -264,7 +268,7 @@ export default function CreateProjectPage() {
                 }}
                 className="p-2.5 text-sm w-full border border-gray-300 rounded-xl appearance-none cursor-pointer"
               >
-                <option value="" disabled selected>
+                <option value={""} disabled>
                   Choose category
                 </option>
                 {categories.map((cat, idx) => (
@@ -638,27 +642,38 @@ export default function CreateProjectPage() {
             {form.impact.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-2">
                 {form.impact.map((imp, idx) => (
-                  <span
+                  <div
                     key={idx}
-                    className="bg-violet-100 border border-violet-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
+                    className="flex-1 min-w-48  bg-violet-100 border border-violet-300 p-3 rounded-xl text-sm gap-2"
                   >
-                    {imp.title}
-                    <button
-                      type="button"
-                      className="cursor-pointer hover:text-red-500 transition-colors"
-                      onClick={() =>
-                        setForm((prev) => ({
-                          ...prev,
-                          impact: prev.impact.filter((_, i) => i !== idx),
-                        }))
-                      }
-                    >
-                      <IoIosCloseCircle size={18} />
-                    </button>
-                  </span>
+                    <div className="flex w-full flex-row gap-4 justify-between items-start">
+                      <span>
+                        {imp.type}
+                      </span>
+
+                      <button
+                        type="button"
+                        className="cursor-pointer hover:text-red-500 transition-colors"
+                        onClick={() =>
+                          setForm((prev) => ({
+                            ...prev,
+                            impact: prev.impact.filter((_, i) => i !== idx),
+                          }))
+                        }
+                      >
+                        <IoIosCloseCircle size={18} />
+                      </button>
+                    </div>
+
+                    <p className="font-semibold">{imp.title}</p>
+                    <p>{imp.description}</p>
+
+                    {imp.icon && <img src={imp.icon} className="w-fit object-contain h-20 rounded-xl mt-2" />}
+                  </div>
                 ))}
               </div>
             )}
+            {/*
             <h2 className="font-semibold text-sm">Schemes</h2>
             <input
               value={newScheme.name}
@@ -678,6 +693,21 @@ export default function CreateProjectPage() {
               placeholder="Scheme Link"
               className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
             />
+            */}
+
+            <div className="text-sm">
+              <label className="font-medium block mb-1">Schema Markup (JSON-LD)</label>
+              <textarea
+                className="border p-2 w-full rounded-xl border-gray-300 font-mono"
+                placeholder='{"name": "Name of Schema", "description": "Description for Schema", "link": "https://"}'
+                value={newScheme}
+                onChange={(e) => setNewScheme(e.target.value)}
+                rows={6}
+              />
+            </div>
+            <p className="text-sm p-3 rounded-xl bg-purple-100 border border-gray-300">{newScheme}</p>
+
+            {/*
             <button
               type="button"
               onClick={handleAddScheme}
@@ -685,30 +715,44 @@ export default function CreateProjectPage() {
             >
               Add Scheme
             </button>
-            {form.scheme.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
-                {form.scheme.map((sch, idx) => (
-                  <span
-                    key={idx}
-                    className="bg-violet-100 border border-violet-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
-                  >
-                    {sch.name}
-                    <button
-                      type="button"
-                      className="cursor-pointer hover:text-red-500 transition-colors"
-                      onClick={() =>
-                        setForm((prev) => ({
-                          ...prev,
-                          scheme: prev.scheme.filter((_, i) => i !== idx),
-                        }))
-                      }
-                    >
-                      <IoIosCloseCircle size={18} />
-                    </button>
-                  </span>
-                ))}
-              </div>
-            )}
+            */}
+
+            {
+              // form.scheme.length > 0 && (
+              //   <div className="flex flex-wrap gap-2 mt-2">
+              //     {form.scheme.map((sch, idx) => (
+              //       <span
+              //         key={idx}
+              //         className="flex-1 min-w-48 bg-violet-100 border border-violet-300 p-3 rounded-xl text-sm gap-2"
+              //       >
+              //         <div className="flex w-full flex-row gap-4 justify-between items-start">
+              //           <span className="font-semibold">
+              //             {sch.name}
+              //           </span>
+
+              //           <button
+              //             type="button"
+              //             className="cursor-pointer hover:text-red-500 transition-colors"
+              //             onClick={() =>
+              //               setForm((prev) => ({
+              //                 ...prev,
+              //                 scheme: prev.scheme.filter((_, i) => i !== idx),
+              //               }))
+              //             }
+              //           >
+              //             <IoIosCloseCircle size={18} />
+              //           </button>
+              //         </div>
+
+              //         <p>{sch.description}</p>
+
+              //         <p>{sch.link}</p>
+              //       </span>
+              //     ))}
+              //   </div>
+              // )
+            }
+
             <h2 className="font-semibold text-sm">Updates</h2>
             <input
               value={newUpdate.version}
@@ -738,24 +782,34 @@ export default function CreateProjectPage() {
             {form.updates.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-2">
                 {form.updates.map((upd, idx) => (
-                  <span
+                  <div
                     key={idx}
-                    className="bg-violet-100 border border-violet-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
+                    className="flex-1 min-w-48 bg-violet-100 border border-violet-300 p-3 rounded-xl text-sm gap-2"
                   >
-                    {upd.version}
-                    <button
-                      type="button"
-                      className="cursor-pointer hover:text-red-500 transition-colors"
-                      onClick={() =>
-                        setForm((prev) => ({
-                          ...prev,
-                          updates: prev.updates.filter((_, i) => i !== idx),
-                        }))
-                      }
-                    >
-                      <IoIosCloseCircle size={18} />
-                    </button>
-                  </span>
+                    <div className="flex w-full flex-row gap-4 justify-between items-start">
+
+                      <span className="font-semibold">
+                        {upd.version}
+                      </span>
+
+                      <button
+                        type="button"
+                        className="cursor-pointer hover:text-red-500 transition-colors"
+                        onClick={() =>
+                          setForm((prev) => ({
+                            ...prev,
+                            updates: prev.updates.filter((_, i) => i !== idx),
+                          }))
+                        }
+                      >
+                        <IoIosCloseCircle size={18} />
+                      </button>
+                    </div>
+
+                    <p>{upd.content}</p>
+
+                    <p>{upd.date}</p>
+                  </div>
                 ))}
               </div>
             )}
