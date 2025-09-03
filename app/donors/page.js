@@ -6,7 +6,7 @@ export default function DonorsPage() {
   const [donors, setDonors] = useState([])
   const [projects, setProjects] = useState([])
   const [donations, setDonations] = useState([])
-  const [clerkUsers, setClerkUsers] = useState([]) // 🆕 state for Clerk users
+  const [clerkUsers, setClerkUsers] = useState([]);
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const rowsPerPage = 5
@@ -31,15 +31,17 @@ export default function DonorsPage() {
       setDonors(donors)
       setProjects(projects)
       setDonations(donations)
-      setClerkUsers(clerkUsersData) // 🆕 store Clerk users
+      setClerkUsers(clerkUsersData)
+
       setLoading(false)
     }
     fetchAll()
   }, [])
 
-  const getProjectName = (id) => id
-  const getDonationAmount = (donor, pid) =>
-    donor.donations?.find((d) => d.projectId === pid)?.amount || 0
+  const getProjectName = (id) => {
+    const project = projects.find((p) => p._id === id);
+    return project ? project.title || project.name : id; // fallback if not found
+  };
 
   const totalPages = Math.ceil(donors.length / rowsPerPage)
   const paginatedDonors = donors.slice(
@@ -54,8 +56,8 @@ export default function DonorsPage() {
 
   return (
     <div className="min-h-full w-full bg-white p-6 rounded-2xl">
-      {/* ------------------- DONORS TABLE ------------------- */}
       <h1 className="text-xl sm:text-2xl font-bold mb-6">Donors</h1>
+
       <div className="bg-white border border-gray-300 rounded-xl shadow overflow-x-auto">
         <table className="w-full text-sm table-auto text-left">
           <thead className="bg-gray-200 text-gray-700 font-semibold border-b border-gray-300">
@@ -63,9 +65,8 @@ export default function DonorsPage() {
               {["Avatar", "Name", "Email", "Total Donated", "Total Projects", "Projects Donated"].map((title, idx) => (
                 <th
                   key={idx}
-                  className={`py-3 px-4 text-nowrap font-medium ${
-                    idx === 0 ? "rounded-tl-xl" : idx === 5 ? "rounded-tr-xl" : ""
-                  }`}
+                  className={`py-3 px-4 text-nowrap font-medium ${idx === 0 ? "rounded-tl-xl" : idx === 5 ? "rounded-tr-xl" : ""
+                    }`}
                 >
                   {title}
                 </th>
@@ -95,11 +96,11 @@ export default function DonorsPage() {
                   <td className="py-3 px-4">₹{donor.totalDonated}</td>
                   <td className="py-3 px-4">{donor.totalProjects}</td>
                   <td className="py-3 px-4">
-                    <ul className="list-disc pl-4">
+                    <ul>
                       {donor.projectsDonatedTo?.length > 0 ? (
                         donor.projectsDonatedTo.map((pid) => (
                           <li key={pid}>
-                            {getProjectName(pid)}: ₹{getDonationAmount(donor, pid)}
+                            {getProjectName(pid)}
                           </li>
                         ))
                       ) : (
@@ -147,9 +148,8 @@ export default function DonorsPage() {
               {["Profile", "Name", "Email", "Phone"].map((title, idx) => (
                 <th
                   key={idx}
-                  className={`py-3 px-4 text-nowrap font-medium ${
-                    idx === 0 ? "rounded-tl-xl" : idx === 3 ? "rounded-tr-xl" : ""
-                  }`}
+                  className={`py-3 px-4 text-nowrap font-medium ${idx === 0 ? "rounded-tl-xl" : idx === 3 ? "rounded-tr-xl" : ""
+                    }`}
                 >
                   {title}
                 </th>
@@ -157,24 +157,27 @@ export default function DonorsPage() {
             </tr>
           </thead>
           <tbody className="text-gray-800">
-            {clerkUsers.map((user) => (
-              <tr key={user.id} className="border-b border-gray-300 last:border-none">
-                <td className="py-3 px-4">
-                  <img
-                    src={user.image_url}
-                    alt={user.first_name}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                </td>
-                <td className="py-3 px-4">{`${user.first_name || ''} ${user.last_name || ''}`}</td>
-                <td className="py-3 px-4">
-                  {user.email_addresses?.[0]?.email_address || '—'}
-                </td>
-                <td className="py-3 px-4">
-                  {user.phone_numbers?.[0]?.phone_number || '—'}
-                </td>
-              </tr>
-            ))}
+            {!!clerkUsers.length
+              ? clerkUsers.map((user) => (
+                <tr key={user.id} className="border-b border-gray-300 last:border-none">
+                  <td className="py-3 px-4">
+                    <img
+                      src={user.image_url}
+                      alt={user.first_name}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  </td>
+                  <td className="py-3 px-4">{`${user.first_name || ''} ${user.last_name || ''}`}</td>
+                  <td className="py-3 px-4">
+                    {user.email_addresses?.[0]?.email_address || '—'}
+                  </td>
+                  <td className="py-3 px-4">
+                    {user.phone_numbers?.[0]?.phone_number || '—'}
+                  </td>
+                </tr>
+              )) : (
+                <p className="my-2 mx-4">Something Went Wrong!!</p>
+              )}
           </tbody>
         </table>
       </div>
