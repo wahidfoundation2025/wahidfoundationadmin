@@ -13,15 +13,16 @@ export default function EditProjectPage({ params }) {
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [uploadingMain, setUploadingMain] = useState(false);
+  const [uploadingCard, setUploadingCard] = useState(false);
   const [uploadingGallery, setUploadingGallery] = useState(false);
   const [uploadingOgImage, setUploadingOgImage] = useState(false);
-  const [uploadingImpactIcon, setUploadingImpactIcon] = useState(false);
   const [categories, setCategories] = useState([]);
   const [imagePreview, setImagePreview] = useState("");
+  const [cardPreview, setCardPreview] = useState("");
   const [galleryPreviews, setGalleryPreviews] = useState([]);
   const [ogImagePreview, setOgImagePreview] = useState("");
-  const [impactIconPreview, setImpactIconPreview] = useState("");
-  const [newImpact, setNewImpact] = useState({ type: "Direct", title: "", description: "", icon: "" });
+  const [newImpact, setNewImpact] = useState({ type: "Direct", title: "", description: "" });
+  const [newTimelineEvent, setNewTimelineEvent] = useState({ title: "", date: new Date().toISOString().split("T")[0], status: "Pending" });
   const [newScheme, setNewScheme] = useState({ name: "", description: "", link: "" });
   const [newUpdate, setNewUpdate] = useState({ version: "", content: "", date: new Date().toISOString().split("T")[0] });
   const [newKeyword, setNewKeyword] = useState("");
@@ -38,6 +39,7 @@ export default function EditProjectPage({ params }) {
     daysLeft: "",
     status: "Active",
     mainImage: "",
+    cardImage: "",
     photoGallery: [],
     youtubeIframe: "",
     overview: "",
@@ -63,6 +65,7 @@ export default function EditProjectPage({ params }) {
       url: "",
     },
     impact: [],
+    timeline: [],
     scheme: [],
     updates: [],
     slug: "",
@@ -105,10 +108,12 @@ export default function EditProjectPage({ params }) {
             : prev.donationOptions,
           impact: Array.isArray(data.impact) ? data.impact : [],
           scheme: Array.isArray(data.scheme) ? data.scheme : [],
+          timeline: Array.isArray(data.timeline) ? data.timeline: [],
           updates: Array.isArray(data.updates) ? data.updates : [],
           target_keywords: Array.isArray(data.target_keywords) ? data.target_keywords : [],
         }));
         setImagePreview(data.mainImage || "");
+        setCardPreview(data.cardImage || "");
         setGalleryPreviews(Array.isArray(data.photoGallery) ? data.photoGallery : []);
         setOgImagePreview(data.og?.image || "");
       } catch (err) {
@@ -173,7 +178,7 @@ export default function EditProjectPage({ params }) {
       if (type === "main") setUploadingMain(true);
       if (type === "gallery") setUploadingGallery(true);
       if (type === "ogImage") setUploadingOgImage(true);
-      if (type === "impactIcon") setUploadingImpactIcon(true);
+      if (type === "card") setUploadingCard(true);
 
       const uploadPromises = files.map(async (file) => {
         const formData = new FormData();
@@ -205,9 +210,9 @@ export default function EditProjectPage({ params }) {
           og: { ...prev.og, image: urls[0] || "" },
         }));
         setOgImagePreview(urls[0] || "");
-      } else if (type === "impactIcon") {
-        setNewImpact((prev) => ({ ...prev, icon: urls[0] || "" }));
-        setImpactIconPreview(urls[0] || "");
+      } else if (type === "card") {
+        setForm((prev) => ({ ...prev, cardImage: urls[0] || "" }));
+        setCardPreview(urls[0] || "");
       }
     } catch (err) {
       console.error(err);
@@ -216,7 +221,7 @@ export default function EditProjectPage({ params }) {
       if (type === "main") setUploadingMain(false);
       if (type === "gallery") setUploadingGallery(false);
       if (type === "ogImage") setUploadingOgImage(false);
-      if (type === "impactIcon") setUploadingImpactIcon(false);
+      if (type === "card") setUploadingCard(false);
     }
   };
 
@@ -243,6 +248,23 @@ export default function EditProjectPage({ params }) {
     setForm((prev) => ({
       ...prev,
       impact: (prev.impact || []).filter((_, i) => i !== index),
+    }));
+  };
+  
+  const handleAddTimelineEvent = () => {
+    if (newTimelineEvent.title && newTimelineEvent.date && newTimelineEvent.status) {
+      setForm((prev) => ({
+        ...prev,
+        timeline: [...(prev.timeline || []), newTimelineEvent],
+      }));
+      setNewImpact({ title: "", date: new Date().toISOString().split("T")[0], status: "Pending" });
+    }
+  };
+
+  const handleRemoveTimelineEvent = (index) => {
+    setForm((prev) => ({
+      ...prev,
+      timeline: (prev.timeline || []).filter((_, i) => i !== index),
     }));
   };
 
@@ -614,6 +636,34 @@ export default function EditProjectPage({ params }) {
               )}
             </div>
             <div className="space-y-2">
+              <label className="block text-sm font-medium">Card Image (1440 X 750) or (1440 X 800)</label>
+              <button
+                type="button"
+                onClick={() => document.getElementById("cardImageInput")?.click()}
+                className="cursor-pointer bg-gray-100 px-4 py-2 rounded-xl border border-gray-300 text-sm"
+              >
+                {uploadingCard ? (
+                  <Loader2 className="animate-spin w-4 h-4" />
+                ) : (
+                  "Upload Card Image"
+                )}
+              </button>
+              <input
+                id="cardImageInput"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => handleImageUpload(e, "card")}
+              />
+              {cardPreview && (
+                <img
+                  src={cardPreview}
+                  alt="Card image preview"
+                  className="w-40 h-40 object-cover rounded-xl border border-gray-200"
+                />
+              )}
+            </div>
+            <div className="space-y-2">
               <label className="block text-sm font-medium">Photo Gallery (450 X 350)</label>
               <button
                 type="button"
@@ -760,34 +810,6 @@ export default function EditProjectPage({ params }) {
               placeholder="Impact Description"
               className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
             />
-            <div className="space-y-2">
-              <label className="block text-sm font-medium">Impact Icon</label>
-              <button
-                type="button"
-                onClick={() => document.getElementById("impactIconInput")?.click()}
-                className="cursor-pointer bg-gray-100 px-4 py-2 rounded-xl border border-gray-300 text-sm"
-              >
-                {uploadingImpactIcon ? (
-                  <Loader2 className="animate-spin w-4 h-4" />
-                ) : (
-                  "Upload Impact Icon"
-                )}
-              </button>
-              <input
-                id="impactIconInput"
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => handleImageUpload(e, "impactIcon")}
-              />
-              {impactIconPreview && (
-                <img
-                  src={impactIconPreview}
-                  alt="Impact icon preview"
-                  className="w-24 h-24 object-cover rounded-xl border border-gray-200"
-                />
-              )}
-            </div>
             <button
               type="button"
               onClick={handleAddImpact}
@@ -859,6 +881,56 @@ export default function EditProjectPage({ params }) {
                 ))}
               </div>
             )}
+
+            <h2 className="font-semibold text-sm">Timeline Events</h2>
+            <input
+              value={newTimelineEvent.title || ""}
+              onChange={(e) => ((prev) => setNewTimelineEvent({ ...prev, title: e.target.value || "" }))}
+              placeholder="Event Title"
+              className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
+            />
+            <select
+              value={newTimelineEvent.status || "Pending"}
+              onChange={(e) => setNewTimelineEvent((prev) => ({ ...prev, status: e.target.value || "Pending" }))}
+              className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
+            >
+              <option value="Pending">Pending</option>
+              <option value="In-Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+            <input
+              value={newTimelineEvent.date || ""}
+              onChange={(e) => setNewTimelineEvent((prev) => ({ ...prev, date: e.target.value || "" }))}
+              type="date"
+              className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
+            />
+            <button
+              type="button"
+              onClick={handleAddTimelineEvent}
+              className="px-4 py-2 bg-violet-600 text-white rounded-xl"
+            >
+              Add Timeline Event
+            </button>
+            {(form.timeline || []).length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {(form.timeline || []).map((event, idx) => (
+                  <span
+                    key={idx}
+                    className="bg-violet-100 border border-violet-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
+                  >
+                    {event.title || "Untitled"}
+                    <button
+                      type="button"
+                      className="cursor-pointer hover:text-red-500 transition-colors"
+                      onClick={() => handleRemoveTimelineEvent(idx)}
+                    >
+                      <IoIosCloseCircle size={18} />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+
             <h2 className="font-semibold text-sm">Updates</h2>
             <input
               value={newUpdate.version || ""}
