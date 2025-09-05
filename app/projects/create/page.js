@@ -4,13 +4,17 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { IoIosCloseCircle } from "react-icons/io";
-import Image from "next/image";
+import { AiOutlineEdit } from "react-icons/ai";
+
+import dynamic from "next/dynamic";
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
+import "react-quill-new/dist/quill.snow.css";
 
 export default function CreateProjectPage() {
   const router = useRouter();
   const [form, setForm] = useState({
     title: "",
-    description: "",
+    description: {},
     category: [],
     location: "",
     totalRequired: "",
@@ -20,6 +24,7 @@ export default function CreateProjectPage() {
     daysLeft: "",
     status: "Active",
     mainImage: "",
+    cardImage: "",
     photoGallery: [],
     youtubeIframe: "",
     overview: "",
@@ -45,6 +50,7 @@ export default function CreateProjectPage() {
       url: "",
     },
     impact: [],
+    timeline: [],
     scheme: [],
     updates: [],
     slug: "",
@@ -54,19 +60,39 @@ export default function CreateProjectPage() {
   });
 
   const [uploadingMain, setUploadingMain] = useState(false);
+  const [uploadingCard, setUploadingCard] = useState(false);
   const [uploadingGallery, setUploadingGallery] = useState(false);
   const [uploadingOgImage, setUploadingOgImage] = useState(false);
-  const [uploadingImpactIcon, setUploadingImpactIcon] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState("");
+  const [cardPreview, setCardPreview] = useState("");
   const [galleryPreviews, setGalleryPreviews] = useState([]);
   const [ogImagePreview, setOgImagePreview] = useState("");
-  const [impactIconPreview, setImpactIconPreview] = useState("");
   const [categories, setCategories] = useState([]);
-  const [newImpact, setNewImpact] = useState({ type: "Direct", title: "", description: "", icon: "" });
-  const [newScheme, setNewScheme] = useState(`{ name: "", description: "", link: "" }`);
-  const [newUpdate, setNewUpdate] = useState({ version: "", content: "", date: new Date().toISOString().split("T")[0] });
+  const [newImpact, setNewImpact] = useState({
+    type: "Direct",
+    title: "",
+    description: "",
+  });
+  const [newTimelineEvent, setNewTimelineEvent] = useState({
+    title: "",
+    date: new Date().toISOString().split("T")[0],
+    status: "Pending",
+  });
+  const [newScheme, setNewScheme] = useState(
+    `{ name: "", description: "", link: "" }`
+  );
+  const [newUpdate, setNewUpdate] = useState({
+    version: "",
+    content: "",
+    date: new Date().toISOString().split("T")[0],
+  });
   const [newKeyword, setNewKeyword] = useState("");
+
+  const [editingImpactIndex, setEditingImpactIndex] = useState(null);
+  const [editingTimelineEventIndex, setEditingTimelineEventIndex] =
+    useState(null);
+  const [editingUpdateIndex, setEditingUpdateIndex] = useState(null);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -104,7 +130,7 @@ export default function CreateProjectPage() {
     if (type === "main") setUploadingMain(true);
     if (type === "gallery") setUploadingGallery(true);
     if (type === "ogImage") setUploadingOgImage(true);
-    if (type === "impactIcon") setUploadingImpactIcon(true);
+    if (type === "card") setUploadingCard(true);
 
     const uploadPromises = files.map(async (file) => {
       const formData = new FormData();
@@ -137,10 +163,10 @@ export default function CreateProjectPage() {
       }));
       setOgImagePreview(urls[0]);
       setUploadingOgImage(false);
-    } else if (type === "impactIcon") {
-      setNewImpact((prev) => ({ ...prev, icon: urls[0] }));
-      setImpactIconPreview(urls[0]);
-      setUploadingImpactIcon(false);
+    } else if (type === "card") {
+      setForm((prev) => ({ ...prev, cardImage: urls[0] }));
+      setCardPreview(urls[0]);
+      setUploadingCard(false);
     }
   };
 
@@ -150,9 +176,116 @@ export default function CreateProjectPage() {
         ...prev,
         impact: [...prev.impact, newImpact],
       }));
-      setNewImpact({ type: "Direct", title: "", description: "", icon: "" });
-      setImpactIconPreview("");
+      setNewImpact({ type: "Direct", title: "", description: "" });
     }
+  };
+
+  const handleEditImpact = (idx) => {
+    setEditingImpactIndex(idx);
+    setNewImpact(form.impact[idx]);
+  };
+
+  const handleSaveImpact = () => {
+    if (editingImpactIndex !== null) {
+      const updated = [...form.impact];
+      updated[editingImpactIndex] = newImpact;
+      setForm((prev) => ({ ...prev, impact: updated }));
+      setEditingImpactIndex(null);
+      setNewImpact({ type: "Direct", title: "", description: "" });
+    }
+  };
+
+  const handleCancelImpactEdit = () => {
+    setEditingImpactIndex(null);
+    setNewImpact({ type: "Direct", title: "", description: "" });
+  };
+
+  const handleAddTimelineEvent = () => {
+    if (
+      newTimelineEvent.title &&
+      newTimelineEvent.date &&
+      newTimelineEvent.status
+    ) {
+      setForm((prev) => ({
+        ...prev,
+        timeline: [...prev.timeline, newTimelineEvent],
+      }));
+      setNewTimelineEvent({
+        title: "",
+        date: new Date().toISOString().split("T")[0],
+        status: "Pending",
+      });
+    }
+  };
+
+  const handleEditTimelineEvent = (idx) => {
+    setEditingTimelineEventIndex(idx);
+    setNewTimelineEvent(form.timeline[idx]);
+  };
+
+  const handleSaveTimelineEvent = () => {
+    if (editingTimelineEventIndex !== null) {
+      const updated = [...form.timeline];
+      updated[editingTimelineEventIndex] = newTimelineEvent;
+      setForm((prev) => ({ ...prev, timeline: updated }));
+      setEditingTimelineEventIndex(null);
+      setNewTimelineEvent({
+        title: "",
+        date: new Date().toISOString().split("T")[0],
+        status: "Pending",
+      });
+    }
+  };
+
+  const handleCancelTimelineEventEdit = () => {
+    setEditingTimelineEventIndex(null);
+    setNewTimelineEvent({
+      title: "",
+      date: new Date().toISOString().split("T")[0],
+      status: "Pending",
+    });
+  };
+
+  const handleAddUpdate = () => {
+    if (newUpdate.version && newUpdate.content) {
+      setForm((prev) => ({
+        ...prev,
+        updates: [...prev.updates, newUpdate],
+      }));
+      setNewUpdate({
+        version: "",
+        content: "",
+        date: new Date().toISOString().split("T")[0],
+      });
+    }
+  };
+
+  const handleEditUpdate = (idx) => {
+    setEditingUpdateIndex(idx);
+    setNewUpdate(form.updates[idx]);
+  };
+
+  const handleSaveUpdate = () => {
+    if (editingUpdateIndex !== null) {
+      const updated = [...form.updates];
+      updated[editingUpdateIndex] = newUpdate;
+      setForm((prev) => ({ ...prev, updates: updated }));
+      setEditingUpdateIndex(null);
+      setNewUpdate({
+        version: "",
+        content: "",
+        date: new Date().toISOString().split("T")[0],
+      });
+    }
+  };
+
+  const handleCancelUpdateEdit = () => {
+    setEditingUpdateIndex(null);
+    setNewUpdate({
+      version: "",
+      content: "",
+      date: new Date().toISOString().split("T")[0],
+    });
   };
 
   const handleAddScheme = () => {
@@ -162,16 +295,6 @@ export default function CreateProjectPage() {
         scheme: [...prev.scheme, newScheme],
       }));
       setNewScheme({ name: "", description: "", link: "" });
-    }
-  };
-
-  const handleAddUpdate = () => {
-    if (newUpdate.version && newUpdate.content) {
-      setForm((prev) => ({
-        ...prev,
-        updates: [...prev.updates, newUpdate],
-      }));
-      setNewUpdate({ version: "", content: "", date: new Date().toISOString().split("T")[0] });
     }
   };
 
@@ -214,7 +337,6 @@ export default function CreateProjectPage() {
 
   console.log(form.impact);
 
-
   return (
     <div className="min-h-full w-full bg-white p-4 sm:p-6 sm:rounded-2xl">
       <div className="flex justify-between items-center mb-6">
@@ -242,13 +364,24 @@ export default function CreateProjectPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Description</label>
-              <textarea
-                name="description"
-                placeholder="Enter project description"
-                onChange={handleChange}
+              <label className="block text-sm font-medium mb-1">
+                Description
+              </label>
+              <ReactQuill
+                value={form.description || ""}
+                onChange={(val) =>
+                  handleChange({ target: { name: "description", value: val } })
+                }
                 className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
-                required
+                modules={{
+                  toolbar: [
+                    [{ header: [1, 2, 3, false] }],
+                    ["bold", "italic", "underline"],
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    ["link", "image"],
+                    ["clean"],
+                  ],
+                }}
               />
             </div>
             <div>
@@ -312,7 +445,9 @@ export default function CreateProjectPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Total Required</label>
+              <label className="block text-sm font-medium mb-1">
+                Total Required
+              </label>
               <input
                 name="totalRequired"
                 type="number"
@@ -323,7 +458,9 @@ export default function CreateProjectPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Collected</label>
+              <label className="block text-sm font-medium mb-1">
+                Collected
+              </label>
               <input
                 name="collected"
                 type="number"
@@ -334,7 +471,9 @@ export default function CreateProjectPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Beneficiaries</label>
+              <label className="block text-sm font-medium mb-1">
+                Beneficiaries
+              </label>
               <input
                 name="beneficiaries"
                 min="0"
@@ -345,7 +484,9 @@ export default function CreateProjectPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Completion %</label>
+              <label className="block text-sm font-medium mb-1">
+                Completion %
+              </label>
               <input
                 name="completion"
                 type="number"
@@ -356,7 +497,9 @@ export default function CreateProjectPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Days Left</label>
+              <label className="block text-sm font-medium mb-1">
+                Days Left
+              </label>
               <input
                 name="daysLeft"
                 type="number"
@@ -390,7 +533,9 @@ export default function CreateProjectPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Meta Title</label>
+              <label className="block text-sm font-medium mb-1">
+                Meta Title
+              </label>
               <input
                 name="metatitle"
                 placeholder="Enter meta title"
@@ -407,7 +552,9 @@ export default function CreateProjectPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Target Keywords</label>
+              <label className="block text-sm font-medium mb-1">
+                Target Keywords
+              </label>
               <div className="flex gap-2">
                 <input
                   value={newKeyword}
@@ -437,7 +584,9 @@ export default function CreateProjectPage() {
                         onClick={() =>
                           setForm((prev) => ({
                             ...prev,
-                            target_keywords: prev.target_keywords.filter((k) => k !== keyword),
+                            target_keywords: prev.target_keywords.filter(
+                              (k) => k !== keyword
+                            ),
                           }))
                         }
                       >
@@ -449,10 +598,14 @@ export default function CreateProjectPage() {
               )}
             </div>
             <div className="space-y-2">
-              <label className="block text-sm font-medium">Main Image (1440 X 750) or (1440 X 800)</label>
+              <label className="block text-sm font-medium">
+                Main Image (1440 X 750) or (1440 X 800)
+              </label>
               <button
                 type="button"
-                onClick={() => document.getElementById("mainImageInput").click()}
+                onClick={() =>
+                  document.getElementById("mainImageInput").click()
+                }
                 className="cursor-pointer bg-gray-100 px-4 py-2 rounded-xl border border-gray-300 text-sm"
               >
                 {uploadingMain ? (
@@ -476,7 +629,40 @@ export default function CreateProjectPage() {
               )}
             </div>
             <div className="space-y-2">
-              <label className="block text-sm font-medium">Photo Gallery (450 X 350)</label>
+              <label className="block text-sm font-medium">
+                Card Image (1440 X 750) or (1440 X 800)
+              </label>
+              <button
+                type="button"
+                onClick={() =>
+                  document.getElementById("cardImageInput").click()
+                }
+                className="cursor-pointer bg-gray-100 px-4 py-2 rounded-xl border border-gray-300 text-sm"
+              >
+                {uploadingCard ? (
+                  <Loader2 className="animate-spin w-4 h-4" />
+                ) : (
+                  "Upload Card Image"
+                )}
+              </button>
+              <input
+                id="cardImageInput"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => handleImageUpload(e, "card")}
+              />
+              {cardPreview && (
+                <img
+                  src={cardPreview}
+                  className="w-40 h-40 object-cover rounded-xl border border-gray-200"
+                />
+              )}
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">
+                Photo Gallery (450 X 350)
+              </label>
               <button
                 type="button"
                 onClick={() => document.getElementById("galleryInput").click()}
@@ -510,7 +696,9 @@ export default function CreateProjectPage() {
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-1">YouTube iframe embed</label>
+              <label className="block text-sm font-medium mb-1">
+                YouTube iframe embed
+              </label>
               <input
                 name="youtubeIframe"
                 placeholder="Paste YouTube iframe embed here"
@@ -586,7 +774,9 @@ export default function CreateProjectPage() {
             <h2 className="font-semibold text-sm">Impact</h2>
             <select
               value={newImpact.type}
-              onChange={(e) => setNewImpact((prev) => ({ ...prev, type: e.target.value }))}
+              onChange={(e) =>
+                setNewImpact((prev) => ({ ...prev, type: e.target.value }))
+              }
               className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
             >
               <option value="Direct">Direct</option>
@@ -595,43 +785,23 @@ export default function CreateProjectPage() {
             </select>
             <input
               value={newImpact.title}
-              onChange={(e) => setNewImpact((prev) => ({ ...prev, title: e.target.value }))}
+              onChange={(e) =>
+                setNewImpact((prev) => ({ ...prev, title: e.target.value }))
+              }
               placeholder="Impact Title"
               className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
             />
             <textarea
               value={newImpact.description}
-              onChange={(e) => setNewImpact((prev) => ({ ...prev, description: e.target.value }))}
+              onChange={(e) =>
+                setNewImpact((prev) => ({
+                  ...prev,
+                  description: e.target.value,
+                }))
+              }
               placeholder="Impact Description"
               className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
             />
-            <div className="space-y-2">
-              <label className="block text-sm font-medium">Impact Icon</label>
-              <button
-                type="button"
-                onClick={() => document.getElementById("impactIconInput").click()}
-                className="cursor-pointer bg-gray-100 px-4 py-2 rounded-xl border border-gray-300 text-sm"
-              >
-                {uploadingImpactIcon ? (
-                  <Loader2 className="animate-spin w-4 h-4" />
-                ) : (
-                  "Upload Impact Icon"
-                )}
-              </button>
-              <input
-                id="impactIconInput"
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => handleImageUpload(e, "impactIcon")}
-              />
-              {impactIconPreview && (
-                <img
-                  src={impactIconPreview}
-                  className="w-24 h-24 object-cover rounded-xl border border-gray-200"
-                />
-              )}
-            </div>
             <button
               type="button"
               onClick={handleAddImpact}
@@ -639,40 +809,110 @@ export default function CreateProjectPage() {
             >
               Add Impact
             </button>
-            {form.impact.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
-                {form.impact.map((imp, idx) => (
-                  <div
-                    key={idx}
-                    className="flex-1 min-w-48  bg-violet-100 border border-violet-300 p-3 rounded-xl text-sm gap-2"
-                  >
-                    <div className="flex w-full flex-row gap-4 justify-between items-start">
-                      <span>
-                        {imp.type}
-                      </span>
-
-                      <button
-                        type="button"
-                        className="cursor-pointer hover:text-red-500 transition-colors"
-                        onClick={() =>
-                          setForm((prev) => ({
-                            ...prev,
-                            impact: prev.impact.filter((_, i) => i !== idx),
-                          }))
+            {form.impact.map((imp, idx) => (
+              <div
+                key={idx}
+                className={` ${
+                  imp.type === "Direct"
+                    ? "bg-green-200"
+                    : imp.type === "Indirect"
+                    ? "bg-amber-100"
+                    : "bg-violet-100"
+                } p-3 rounded-xl`}
+              >
+                {editingImpactIndex === idx ? (
+                  <div className="space-y-2">
+                    <div className="flex flex-col space-y-2">
+                      <input
+                        type="text"
+                        value={newImpact.type}
+                        onChange={(e) =>
+                          setNewImpact({ ...newImpact, type: e.target.value })
                         }
-                      >
-                        <IoIosCloseCircle size={18} />
+                        className={` ${
+                          imp.type === "Direct"
+                            ? "border-green-300"
+                            : imp.type === "Indirect"
+                            ? "border-amber-300"
+                            : "border-violet-400"
+                        } p-2.5 w-full text-sm border rounded-xl`}
+                      />
+                      <input
+                        type="text"
+                        value={newImpact.title}
+                        onChange={(e) =>
+                          setNewImpact({ ...newImpact, title: e.target.value })
+                        }
+                        className={` ${
+                          imp.type === "Direct"
+                            ? "border-green-300"
+                            : imp.type === "Indirect"
+                            ? "border-amber-300"
+                            : "border-violet-400"
+                        } p-2.5 w-full text-sm border rounded-xl`}
+                      />
+                      <textarea
+                        value={newImpact.description}
+                        onChange={(e) =>
+                          setNewImpact({
+                            ...newImpact,
+                            description: e.target.value,
+                          })
+                        }
+                        className={` ${
+                          imp.type === "Direct"
+                            ? "border-green-300"
+                            : imp.type === "Indirect"
+                            ? "border-amber-300"
+                            : "border-violet-400"
+                        } p-2.5 w-full text-sm border rounded-xl`}
+                      />
+                    </div>
+                    <div className="flex gap-4 justify-end">
+                      <button onClick={handleCancelImpactEdit}>
+                        <span className="font-semibold cursor-pointer bg-red-300 px-2 py-1 rounded-sm">
+                          Cancel
+                        </span>
+                      </button>
+                      <button onClick={handleSaveImpact}>
+                        <span className="font-semibold cursor-pointer bg-violet-600 text-white px-2 py-1 rounded-sm">
+                          Save
+                        </span>
                       </button>
                     </div>
-
-                    <p className="font-semibold">{imp.title}</p>
-                    <p>{imp.description}</p>
-
-                    {imp.icon && <img src={imp.icon} className="w-fit object-contain h-20 rounded-xl mt-2" />}
                   </div>
-                ))}
+                ) : (
+                  <div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-700 font-semibold text-medium">
+                        {imp.type}
+                      </span>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleEditImpact(idx)}
+                          className="cursor-pointer"
+                        >
+                          <AiOutlineEdit size={18} />
+                        </button>
+                        <button
+                          onClick={() =>
+                            setForm((prev) => ({
+                              ...prev,
+                              impact: prev.impact.filter((_, i) => i !== idx),
+                            }))
+                          }
+                          className="cursor-pointer"
+                        >
+                          <IoIosCloseCircle size={18} />
+                        </button>
+                      </div>
+                    </div>
+                    <p className="font-bold text-lg">{imp.title}</p>
+                    <p className="text-sm">{imp.description}</p>
+                  </div>
+                )}
               </div>
-            )}
+            ))}
             {/*
             <h2 className="font-semibold text-sm">Schemes</h2>
             <input
@@ -696,7 +936,9 @@ export default function CreateProjectPage() {
             */}
 
             <div className="text-sm">
-              <label className="font-medium block mb-1">Schema Markup (JSON-LD)</label>
+              <label className="font-medium block mb-1">
+                Schema Markup (JSON-LD)
+              </label>
               <textarea
                 className="border p-2 w-full rounded-xl border-gray-300 font-mono"
                 placeholder='{"name": "Name of Schema", "description": "Description for Schema", "link": "https://"}'
@@ -705,7 +947,9 @@ export default function CreateProjectPage() {
                 rows={6}
               />
             </div>
-            <p className="text-sm p-3 rounded-xl bg-purple-100 border border-gray-300">{newScheme}</p>
+            <p className="text-sm p-3 rounded-xl bg-purple-100 border border-gray-300">
+              {newScheme}
+            </p>
 
             {/*
             <button
@@ -729,7 +973,6 @@ export default function CreateProjectPage() {
               //           <span className="font-semibold">
               //             {sch.name}
               //           </span>
-
               //           <button
               //             type="button"
               //             className="cursor-pointer hover:text-red-500 transition-colors"
@@ -743,9 +986,7 @@ export default function CreateProjectPage() {
               //             <IoIosCloseCircle size={18} />
               //           </button>
               //         </div>
-
               //         <p>{sch.description}</p>
-
               //         <p>{sch.link}</p>
               //       </span>
               //     ))}
@@ -753,22 +994,183 @@ export default function CreateProjectPage() {
               // )
             }
 
+            <h2 className="font-semibold text-sm">Timeline Events</h2>
+            <input
+              value={newTimelineEvent.title}
+              onChange={(e) =>
+                setNewTimelineEvent((prev) => ({
+                  ...prev,
+                  title: e.target.value,
+                }))
+              }
+              placeholder="Event Title"
+              className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
+            />
+            <select
+              value={newTimelineEvent.status}
+              onChange={(e) =>
+                setNewTimelineEvent((prev) => ({
+                  ...prev,
+                  status: e.target.value,
+                }))
+              }
+              className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
+            >
+              <option value="Pending">Pending</option>
+              <option value="In-Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+            <input
+              value={newUpdate.date}
+              onChange={(e) =>
+                setNewTimelineEvent((prev) => ({
+                  ...prev,
+                  date: e.target.value,
+                }))
+              }
+              type="date"
+              className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
+            />
+            <button
+              type="button"
+              onClick={handleAddTimelineEvent}
+              className="px-4 py-2 bg-violet-600 text-white rounded-xl"
+            >
+              Add Timeline Event
+            </button>
+            {form.timeline.map((event, idx) => (
+              <div
+                key={idx}
+                className={` ${
+                  event.status === "Completed"
+                    ? "bg-green-200"
+                    : event.status === "In-Progress"
+                    ? "bg-amber-100"
+                    : "bg-violet-100"
+                } p-3 rounded-xl`}
+              >
+                {editingTimelineEventIndex === idx ? (
+                  <div className="space-y-2">
+                    <div className="flex flex-col space-y-2">
+                      <input
+                        type="text"
+                        value={newTimelineEvent.status}
+                        onChange={(e) =>
+                          setNewTimelineEvent({
+                            ...newTimelineEvent,
+                            status: e.target.value,
+                          })
+                        }
+                        className={` ${
+                          event.status === "Completed"
+                            ? "border-green-300"
+                            : event.status === "In-Progress"
+                            ? "border-amber-300"
+                            : "border-violet-400"
+                        } p-2.5 w-full text-sm border rounded-xl`}
+                      />
+                      <input
+                        type="text"
+                        value={newTimelineEvent.title}
+                        onChange={(e) =>
+                          setNewTimelineEvent({
+                            ...newTimelineEvent,
+                            title: e.target.value,
+                          })
+                        }
+                        className={` ${
+                          event.status === "Completed"
+                            ? "border-green-300"
+                            : event.status === "In-Progress"
+                            ? "border-amber-300"
+                            : "border-violet-400"
+                        } p-2.5 w-full text-sm border rounded-xl`}
+                      />
+                      <input
+                        type="date"
+                        value={newTimelineEvent.date}
+                        onChange={(e) =>
+                          setNewTimelineEvent({
+                            ...newTimelineEvent,
+                            date: e.target.value,
+                          })
+                        }
+                        className={` ${
+                          event.status === "Completed"
+                            ? "border-green-300"
+                            : event.status === "In-Progress"
+                            ? "border-amber-300"
+                            : "border-violet-400"
+                        } p-2.5 w-full text-sm border rounded-xl`}
+                      />
+                    </div>
+                    <div className="flex gap-4 justify-end">
+                      <button onClick={handleCancelTimelineEventEdit}>
+                        <span className="font-semibold cursor-pointer bg-red-300 px-2 py-1 rounded-sm">
+                          Cancel
+                        </span>
+                      </button>
+                      <button onClick={handleSaveTimelineEvent}>
+                        <span className="font-semibold cursor-pointer bg-violet-600 text-white px-2 py-1 rounded-sm">
+                          Save
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-700 font-semibold text-medium">
+                        {event.status}
+                      </span>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleEditTimelineEvent(idx)}
+                          className="cursor-pointer"
+                        >
+                          <AiOutlineEdit size={18} />
+                        </button>
+                        <button
+                          onClick={() =>
+                            setForm((prev) => ({
+                              ...prev,
+                              timeline: prev.timeline.filter((_, i) => i !== idx),
+                            }))
+                          }
+                          className="cursor-pointer"
+                        >
+                          <IoIosCloseCircle size={18} />
+                        </button>
+                      </div>
+                    </div>
+                    <p className="font-bold text-lg">{event.title}</p>
+                    <p className="text-sm">{event.date}</p>
+                  </div>
+                )}
+              </div>
+            ))}
             <h2 className="font-semibold text-sm">Updates</h2>
             <input
               value={newUpdate.version}
-              onChange={(e) => setNewUpdate((prev) => ({ ...prev, version: e.target.value }))}
+              onChange={(e) =>
+                setNewUpdate((prev) => ({ ...prev, version: e.target.value }))
+              }
               placeholder="Update Version"
               className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
             />
             <textarea
               value={newUpdate.content}
-              onChange={(e) => setNewUpdate((prev) => ({ ...prev, content: e.target.value }))}
+              onChange={(e) =>
+                setNewUpdate((prev) => ({ ...prev, content: e.target.value }))
+              }
               placeholder="Update Content"
               className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
             />
             <input
               value={newUpdate.date}
-              onChange={(e) => setNewUpdate((prev) => ({ ...prev, date: e.target.value }))}
+              onChange={(e) =>
+                setNewUpdate((prev) => ({ ...prev, date: e.target.value }))
+              }
               type="date"
               className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
             />
@@ -779,40 +1181,92 @@ export default function CreateProjectPage() {
             >
               Add Update
             </button>
-            {form.updates.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
-                {form.updates.map((upd, idx) => (
-                  <div
-                    key={idx}
-                    className="flex-1 min-w-48 bg-violet-100 border border-violet-300 p-3 rounded-xl text-sm gap-2"
-                  >
-                    <div className="flex w-full flex-row gap-4 justify-between items-start">
-
-                      <span className="font-semibold">
-                        {upd.version}
-                      </span>
-
-                      <button
-                        type="button"
-                        className="cursor-pointer hover:text-red-500 transition-colors"
-                        onClick={() =>
-                          setForm((prev) => ({
-                            ...prev,
-                            updates: prev.updates.filter((_, i) => i !== idx),
-                          }))
+            {form.updates.map((upd, idx) => (
+              <div
+                key={idx}
+                className="p-3 rounded-xl bg-violet-100"
+              >
+                {editingUpdateIndex === idx ? (
+                  <div className="space-y-2">
+                    <div className="flex flex-col space-y-2">
+                      <input
+                        type="text"
+                        value={newUpdate.version}
+                        onChange={(e) =>
+                          setNewUpdate({
+                            ...newUpdate,
+                            version: e.target.value,
+                          })
                         }
-                      >
-                        <IoIosCloseCircle size={18} />
+                        className="p-2.5 w-full text-sm border border-gray-100 rounded-xl"
+                      />
+                      <textarea
+                        value={newUpdate.content}
+                        onChange={(e) =>
+                          setNewUpdate({
+                            ...newUpdate,
+                            content: e.target.value,
+                          })
+                        }
+                        className="p-2.5 w-full text-sm border border-gray-100 rounded-xl"
+                      />
+                      <input
+                        type="date"
+                        value={newUpdate.date}
+                        onChange={(e) =>
+                          setNewUpdate({
+                            ...newUpdate,
+                            date: e.target.value,
+                          })
+                        }
+                        className="p-2.5 w-full text-sm border border-gray-100 rounded-xl"
+                      />
+                    </div>
+                    <div className="flex gap-4 justify-end">
+                      <button onClick={handleCancelUpdateEdit}>
+                        <span className="font-semibold cursor-pointer bg-red-300 px-2 py-1 rounded-sm">
+                          Cancel
+                        </span>
+                      </button>
+                      <button onClick={handleSaveUpdate}>
+                        <span className="font-semibold cursor-pointer bg-violet-600 text-white px-2 py-1 rounded-sm">
+                          Save
+                        </span>
                       </button>
                     </div>
-
-                    <p>{upd.content}</p>
-
-                    <p>{upd.date}</p>
                   </div>
-                ))}
+                ) : (
+                  <div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-700 font-semibold text-medium">
+                        {upd.version}
+                      </span>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleEditUpdate(idx)}
+                          className="cursor-pointer"
+                        >
+                          <AiOutlineEdit size={18} />
+                        </button>
+                        <button
+                          onClick={() =>
+                            setForm((prev) => ({
+                              ...prev,
+                              updates: prev.updates.filter((_, i) => i !== idx),
+                            }))
+                          }
+                          className="cursor-pointer"
+                        >
+                          <IoIosCloseCircle size={18} />
+                        </button>
+                      </div>
+                    </div>
+                    <p className="font-bold text-lg">{upd.content}</p>
+                    <p className="text-sm">{upd.date}</p>
+                  </div>
+                )}
               </div>
-            )}
+            ))}
             <h2 className="font-semibold text-sm">Donation Options</h2>
             <div className="flex flex-wrap gap-4">
               {form.donationOptions.map((option, index) => (
