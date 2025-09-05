@@ -6,6 +6,10 @@ import { Loader2, Trash2 } from "lucide-react";
 import { IoIosCloseCircle } from "react-icons/io";
 import { AiOutlineEdit } from "react-icons/ai";
 
+import dynamic from "next/dynamic";
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
+import "react-quill-new/dist/quill.snow.css";
+
 export default function EditProjectPage({ params }) {
   const { id } = use(params) || {};
   const router = useRouter();
@@ -521,13 +525,21 @@ export default function EditProjectPage({ params }) {
               <label className="block text-sm font-medium mb-1">
                 Description
               </label>
-              <textarea
-                name="description"
+              <ReactQuill
                 value={form.description || ""}
-                onChange={handleChange}
-                placeholder="Enter project description"
+                onChange={(val) =>
+                  handleChange({ target: { name: "description", value: val } })
+                }
                 className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
-                required
+                modules={{
+                  toolbar: [
+                    [{ header: [1, 2, 3, false] }],
+                    ["bold", "italic", "underline"],
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    ["link", "image"],
+                    ["clean"],
+                  ],
+                }}
               />
             </div>
             <div>
