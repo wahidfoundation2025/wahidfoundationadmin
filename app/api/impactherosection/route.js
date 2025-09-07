@@ -1,5 +1,5 @@
 import { dbConnect } from '../../../lib/dbConnect'
-import HomeHeroSection from '../../../lib/models/homeherosection'
+import ImpactHeroSection from '@/lib/models/impactherosection'
 import { NextResponse } from 'next/server'
 
 // CORS preflight handler
@@ -7,8 +7,8 @@ export async function OPTIONS() {
   return new NextResponse(null, {
     status: 204,
     headers: {
-      'Access-Control-Allow-Origin': 'https://www.wahid.org.in',
-      'Access-Control-Allow-Methods': 'GET',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET,POST,DELETE,OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type,Authorization',
     },
   })
@@ -17,10 +17,10 @@ export async function OPTIONS() {
 // GET the single hero section (singleton)
 export async function GET() {
   await dbConnect()
-  const data = await HomeHeroSection.findOne({})
+  const data = await ImpactHeroSection.findOne({})
   return NextResponse.json(data, {
     headers: {
-      'Access-Control-Allow-Origin': 'https://www.wahid.org.in',
+      'Access-Control-Allow-Origin': '*',
     },
   })
 }
@@ -29,19 +29,11 @@ export async function GET() {
 export async function POST(req) {
   await dbConnect()
   const body = await req.json()
-
-  // Remove 'history' if present in body to avoid conflict
-  const { history, ...updateData } = body
-
-  const updated = await HomeHeroSection.findOneAndUpdate(
-    {},
-    updateData, // no 'history' here
-    { new: true, upsert: true }
-  )
-
+  // Upsert: update if exists, else create
+  const updated = await ImpactHeroSection.findOneAndUpdate({}, body, { new: true, upsert: true })
   return NextResponse.json(updated, {
     headers: {
-      'Access-Control-Allow-Origin': 'https://www.wahid.org.in',
+      'Access-Control-Allow-Origin': '*',
     },
   })
 }
@@ -49,10 +41,10 @@ export async function POST(req) {
 // DELETE the single hero section
 export async function DELETE() {
   await dbConnect()
-  await HomeHeroSection.deleteMany({})
+  await ImpactHeroSection.deleteMany({})
   return NextResponse.json({ success: true }, {
     headers: {
-      'Access-Control-Allow-Origin': 'https://www.wahid.org.in',
+      'Access-Control-Allow-Origin': '*',
     },
   })
 }

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react"
 import { Calendar, Users, Heart } from "lucide-react"
 import { TbEdit, TbTrash } from "react-icons/tb";
+import { useSession } from "next-auth/react";
 
 const ICON_MAP = {
   Calendar: <Calendar size={24} className="inline-block align-middle mr-1" />,
@@ -10,6 +11,8 @@ const ICON_MAP = {
 }
 
 export default function HomeHeroSectionEditor() {
+  const { data: session } = useSession();
+   const userEmail = session?.user?.email;
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [edit, setEdit] = useState(false)
@@ -83,7 +86,7 @@ export default function HomeHeroSectionEditor() {
     const res = await fetch("/api/homeherosection", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, lastUpdatedBy: userEmail }),
     })
     const updated = await res.json()
     setData(updated)
