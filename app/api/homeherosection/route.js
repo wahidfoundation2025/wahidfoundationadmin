@@ -7,8 +7,8 @@ export async function OPTIONS() {
   return new NextResponse(null, {
     status: 204,
     headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET,POST,DELETE,OPTIONS',
+      'Access-Control-Allow-Origin': 'https://www.wahid.org.in',
+      'Access-Control-Allow-Methods': 'GET',
       'Access-Control-Allow-Headers': 'Content-Type,Authorization',
     },
   })
@@ -20,7 +20,7 @@ export async function GET() {
   const data = await HomeHeroSection.findOne({})
   return NextResponse.json(data, {
     headers: {
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': 'https://www.wahid.org.in',
     },
   })
 }
@@ -29,11 +29,19 @@ export async function GET() {
 export async function POST(req) {
   await dbConnect()
   const body = await req.json()
-  // Upsert: update if exists, else create
-  const updated = await HomeHeroSection.findOneAndUpdate({}, body, { new: true, upsert: true })
+
+  // Remove 'history' if present in body to avoid conflict
+  const { history, ...updateData } = body
+
+  const updated = await HomeHeroSection.findOneAndUpdate(
+    {},
+    updateData, // no 'history' here
+    { new: true, upsert: true }
+  )
+
   return NextResponse.json(updated, {
     headers: {
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': 'https://www.wahid.org.in',
     },
   })
 }
@@ -44,7 +52,7 @@ export async function DELETE() {
   await HomeHeroSection.deleteMany({})
   return NextResponse.json({ success: true }, {
     headers: {
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': 'https://www.wahid.org.in',
     },
   })
 }
