@@ -1,11 +1,11 @@
-import { dbConnect } from '@/lib/dbConnect';
-import User from '@/lib/models/user';
-import Invite from '@/lib/models/invite';
+import { dbConnect } from "@/lib/dbConnect";
+import User from "@/lib/models/user";
+import Invite from "@/lib/models/invite";
 
 export const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET,PUT,DELETE,OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET,PUT,DELETE,OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
 // Handle preflight requests
@@ -25,7 +25,7 @@ export async function GET(_, { params }) {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return new Response(JSON.stringify({ message: 'User not found' }), {
+      return new Response(JSON.stringify({ message: "User not found" }), {
         status: 404,
         headers: corsHeaders,
       });
@@ -36,8 +36,8 @@ export async function GET(_, { params }) {
       headers: corsHeaders,
     });
   } catch (error) {
-    console.error('GET error:', error);
-    return new Response(JSON.stringify({ message: 'Failed to fetch user' }), {
+    console.error("GET error:", error);
+    return new Response(JSON.stringify({ message: "Failed to fetch user" }), {
       status: 500,
       headers: corsHeaders,
     });
@@ -52,14 +52,15 @@ export async function PUT(req, { params }) {
     const email = decodeURIComponent(params.email);
     const body = await req.json();
 
-    const updated = await User.findOneAndUpdate(
-      { email },
-      body,
-      { new: true }
-    );
+    // Remove 'history' if present in body to avoid conflict
+    const { history, ...updateData } = body;
+
+    const updated = await User.findOneAndUpdate({ email }, updateData, {
+      new: true,
+    });
 
     if (!updated) {
-      return new Response(JSON.stringify({ message: 'User not found' }), {
+      return new Response(JSON.stringify({ message: "User not found" }), {
         status: 404,
         headers: corsHeaders,
       });
@@ -70,8 +71,8 @@ export async function PUT(req, { params }) {
       headers: corsHeaders,
     });
   } catch (error) {
-    console.error('PUT error:', error);
-    return new Response(JSON.stringify({ message: 'Failed to update user' }), {
+    console.error("PUT error:", error);
+    return new Response(JSON.stringify({ message: "Failed to update user" }), {
       status: 500,
       headers: corsHeaders,
     });
@@ -89,25 +90,34 @@ export async function DELETE(_, { params }) {
     const deletedInvite = await Invite.findOneAndDelete({ email });
 
     if (!deletedUser && !deletedInvite) {
-      return new Response(JSON.stringify({ message: 'User not found in both collections' }), {
-        status: 404,
-        headers: corsHeaders,
-      });
+      return new Response(
+        JSON.stringify({ message: "User not found in both collections" }),
+        {
+          status: 404,
+          headers: corsHeaders,
+        }
+      );
     }
 
-    return new Response(JSON.stringify({
-      message: 'User and/or invite deleted successfully',
-      userDeleted: !!deletedUser,
-      inviteDeleted: !!deletedInvite,
-    }), {
-      status: 200,
-      headers: corsHeaders,
-    });
+    return new Response(
+      JSON.stringify({
+        message: "User and/or invite deleted successfully",
+        userDeleted: !!deletedUser,
+        inviteDeleted: !!deletedInvite,
+      }),
+      {
+        status: 200,
+        headers: corsHeaders,
+      }
+    );
   } catch (error) {
-    console.error('DELETE error:', error);
-    return new Response(JSON.stringify({ message: 'Failed to delete user/invite' }), {
-      status: 500,
-      headers: corsHeaders,
-    });
+    console.error("DELETE error:", error);
+    return new Response(
+      JSON.stringify({ message: "Failed to delete user/invite" }),
+      {
+        status: 500,
+        headers: corsHeaders,
+      }
+    );
   }
 }

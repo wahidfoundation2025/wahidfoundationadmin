@@ -1,51 +1,54 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
-import { IoIosCloseCircle } from 'react-icons/io';
+import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { IoIosCloseCircle } from "react-icons/io";
+import { useSession } from "next-auth/react";
 
-const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
-import 'react-quill-new/dist/quill.snow.css';
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
+import "react-quill-new/dist/quill.snow.css";
 
 export default function CreateBlogPage() {
   const [form, setForm] = useState({
-    title: '',
-    content: '',
-    imageUrl: '',
-    imageAlt: '',
-    youtubeUrl: '',
+    title: "",
+    content: "",
+    imageUrl: "",
+    imageAlt: "",
+    youtubeUrl: "",
     category: [],
-    authorName: '',
-    metaTitle: '',
-    metaDescription: '',
+    authorName: "",
+    metaTitle: "",
+    metaDescription: "",
     targetKeywords: [],
-    ogTitle: '',
-    ogDescription: '',
-    ogImage: '',
-    schemaMarkup: '',
+    ogTitle: "",
+    ogDescription: "",
+    ogImage: "",
+    schemaMarkup: "",
   });
   const [categories, setCategories] = useState([]);
-  const [keywordInput, setKeywordInput] = useState('');
+  const [keywordInput, setKeywordInput] = useState("");
 
   const router = useRouter();
+  const { data: session } = useSession();
+  const userEmail = session?.user?.email;
 
   async function handleImageUpload(e, field) {
     const file = e.target.files[0];
     if (!file) return;
 
     const data = new FormData();
-    data.append('file', file);
+    data.append("file", file);
 
-    const res = await fetch('/api/upload', {
-      method: 'POST',
+    const res = await fetch("/api/upload", {
+      method: "POST",
       body: data,
     });
 
     if (!res.ok) {
       const errorData = await res.json();
-      alert(errorData.error || 'Upload failed');
+      alert(errorData.error || "Upload failed");
       return;
     }
 
@@ -54,24 +57,27 @@ export default function CreateBlogPage() {
   }
 
   async function handleSubmit() {
-    console.log('Submitting form:', form);
+    console.log("Submitting form:", form);
     try {
-      await axios.post('/api/blogs', {
-...form,
-  categories: form.category,
-  imageUrl: form.imageUrl,
-  schemaMarkup: form.schemaMarkup ? JSON.parse(form.schemaMarkup) : undefined,
+      await axios.post("/api/blogs", {
+        ...form,
+        lastUpdatedBy: userEmail,
+        categories: form.category,
+        imageUrl: form.imageUrl,
+        schemaMarkup: form.schemaMarkup
+          ? JSON.parse(form.schemaMarkup)
+          : undefined,
       });
 
-      alert('Blog saved!');
-      router.push('/blogs');
+      alert("Blog saved!");
+      router.push("/blogs");
     } catch (error) {
-      alert("Couldn't Save Blog!",error);
+      alert("Couldn't Save Blog!", error);
     }
   }
 
   async function fetchCategories() {
-    const res = await fetch('/api/categories');
+    const res = await fetch("/api/categories");
     const data = await res.json();
     setCategories(data);
   }
@@ -81,12 +87,15 @@ export default function CreateBlogPage() {
   }, []);
 
   const handleAddKeyword = () => {
-    if (keywordInput.trim() && !form.targetKeywords.includes(keywordInput.trim())) {
+    if (
+      keywordInput.trim() &&
+      !form.targetKeywords.includes(keywordInput.trim())
+    ) {
       setForm((prev) => ({
         ...prev,
         targetKeywords: [...prev.targetKeywords, keywordInput.trim()],
       }));
-      setKeywordInput('');
+      setKeywordInput("");
     }
   };
 
@@ -110,7 +119,9 @@ export default function CreateBlogPage() {
             className="border p-2 w-full rounded-xl border-gray-300"
             placeholder="Title"
             value={form.title}
-            onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, title: e.target.value }))
+            }
           />
         </div>
         <div className="flex-1">
@@ -119,7 +130,9 @@ export default function CreateBlogPage() {
             className="border p-2 w-full rounded-xl border-gray-300"
             placeholder="YouTube URL"
             value={form.youtubeUrl}
-            onChange={(e) => setForm((prev) => ({ ...prev, youtubeUrl: e.target.value }))}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, youtubeUrl: e.target.value }))
+            }
           />
         </div>
       </div>
@@ -131,7 +144,9 @@ export default function CreateBlogPage() {
           className="border p-2 w-full rounded-xl border-gray-300"
           placeholder="Author Name"
           value={form.authorName}
-          onChange={(e) => setForm((prev) => ({ ...prev, authorName: e.target.value }))}
+          onChange={(e) =>
+            setForm((prev) => ({ ...prev, authorName: e.target.value }))
+          }
         />
       </div>
 
@@ -200,7 +215,7 @@ export default function CreateBlogPage() {
         )}
         <input
           type="file"
-          onChange={(e) => handleImageUpload(e, 'imageUrl')}
+          onChange={(e) => handleImageUpload(e, "imageUrl")}
           className="block w-full text-sm text-gray-700
             file:mr-4 file:py-2 file:px-4
             file:rounded-lg file:border-0
@@ -213,7 +228,9 @@ export default function CreateBlogPage() {
           className="border p-2 w-full rounded-xl border-gray-300"
           placeholder="Image Alt Text"
           value={form.imageAlt}
-          onChange={(e) => setForm((prev) => ({ ...prev, imageAlt: e.target.value }))}
+          onChange={(e) =>
+            setForm((prev) => ({ ...prev, imageAlt: e.target.value }))
+          }
         />
       </div>
 
@@ -227,7 +244,9 @@ export default function CreateBlogPage() {
               className="border p-2 w-full rounded-xl border-gray-300"
               placeholder="Meta Title"
               value={form.metaTitle}
-              onChange={(e) => setForm((prev) => ({ ...prev, metaTitle: e.target.value }))}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, metaTitle: e.target.value }))
+              }
             />
           </div>
           <div>
@@ -236,7 +255,12 @@ export default function CreateBlogPage() {
               className="border p-2 w-full rounded-xl border-gray-300"
               placeholder="Meta Description"
               value={form.metaDescription}
-              onChange={(e) => setForm((prev) => ({ ...prev, metaDescription: e.target.value }))}
+              onChange={(e) =>
+                setForm((prev) => ({
+                  ...prev,
+                  metaDescription: e.target.value,
+                }))
+              }
               rows={4}
             />
           </div>
@@ -249,7 +273,7 @@ export default function CreateBlogPage() {
                 value={keywordInput}
                 onChange={(e) => setKeywordInput(e.target.value)}
                 onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
+                  if (e.key === "Enter") {
                     e.preventDefault();
                     handleAddKeyword();
                   }
@@ -277,7 +301,9 @@ export default function CreateBlogPage() {
                       onClick={() =>
                         setForm((prev) => ({
                           ...prev,
-                          targetKeywords: prev.targetKeywords.filter((k) => k !== keyword),
+                          targetKeywords: prev.targetKeywords.filter(
+                            (k) => k !== keyword
+                          ),
                         }))
                       }
                     >
@@ -301,7 +327,9 @@ export default function CreateBlogPage() {
               className="border p-2 w-full rounded-xl border-gray-300"
               placeholder="OG Title"
               value={form.ogTitle}
-              onChange={(e) => setForm((prev) => ({ ...prev, ogTitle: e.target.value }))}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, ogTitle: e.target.value }))
+              }
             />
           </div>
           <div>
@@ -310,7 +338,9 @@ export default function CreateBlogPage() {
               className="border p-2 w-full rounded-xl border-gray-300"
               placeholder="OG Description"
               value={form.ogDescription}
-              onChange={(e) => setForm((prev) => ({ ...prev, ogDescription: e.target.value }))}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, ogDescription: e.target.value }))
+              }
               rows={4}
             />
           </div>
@@ -325,7 +355,7 @@ export default function CreateBlogPage() {
             )}
             <input
               type="file"
-              onChange={(e) => handleImageUpload(e, 'ogImage')}
+              onChange={(e) => handleImageUpload(e, "ogImage")}
               className="block w-full text-sm text-gray-700
                 file:mr-4 file:py-2 file:px-4
                 file:rounded-lg file:border-0
@@ -339,12 +369,16 @@ export default function CreateBlogPage() {
 
       {/* Schema Markup */}
       <div className="mb-6">
-        <label className="font-medium block mb-1">Schema Markup (JSON-LD)</label>
+        <label className="font-medium block mb-1">
+          Schema Markup (JSON-LD)
+        </label>
         <textarea
           className="border p-2 w-full rounded-xl border-gray-300 font-mono"
           placeholder='{"@context": "https://schema.org", "@type": "BlogPosting", ...}'
           value={form.schemaMarkup}
-          onChange={(e) => setForm((prev) => ({ ...prev, schemaMarkup: e.target.value }))}
+          onChange={(e) =>
+            setForm((prev) => ({ ...prev, schemaMarkup: e.target.value }))
+          }
           rows={6}
         />
       </div>
@@ -359,10 +393,10 @@ export default function CreateBlogPage() {
           modules={{
             toolbar: [
               [{ header: [1, 2, 3, false] }],
-              ['bold', 'italic', 'underline'],
-              [{ list: 'ordered' }, { list: 'bullet' }],
-              ['link', 'image'],
-              ['clean'],
+              ["bold", "italic", "underline"],
+              [{ list: "ordered" }, { list: "bullet" }],
+              ["link", "image"],
+              ["clean"],
             ],
           }}
         />

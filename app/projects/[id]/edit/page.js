@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, Trash2 } from "lucide-react";
 import { IoIosCloseCircle } from "react-icons/io";
 import { AiOutlineEdit } from "react-icons/ai";
+import { useSession } from "next-auth/react";
 
 import dynamic from "next/dynamic";
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
@@ -13,6 +14,9 @@ import "react-quill-new/dist/quill.snow.css";
 export default function EditProjectPage({ params }) {
   const { id } = use(params) || {};
   const router = useRouter();
+
+  const { data: session } = useSession();
+  const userEmail = session?.user?.email;
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -453,7 +457,7 @@ export default function EditProjectPage({ params }) {
       const res = await fetch(`/api/projects/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, lastUpdatedBy: userEmail  }),
       });
       if (!res.ok) throw new Error("Failed to update project");
       router.push(`/projects/${id}`);

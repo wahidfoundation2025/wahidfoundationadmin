@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { IoIosCloseCircle } from "react-icons/io";
 import { AiOutlineEdit } from "react-icons/ai";
+import { useSession } from "next-auth/react";
 
 import dynamic from "next/dynamic";
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
@@ -12,6 +13,9 @@ import "react-quill-new/dist/quill.snow.css";
 
 export default function CreateProjectPage() {
   const router = useRouter();
+  const { data: session } = useSession();
+  const userEmail = session?.user?.email;
+
   const [form, setForm] = useState({
     title: "",
     description: {},
@@ -313,7 +317,7 @@ export default function CreateProjectPage() {
     setSubmitting(true);
     const res = await fetch("/api/projects", {
       method: "POST",
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, lastUpdatedBy: userEmail }),
       headers: { "Content-Type": "application/json" },
     });
     setSubmitting(false);
@@ -1134,7 +1138,9 @@ export default function CreateProjectPage() {
                           onClick={() =>
                             setForm((prev) => ({
                               ...prev,
-                              timeline: prev.timeline.filter((_, i) => i !== idx),
+                              timeline: prev.timeline.filter(
+                                (_, i) => i !== idx
+                              ),
                             }))
                           }
                           className="cursor-pointer"
@@ -1182,10 +1188,7 @@ export default function CreateProjectPage() {
               Add Update
             </button>
             {form.updates.map((upd, idx) => (
-              <div
-                key={idx}
-                className="p-3 rounded-xl bg-violet-100"
-              >
+              <div key={idx} className="p-3 rounded-xl bg-violet-100">
                 {editingUpdateIndex === idx ? (
                   <div className="space-y-2">
                     <div className="flex flex-col space-y-2">

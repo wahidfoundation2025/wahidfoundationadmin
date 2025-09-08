@@ -1,46 +1,56 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { GraduationCap, Heart, Users, Calendar, Eye, Trash2 } from 'lucide-react'
+import { useEffect, useState } from "react";
+import {
+  GraduationCap,
+  Heart,
+  Users,
+  Calendar,
+  Eye,
+  Trash2,
+} from "lucide-react";
 
 const ICON_MAP = {
   GraduationCap: GraduationCap,
   Heart: Heart,
   Users: Users,
   Calendar: Calendar,
-}
+};
 
 export default function VolunteerPositionsPage() {
-  const [positions, setPositions] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [selected, setSelected] = useState(null)
-  const [deleting, setDeleting] = useState(null)
+  const [positions, setPositions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState(null);
+  const [deleting, setDeleting] = useState(null);
 
   useEffect(() => {
-    fetchPositions()
-  }, [])
+    fetchPositions();
+  }, []);
 
   async function fetchPositions() {
-    setLoading(true)
-    const res = await fetch('/api/volunteer-positions')
-    const data = await res.json()
-    setPositions(data)
-    setLoading(false)
+    setLoading(true);
+    const res = await fetch("/api/volunteer-positions");
+    const data = await res.json();
+    setPositions(data);
+    setLoading(false);
   }
 
   async function handleDelete(id) {
-    if (!window.confirm('Are you sure you want to delete this position?')) return
-    setDeleting(id)
-    await fetch(`/api/volunteer-positions?id=${id}`, { method: 'DELETE' })
-    setDeleting(null)
-    setPositions((prev) => prev.filter((pos) => pos._id !== id))
-    if (selected && selected._id === id) setSelected(null)
+    if (!window.confirm("Are you sure you want to delete this position?"))
+      return;
+    setDeleting(id);
+    await fetch(`/api/volunteer-positions?id=${id}`, { method: "DELETE" });
+    setDeleting(null);
+    setPositions((prev) => prev.filter((pos) => pos._id !== id));
+    if (selected && selected._id === id) setSelected(null);
   }
 
   return (
     <div className="min-h-screen w-full bg-gray-100 py-10 px-0">
       <div className="w-full px-0">
-        <h1 className="text-4xl font-extrabold mb-2 text-gray-900 text-center">Volunteer Positions</h1>
+        <h1 className="text-4xl font-extrabold mb-2 text-gray-900 text-center">
+          Volunteer Positions
+        </h1>
         <p className="text-lg text-gray-600 mb-8 text-center">
           Browse all available volunteer positions and view or delete them.
         </p>
@@ -58,7 +68,7 @@ export default function VolunteerPositionsPage() {
             <tbody>
               {positions.length > 0 &&
                 positions.map((pos) => {
-                  const Icon = ICON_MAP[pos.icon] || Users
+                  const Icon = ICON_MAP[pos.icon] || Users;
                   return (
                     <tr key={pos._id} className="border-b hover:bg-gray-50">
                       <td className="py-2 px-4 border text-center">
@@ -89,7 +99,7 @@ export default function VolunteerPositionsPage() {
                         </div>
                       </td>
                     </tr>
-                  )
+                  );
                 })}
             </tbody>
           </table>
@@ -109,25 +119,30 @@ export default function VolunteerPositionsPage() {
             </button>
             <div className="flex items-center gap-3 mb-4">
               {(() => {
-                const Icon = ICON_MAP[selected.icon] || Users
-                return <Icon className="w-8 h-8 text-gray-700" />
+                const Icon = ICON_MAP[selected.icon] || Users;
+                return <Icon className="w-8 h-8 text-gray-700" />;
               })()}
-              <h2 className="text-xl font-semibold text-gray-800">{selected.title}</h2>
+              <h2 className="text-xl font-semibold text-gray-800">
+                {selected.title}
+              </h2>
             </div>
             <div className="mb-2">
-              <span className="font-semibold text-gray-700">Commitment:</span> {selected.commitment}
+              <span className="font-semibold text-gray-700">Commitment:</span>{" "}
+              {selected.commitment}
             </div>
             <div className="mb-2">
               <span className="font-semibold text-gray-700">Description:</span>
               <div className="mt-1 text-gray-700">{selected.description}</div>
             </div>
             <div className="text-xs text-gray-400 mt-4">
-              Created: {selected.createdAt ? new Date(selected.createdAt).toLocaleString() : ''}
+              Created:{" "}
+              {selected.createdAt
+                ? new Date(selected.createdAt).toLocaleString()
+                : ""}
             </div>
           </div>
         </div>
-      )
-      }
-    </div >
-  )
+      )}
+    </div>
+  );
 }

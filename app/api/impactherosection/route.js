@@ -29,8 +29,12 @@ export async function GET() {
 export async function POST(req) {
   await dbConnect()
   const body = await req.json()
+
+  // Remove 'history' if present in body to avoid conflict
+  const { history, ...updateData } = body
+
   // Upsert: update if exists, else create
-  const updated = await ImpactHeroSection.findOneAndUpdate({}, body, { new: true, upsert: true })
+  const updated = await ImpactHeroSection.findOneAndUpdate({}, updateData, { new: true, upsert: true })
   return NextResponse.json(updated, {
     headers: {
       'Access-Control-Allow-Origin': '*',

@@ -25,9 +25,12 @@ export async function POST(req) {
   await dbConnect();
   const body = await req.json();
 
+  // Remove 'history' if present in body to avoid conflict
+  const { history, ...updateData } = body
+
   const updated = await ImpactCategoriesDoc.findOneAndUpdate(
     {},
-    body,
+    updateData,
     { new: true, upsert: true }
   );
 

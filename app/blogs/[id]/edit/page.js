@@ -1,25 +1,29 @@
 // app/blogs/[id]/edit/page.js
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import dynamic from 'next/dynamic';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 
 // rich text editor
-const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
-import 'react-quill-new/dist/quill.snow.css';
-import { IoIosCloseCircle } from 'react-icons/io';
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
+import "react-quill-new/dist/quill.snow.css";
+import { IoIosCloseCircle } from "react-icons/io";
 
 export default function EditBlogPage() {
   const params = useParams();
   const router = useRouter();
   const blogId = params.id;
 
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const { data: session } = useSession();
+  const userEmail = session?.user?.email;
+
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
-  const [youtubeUrl, setYoutubeUrl] = useState('');
+  const [youtubeUrl, setYoutubeUrl] = useState("");
 
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -31,8 +35,8 @@ export default function EditBlogPage() {
       setTitle(blog.title);
       setContent(blog.content);
       setImage(blog.imageUrl);
-      setYoutubeUrl(blog.youtubeUrl || '');
-      setSelectedCategories(blog.categories ?? [])
+      setYoutubeUrl(blog.youtubeUrl || "");
+      setSelectedCategories(blog.categories ?? []);
     }
     fetchBlog();
   }, [blogId]);
@@ -43,26 +47,26 @@ export default function EditBlogPage() {
     if (!file) return;
 
     const data = new FormData();
-    data.append('file', file);
+    data.append("file", file);
 
     try {
       // call your /api/upload route (which uploads to Cloudinary)
-      const res = await fetch('/api/upload', {
-        method: 'POST',
+      const res = await fetch("/api/upload", {
+        method: "POST",
         body: data,
       });
 
       if (!res.ok) {
         const errorData = await res.json();
-        alert(errorData.error || 'Upload failed');
+        alert(errorData.error || "Upload failed");
         return;
       }
 
       const uploaded = await res.json();
       setImage(uploaded.url); // ✅ update preview
     } catch (err) {
-      console.error('Upload failed', err);
-      alert('Upload failed');
+      console.error("Upload failed", err);
+      alert("Upload failed");
     }
   }
 
@@ -73,20 +77,21 @@ export default function EditBlogPage() {
       content,
       imageUrl: image,
       youtubeUrl,
-      categories: selectedCategories
+      categories: selectedCategories,
+      lastUpdatedBy: userEmail
     });
-    alert('Blog updated!');
-    router.push('/blogs');
+    alert("Blog updated!");
+    router.push("/blogs");
   }
 
   async function fetchCategories() {
-    const res = await fetch('/api/categories')
-    const data = await res.json()
-    setCategories(data)
+    const res = await fetch("/api/categories");
+    const data = await res.json();
+    setCategories(data);
   }
 
   useEffect(() => {
-    fetchCategories()
+    fetchCategories();
   }, []);
 
   return (
@@ -110,7 +115,7 @@ export default function EditBlogPage() {
             className="border p-2 w-full rounded-xl border-gray-300"
             placeholder="Title"
             value={title}
-            onChange={e => setTitle(e.target.value)}
+            onChange={(e) => setTitle(e.target.value)}
           />
         </div>
 
@@ -120,23 +125,29 @@ export default function EditBlogPage() {
             className="border p-2 w-full rounded-xl border-gray-300"
             placeholder="YouTube URL"
             value={youtubeUrl}
-            onChange={e => setYoutubeUrl(e.target.value)}
+            onChange={(e) => setYoutubeUrl(e.target.value)}
           />
         </div>
       </div>
 
-      <div className='mb-6 w-1/2'>
+      <div className="mb-6 w-1/2">
         <label className="block text-sm font-medium mb-1">Category</label>
         <select
           name="category"
           onChange={(e) => {
-            const selected = Array.from(e.target.selectedOptions).map(opt => opt.value);
-            setSelectedCategories(prev => ([...new Set([...prev, ...selected])]));
+            const selected = Array.from(e.target.selectedOptions).map(
+              (opt) => opt.value
+            );
+            setSelectedCategories((prev) => [
+              ...new Set([...prev, ...selected]),
+            ]);
           }}
           className="p-2.5 text-sm w-full border border-gray-300 rounded-xl appearance-none cursor-pointer"
         >
           {categories.map((cat, indx) => (
-            <option value={cat.name} key={indx}>{cat.name}</option>
+            <option value={cat.name} key={indx}>
+              {cat.name}
+            </option>
           ))}
         </select>
 
@@ -152,7 +163,9 @@ export default function EditBlogPage() {
                   type="button"
                   className="cursor-pointer hover:text-red-500 transition-colors"
                   onClick={() =>
-                    setSelectedCategories(prev => (prev.filter(c => c !== cat)))
+                    setSelectedCategories((prev) =>
+                      prev.filter((c) => c !== cat)
+                    )
                   }
                 >
                   <IoIosCloseCircle size={18} />
@@ -163,8 +176,8 @@ export default function EditBlogPage() {
         )}
       </div>
 
-      <div className='flex flex-col gap-2 mb-6'>
-        <label className='font-medium block mb-1'>Profile Photo</label>
+      <div className="flex flex-col gap-2 mb-6">
+        <label className="font-medium block mb-1">Profile Photo</label>
 
         {image && (
           <img
@@ -194,10 +207,10 @@ export default function EditBlogPage() {
         modules={{
           toolbar: [
             [{ header: [1, 2, 3, false] }],
-            ['bold', 'italic', 'underline'],
-            [{ list: 'ordered' }, { list: 'bullet' }],
-            ['link', 'image'],
-            ['clean'],
+            ["bold", "italic", "underline"],
+            [{ list: "ordered" }, { list: "bullet" }],
+            ["link", "image"],
+            ["clean"],
           ],
         }}
       />

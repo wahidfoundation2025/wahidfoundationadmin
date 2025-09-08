@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { TbEdit } from "react-icons/tb";
+import { useSession } from "next-auth/react";
 
 export default function ImpactHeroSectionEditor() {
   const [data, setData] = useState(null);
@@ -8,6 +9,9 @@ export default function ImpactHeroSectionEditor() {
   const [edit, setEdit] = useState(false);
   const [form, setForm] = useState({});
   const [saving, setSaving] = useState(false);
+
+  const { data: session } = useSession();
+  const userEmail = session?.user?.email;
 
   useEffect(() => {
     fetch("/api/impactherosection")
@@ -44,7 +48,7 @@ export default function ImpactHeroSectionEditor() {
     const res = await fetch("/api/impactherosection", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, lastUpdatedBy: userEmail }),
     });
     const updated = await res.json();
     setData(updated);

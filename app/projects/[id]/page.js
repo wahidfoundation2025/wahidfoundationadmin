@@ -216,7 +216,7 @@ export default async function ProjectDetailPage({ params }) {
           </div>
         </Section>
       )}
-      
+
       {/* Timeline */}
       {project.timeline?.length > 0 && (
         <Section title="Timeline Events">

@@ -23,7 +23,10 @@ export async function GET(_, { params }) {
 export async function PUT(req, { params }) {
   await dbConnect();
   const data = await req.json();
-  const updated = await Category.findByIdAndUpdate(params.id, data, { new: true });
+
+  // Remove 'history' if present in body to avoid conflict
+  const { history, ...updateData } = body
+  const updated = await Category.findByIdAndUpdate(params.id, updateData, { new: true });
   return NextResponse.json(updated, { headers: corsHeaders });
 }
 

@@ -1,78 +1,81 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Trash2 } from "lucide-react"
-import { TbEdit } from "react-icons/tb"
-import { FaPlus, FaCheck } from "react-icons/fa6"
-import { FcCancel } from "react-icons/fc"
+import { useEffect, useState } from "react";
+import { Trash2 } from "lucide-react";
+import { TbEdit } from "react-icons/tb";
+import { FaPlus, FaCheck } from "react-icons/fa6";
+import { FcCancel } from "react-icons/fc";
+import { useSession } from "next-auth/react";
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState([])
-  const [loading, setLoading] = useState(false)
+  const { data: session } = useSession();
+  const userEmail = session?.user?.email;
 
-  const [modalOpen, setModalOpen] = useState(false)
-  const [modalType, setModalType] = useState("add") // "add" | "edit"
-  const [formData, setFormData] = useState({ name: "", description: "" })
-  const [editId, setEditId] = useState(null)
-  const [saving, setSaving] = useState(false)
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState("add"); // "add" | "edit"
+  const [formData, setFormData] = useState({ name: "", description: "" });
+  const [editId, setEditId] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   async function fetchCategories() {
     try {
-      setLoading(true)
-      const res = await fetch("/api/categories")
-      const data = await res.json()
-      setCategories(data)
+      setLoading(true);
+      const res = await fetch("/api/categories");
+      const data = await res.json();
+      setCategories(data);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   useEffect(() => {
-    fetchCategories()
-  }, [])
+    fetchCategories();
+  }, []);
 
   async function handleDelete(id) {
-    if (!confirm("Delete this category?")) return
-    await fetch(`/api/categories/${id}`, { method: "DELETE" })
-    fetchCategories()
+    if (!confirm("Delete this category?")) return;
+    await fetch(`/api/categories/${id}`, { method: "DELETE" });
+    fetchCategories();
   }
 
   function openAddModal() {
-    setFormData({ name: "", description: "" })
-    setModalType("add")
-    setModalOpen(true)
+    setFormData({ name: "", description: "" });
+    setModalType("add");
+    setModalOpen(true);
   }
 
   function openEditModal(cat) {
-    setFormData({ name: cat.name, description: cat.description || "" })
-    setEditId(cat._id)
-    setModalType("edit")
-    setModalOpen(true)
+    setFormData({ name: cat.name, description: cat.description || "" });
+    setEditId(cat._id);
+    setModalType("edit");
+    setModalOpen(true);
   }
 
   async function handleSave(e) {
-    e.preventDefault()
-    setSaving(true)
+    e.preventDefault();
+    setSaving(true);
 
     if (modalType === "add") {
       await fetch("/api/categories", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      })
+        body: JSON.stringify({ ...formData, lastUpdatedBy: userEmail }),
+      });
     } else if (modalType === "edit" && editId) {
       await fetch(`/api/categories/${editId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
-      })
+      });
     }
 
-    setSaving(false)
-    setModalOpen(false)
-    fetchCategories()
+    setSaving(false);
+    setModalOpen(false);
+    fetchCategories();
   }
 
   return (
@@ -135,16 +138,22 @@ export default function CategoriesPage() {
                 <label className="block text-sm font-medium mb-1">Name</label>
                 <input
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   required
                   className="p-2.5 w-full border border-gray-300 rounded-xl"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Description</label>
+                <label className="block text-sm font-medium mb-1">
+                  Description
+                </label>
                 <textarea
                   value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, description: e.target.value })
+                  }
                   className="p-2.5 w-full border border-gray-300 rounded-xl"
                 />
               </div>
@@ -169,5 +178,5 @@ export default function CategoriesPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

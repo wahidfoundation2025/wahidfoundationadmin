@@ -79,8 +79,11 @@ export async function PUT(req, { params }) {
   await dbConnect();
   const body = await req.json();
 
+  // Remove 'history' if present in body to avoid conflict
+  const { history, ...updateData } = body
+
   try {
-    const donor = await Donor.findOneAndUpdate({ email }, body, { new: true });
+    const donor = await Donor.findOneAndUpdate({ email }, updateData, { new: true });
     if (!donor) {
       return new Response(JSON.stringify({ message: 'Donor not found' }), {
         status: 404,

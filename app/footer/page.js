@@ -1,9 +1,13 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { Loader2, Edit, Save, X, Plus, Trash } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { Loader2, Edit, Save, X, Plus, Trash } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 export default function FooterSettingsPage() {
+  const { data: session } = useSession();
+  const userEmail = session?.user?.email;
+
   const [footer, setFooter] = useState(null);
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(true);
@@ -12,9 +16,9 @@ export default function FooterSettingsPage() {
 
   // Fetch existing footer settings
   useEffect(() => {
-    fetch('/api/footer')
-      .then(res => res.json())
-      .then(data => {
+    fetch("/api/footer")
+      .then((res) => res.json())
+      .then((data) => {
         setFooter(data);
         setFormData(data);
         setLoading(false);
@@ -22,41 +26,41 @@ export default function FooterSettingsPage() {
   }, []);
 
   const handleFieldChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleNestedChange = (section, field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [section]: { ...prev[section], [field]: value }
+      [section]: { ...prev[section], [field]: value },
     }));
   };
 
   const handleArrayChange = (arrayName, index, field, value) => {
     const updatedArray = [...formData[arrayName]];
     updatedArray[index][field] = value;
-    setFormData(prev => ({ ...prev, [arrayName]: updatedArray }));
+    setFormData((prev) => ({ ...prev, [arrayName]: updatedArray }));
   };
 
   const addArrayItem = (arrayName) => {
-    const newItem = { label: '', path: '' };
-    setFormData(prev => ({
+    const newItem = { label: "", path: "" };
+    setFormData((prev) => ({
       ...prev,
-      [arrayName]: [...(prev[arrayName] || []), newItem]
+      [arrayName]: [...(prev[arrayName] || []), newItem],
     }));
   };
 
   const removeArrayItem = (arrayName, index) => {
     const updatedArray = formData[arrayName].filter((_, i) => i !== index);
-    setFormData(prev => ({ ...prev, [arrayName]: updatedArray }));
+    setFormData((prev) => ({ ...prev, [arrayName]: updatedArray }));
   };
 
   const handleSave = async () => {
     setSaving(true);
-    const res = await fetch('/api/footer', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
+    const res = await fetch("/api/footer", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...formData, lastUpdatedBy: userEmail }),
     });
     const updated = await res.json();
     setFooter(updated);
@@ -127,8 +131,8 @@ export default function FooterSettingsPage() {
               {editMode ? (
                 <input
                   type="text"
-                  value={formData.orgName || ''}
-                  onChange={e => handleFieldChange('orgName', e.target.value)}
+                  value={formData.orgName || ""}
+                  onChange={(e) => handleFieldChange("orgName", e.target.value)}
                   className="border border-gray-300 p-2 rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                   placeholder="Enter organization name"
                 />
@@ -154,8 +158,13 @@ export default function FooterSettingsPage() {
                       <input
                         type="text"
                         value={link.label}
-                        onChange={e =>
-                          handleArrayChange('quickLinks', i, 'label', e.target.value)
+                        onChange={(e) =>
+                          handleArrayChange(
+                            "quickLinks",
+                            i,
+                            "label",
+                            e.target.value
+                          )
                         }
                         placeholder="Link Label"
                         className="border border-gray-300 p-2 rounded-lg flex-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
@@ -163,14 +172,19 @@ export default function FooterSettingsPage() {
                       <input
                         type="text"
                         value={link.path}
-                        onChange={e =>
-                          handleArrayChange('quickLinks', i, 'path', e.target.value)
+                        onChange={(e) =>
+                          handleArrayChange(
+                            "quickLinks",
+                            i,
+                            "path",
+                            e.target.value
+                          )
                         }
                         placeholder="Link Path"
                         className="border border-gray-300 p-2 rounded-lg flex-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                       />
                       <button
-                        onClick={() => removeArrayItem('quickLinks', i)}
+                        onClick={() => removeArrayItem("quickLinks", i)}
                         className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition flex items-center"
                       >
                         <Trash size={16} />
@@ -178,14 +192,15 @@ export default function FooterSettingsPage() {
                     </>
                   ) : (
                     <p className="flex-1 text-gray-900 font-medium">
-                      {link.label} <span className="text-gray-400">→</span> {link.path}
+                      {link.label} <span className="text-gray-400">→</span>{" "}
+                      {link.path}
                     </p>
                   )}
                 </div>
               ))}
               {editMode && (
                 <button
-                  onClick={() => addArrayItem('quickLinks')}
+                  onClick={() => addArrayItem("quickLinks")}
                   className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition flex items-center gap-2 mt-3"
                 >
                   <Plus size={16} /> Add Quick Link
@@ -210,8 +225,13 @@ export default function FooterSettingsPage() {
                       <input
                         type="text"
                         value={link.label}
-                        onChange={e =>
-                          handleArrayChange('termsLinks', i, 'label', e.target.value)
+                        onChange={(e) =>
+                          handleArrayChange(
+                            "termsLinks",
+                            i,
+                            "label",
+                            e.target.value
+                          )
                         }
                         placeholder="Link Label"
                         className="border border-gray-300 p-2 rounded-lg flex-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
@@ -219,14 +239,19 @@ export default function FooterSettingsPage() {
                       <input
                         type="text"
                         value={link.path}
-                        onChange={e =>
-                          handleArrayChange('termsLinks', i, 'path', e.target.value)
+                        onChange={(e) =>
+                          handleArrayChange(
+                            "termsLinks",
+                            i,
+                            "path",
+                            e.target.value
+                          )
                         }
                         placeholder="Link Path"
                         className="border border-gray-300 p-2 rounded-lg flex-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                       />
                       <button
-                        onClick={() => removeArrayItem('termsLinks', i)}
+                        onClick={() => removeArrayItem("termsLinks", i)}
                         className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition flex items-center"
                       >
                         <Trash size={16} />
@@ -234,14 +259,15 @@ export default function FooterSettingsPage() {
                     </>
                   ) : (
                     <p className="flex-1 text-gray-900 font-medium">
-                      {link.label} <span className="text-gray-400">→</span> {link.path}
+                      {link.label} <span className="text-gray-400">→</span>{" "}
+                      {link.path}
                     </p>
                   )}
                 </div>
               ))}
               {editMode && (
                 <button
-                  onClick={() => addArrayItem('termsLinks')}
+                  onClick={() => addArrayItem("termsLinks")}
                   className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition flex items-center gap-2 mt-3"
                 >
                   <Plus size={16} /> Add Terms Link
@@ -259,17 +285,25 @@ export default function FooterSettingsPage() {
               <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
                 <input
                   type="text"
-                  value={formData.volunteering?.heading || ''}
-                  onChange={e =>
-                    handleNestedChange('volunteering', 'heading', e.target.value)
+                  value={formData.volunteering?.heading || ""}
+                  onChange={(e) =>
+                    handleNestedChange(
+                      "volunteering",
+                      "heading",
+                      e.target.value
+                    )
                   }
                   placeholder="Volunteering Heading"
                   className="border border-gray-300 p-2 rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                 />
                 <textarea
-                  value={formData.volunteering?.description || ''}
-                  onChange={e =>
-                    handleNestedChange('volunteering', 'description', e.target.value)
+                  value={formData.volunteering?.description || ""}
+                  onChange={(e) =>
+                    handleNestedChange(
+                      "volunteering",
+                      "description",
+                      e.target.value
+                    )
                   }
                   placeholder="Volunteering Description"
                   className="border border-gray-300 p-2 rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
@@ -277,18 +311,26 @@ export default function FooterSettingsPage() {
                 />
                 <input
                   type="text"
-                  value={formData.volunteering?.linkLabel || ''}
-                  onChange={e =>
-                    handleNestedChange('volunteering', 'linkLabel', e.target.value)
+                  value={formData.volunteering?.linkLabel || ""}
+                  onChange={(e) =>
+                    handleNestedChange(
+                      "volunteering",
+                      "linkLabel",
+                      e.target.value
+                    )
                   }
                   placeholder="Link Label"
                   className="border border-gray-300 p-2 rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                 />
                 <input
                   type="text"
-                  value={formData.volunteering?.linkPath || ''}
-                  onChange={e =>
-                    handleNestedChange('volunteering', 'linkPath', e.target.value)
+                  value={formData.volunteering?.linkPath || ""}
+                  onChange={(e) =>
+                    handleNestedChange(
+                      "volunteering",
+                      "linkPath",
+                      e.target.value
+                    )
                   }
                   placeholder="Link Path"
                   className="border border-gray-300 p-2 rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
@@ -296,11 +338,16 @@ export default function FooterSettingsPage() {
               </div>
             ) : (
               <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="font-bold text-gray-900">{footer.volunteering.heading}</p>
-                <p className="text-gray-600 mt-1">{footer.volunteering.description}</p>
+                <p className="font-bold text-gray-900">
+                  {footer.volunteering.heading}
+                </p>
+                <p className="text-gray-600 mt-1">
+                  {footer.volunteering.description}
+                </p>
                 <p className="text-gray-900 font-medium mt-1">
-                  {footer.volunteering.linkLabel}{' '}
-                  <span className="text-gray-400">→</span> {footer.volunteering.linkPath}
+                  {footer.volunteering.linkLabel}{" "}
+                  <span className="text-gray-400">→</span>{" "}
+                  {footer.volunteering.linkPath}
                 </p>
               </div>
             )}
@@ -324,12 +371,16 @@ export default function FooterSettingsPage() {
                     <input
                       type="text"
                       value={formData.socialLinks[key]}
-                      onChange={e => handleNestedChange('socialLinks', key, e.target.value)}
+                      onChange={(e) =>
+                        handleNestedChange("socialLinks", key, e.target.value)
+                      }
                       className="border border-gray-300 p-2 rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                       placeholder={`Enter ${key} URL`}
                     />
                   ) : (
-                    <p className="text-gray-900 font-medium">{footer.socialLinks[key]}</p>
+                    <p className="text-gray-900 font-medium">
+                      {footer.socialLinks[key]}
+                    </p>
                   )}
                 </div>
               ))}
@@ -345,13 +396,17 @@ export default function FooterSettingsPage() {
               {editMode ? (
                 <input
                   type="text"
-                  value={formData.copyrightText || ''}
-                  onChange={e => handleFieldChange('copyrightText', e.target.value)}
+                  value={formData.copyrightText || ""}
+                  onChange={(e) =>
+                    handleFieldChange("copyrightText", e.target.value)
+                  }
                   className="border border-gray-300 p-2 rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                   placeholder="Enter copyright text"
                 />
               ) : (
-                <p className="text-gray-900 font-medium">{footer.copyrightText}</p>
+                <p className="text-gray-900 font-medium">
+                  {footer.copyrightText}
+                </p>
               )}
             </div>
           </div>

@@ -1,54 +1,71 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import { TbEdit } from "react-icons/tb";
 import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
-import { TbTrash } from 'react-icons/tb';
+import { TbTrash } from "react-icons/tb";
+import { useSession } from "next-auth/react";
 
 export default function SettingsPage() {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
 
   const [updateFormData, setUpdateFormData] = useState({
-    name: '',
-    email: '',
-    role: '',
+    name: "",
+    email: "",
+    role: "",
     access: [],
   });
 
   const [newUserData, setNewUserData] = useState({
-    name: '',
-    email: '',
-    role: '',
+    name: "",
+    email: "",
+    role: "",
     access: [],
   });
-async function handleDeleteUser(email) {
-  const confirmed = confirm(`Are you sure you want to delete the user ${email}?`);
-  if (!confirmed) return;
 
-  try {
-    const res = await fetch(`/api/users/${encodeURIComponent(email)}`, {
-      method: 'DELETE',
-    });
+  async function handleDeleteUser(email) {
+    const confirmed = confirm(
+      `Are you sure you want to delete the user ${email}?`
+    );
+    if (!confirmed) return;
 
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message);
+    try {
+      const res = await fetch(`/api/users/${encodeURIComponent(email)}`, {
+        method: "DELETE",
+      });
 
-    alert('User deleted successfully');
-    fetchUsers(); // Refresh list
-  } catch (err) {
-    console.error('Error deleting user:', err);
-    alert('Failed to delete user');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+
+      alert("User deleted successfully");
+      fetchUsers(); // Refresh list
+    } catch (err) {
+      console.error("Error deleting user:", err);
+      alert("Failed to delete user");
+    }
   }
-}
-  const ACCESS_OPTIONS = ["dashboard", "donations", "settings", "cms", "donors"];
-  const [loading, setLoading] = useState(true);
 
+  const ACCESS_OPTIONS = [
+    "dashboard",
+    "donations",
+    "settings",
+    "cms",
+    "donors",
+  ];
+
+  const { data: session } = useSession();
+  const userEmail = session?.user?.email;
+
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
   const totalPages = Math.ceil(users.length / rowsPerPage);
-  const paginatedUsers = users?.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+  const paginatedUsers = users?.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
 
   useEffect(() => {
     fetchUsers();
@@ -56,7 +73,7 @@ async function handleDeleteUser(email) {
 
   async function fetchUsers() {
     setLoading(true);
-    const res = await fetch('/api/users');
+    const res = await fetch("/api/users");
     const data = await res.json();
     setUsers(data);
     setLoading(false);
@@ -65,9 +82,9 @@ async function handleDeleteUser(email) {
   function openEditModal(user) {
     setEditingUser(user);
     setUpdateFormData({
-      name: user.name || '',
-      email: user.email || '',
-      role: user.role || '',
+      name: user.name || "",
+      email: user.email || "",
+      role: user.role || "",
       access: user.access || [],
     });
   }
@@ -75,17 +92,20 @@ async function handleDeleteUser(email) {
   async function handleUpdate(e) {
     e.preventDefault();
 
-    const res = await fetch(`/api/users/${encodeURIComponent(updateFormData.email)}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updateFormData),
-    });
+    const res = await fetch(
+      `/api/users/${encodeURIComponent(updateFormData.email)}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...updateFormData, lastUpdatedBy: userEmail }),
+      }
+    );
 
     if (res.ok) {
       await fetchUsers();
       setEditingUser(null);
     } else {
-      alert('Failed to update user');
+      alert("Failed to update user");
     }
   }
 
@@ -107,68 +127,87 @@ async function handleDeleteUser(email) {
   }
 
   async function handleAddSubmit() {
-  const payload = {
-    email: newUserData.email,
-    role: newUserData.role,
-    access: newUserData.access,
-  };
+    const payload = {
+      email: newUserData.email,
+      role: newUserData.role,
+      access: newUserData.access,
+    };
 
-  console.log("📤 Sending invite payload:", payload); // 👈 Log here
+    console.log("📤 Sending invite payload:", payload); // 👈 Log here
 
-  try {
-    const res = await fetch('/api/send-invite', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const res = await fetch("/api/send-invite", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (!res.ok) throw new Error(data.message);
+      if (!res.ok) throw new Error(data.message);
 
-    setNewUserData({
-      name: '',
-      email: '',
-      role: '',
-      access: [],
-    });
-    alert("Invite sent successfully!");
-  } catch (err) {
-    console.error('❌ Error in adding user:', err);
-    alert("Failed to invite user");
+      setNewUserData({
+        name: "",
+        email: "",
+        role: "",
+        access: [],
+      });
+      alert("Invite sent successfully!");
+    } catch (err) {
+      console.error("❌ Error in adding user:", err);
+      alert("Failed to invite user");
+    }
   }
-}
+  
   if (loading) return <div className="p-10 text-center">Loading users...</div>;
 
   return (
     <div className="bg-white p-4 sm:p-6 sm:rounded-2xl min-h-full">
-      <h1 className="text-xl sm:text-2xl font-bold mb-6">Settings - User Management</h1>
+      <h1 className="text-xl sm:text-2xl font-bold mb-6">
+        Settings - User Management
+      </h1>
 
       <div className="overflow-x-auto w-full pb-4">
         <div className="bg-white w-full border border-gray-300 shadow rounded-xl overflow-x-auto">
           <table className="w-full table-auto text-left">
             <thead className="bg-gray-200 text-gray-700 border-b border-gray-300 text-sm font-semibold">
               <tr>
-                {["Avatar", "Email", "Name", "Role", "Access", "Actions"].map((title, idx) => (
-                  <th
-                    key={idx}
-                    className={`py-3 px-4 text-nowrap font-medium ${idx === 0 ? "rounded-tl-xl" : idx === 5 ? "rounded-tr-xl" : ""}`}
-                  >
-                    {title}
-                  </th>
-                ))}
+                {["Avatar", "Email", "Name", "Role", "Access", "Actions"].map(
+                  (title, idx) => (
+                    <th
+                      key={idx}
+                      className={`py-3 px-4 text-nowrap font-medium ${
+                        idx === 0
+                          ? "rounded-tl-xl"
+                          : idx === 5
+                          ? "rounded-tr-xl"
+                          : ""
+                      }`}
+                    >
+                      {title}
+                    </th>
+                  )
+                )}
               </tr>
             </thead>
             <tbody>
               {paginatedUsers.length > 0 &&
                 paginatedUsers.map((user) => {
                   const color = user.colorCode || "#6B7280";
-                  const initials = user.name?.split(' ').map(n => n[0]).join('').slice(0, 2) || "US";
+                  const initials =
+                    user.name
+                      ?.split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .slice(0, 2) || "US";
 
                   return (
-                    <tr key={user.email} className="border-b border-gray-300 last:border-none">
+                    <tr
+                      key={user.email}
+                      className="border-b border-gray-300 last:border-none"
+                    >
                       <td className="py-3 px-4 text-sm">
                         <div
                           style={{ backgroundColor: `${color}20`, color }}
@@ -178,9 +217,13 @@ async function handleDeleteUser(email) {
                         </div>
                       </td>
                       <td className="py-3 px-4 text-sm">{user.email}</td>
-                      <td className="py-3 px-4 text-sm text-nowrap">{user.name || "—"}</td>
+                      <td className="py-3 px-4 text-sm text-nowrap">
+                        {user.name || "—"}
+                      </td>
                       <td className="py-3 px-4 text-sm">{user.role || "—"}</td>
-                      <td className="py-3 px-4 text-sm text-nowrap">{user.access?.join(', ') || "—"}</td>
+                      <td className="py-3 px-4 text-sm text-nowrap">
+                        {user.access?.join(", ") || "—"}
+                      </td>
                       <td className="py-3 px-2 text-sm text-gray-900 bg-white">
                         <button
                           onClick={() => openEditModal(user)}
@@ -190,12 +233,12 @@ async function handleDeleteUser(email) {
                           <TbEdit size={20} />
                         </button>
                         <button
-    onClick={() => handleDeleteUser(user.email)}
-    className="ml-2 cursor-pointer text-red-600 p-2 rounded-full hover:bg-red-100"
-    title="Delete user"
-  >
-    <TbTrash size={20} />
-  </button>
+                          onClick={() => handleDeleteUser(user.email)}
+                          className="ml-2 cursor-pointer text-red-600 p-2 rounded-full hover:bg-red-100"
+                          title="Delete user"
+                        >
+                          <TbTrash size={20} />
+                        </button>
                       </td>
                     </tr>
                   );
@@ -207,7 +250,8 @@ async function handleDeleteUser(email) {
         <div className="flex justify-between items-center mt-4 px-2 text-sm text-gray-700">
           <div>
             Showing {(currentPage - 1) * rowsPerPage + 1} to{" "}
-            {Math.min(currentPage * rowsPerPage, users.length)} of {users.length} entries
+            {Math.min(currentPage * rowsPerPage, users.length)} of{" "}
+            {users.length} entries
           </div>
           <div className="flex gap-2">
             <button
@@ -236,7 +280,9 @@ async function handleDeleteUser(email) {
             <div className="flex flex-col gap-y-4">
               <div className="grid sm:grid-cols-2 gap-2 sm:gap-4 w-full">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Email</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Email
+                  </label>
                   <input
                     type="text"
                     value={updateFormData.email}
@@ -249,7 +295,12 @@ async function handleDeleteUser(email) {
                   <input
                     type="text"
                     value={updateFormData.name}
-                    onChange={(e) => setUpdateFormData({ ...updateFormData, name: e.target.value })}
+                    onChange={(e) =>
+                      setUpdateFormData({
+                        ...updateFormData,
+                        name: e.target.value,
+                      })
+                    }
                     className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
                   />
                 </div>
@@ -258,7 +309,12 @@ async function handleDeleteUser(email) {
                   <input
                     type="text"
                     value={updateFormData.role}
-                    onChange={(e) => setUpdateFormData({ ...updateFormData, role: e.target.value })}
+                    onChange={(e) =>
+                      setUpdateFormData({
+                        ...updateFormData,
+                        role: e.target.value,
+                      })
+                    }
                     className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
                   />
                 </div>
@@ -305,11 +361,15 @@ async function handleDeleteUser(email) {
             <div className="flex flex-col gap-y-4">
               <div className="grid sm:grid-cols-2  gap-2 sm:gap-4 w-full">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Email</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Email
+                  </label>
                   <input
                     type="email"
                     value={newUserData.email}
-                    onChange={(e) => setNewUserData({ ...newUserData, email: e.target.value })}
+                    onChange={(e) =>
+                      setNewUserData({ ...newUserData, email: e.target.value })
+                    }
                     className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
                   />
                 </div>
@@ -318,7 +378,9 @@ async function handleDeleteUser(email) {
                   <input
                     type="text"
                     value={newUserData.name}
-                    onChange={(e) => setNewUserData({ ...newUserData, name: e.target.value })}
+                    onChange={(e) =>
+                      setNewUserData({ ...newUserData, name: e.target.value })
+                    }
                     className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
                   />
                 </div>
@@ -327,7 +389,9 @@ async function handleDeleteUser(email) {
                   <input
                     type="text"
                     value={newUserData.role}
-                    onChange={(e) => setNewUserData({ ...newUserData, role: e.target.value })}
+                    onChange={(e) =>
+                      setNewUserData({ ...newUserData, role: e.target.value })
+                    }
                     className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
                   />
                 </div>

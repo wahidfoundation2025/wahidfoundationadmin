@@ -1,59 +1,67 @@
-"use client"
-import { useEffect, useState } from "react"
-import { TbEdit, TbTrash } from "react-icons/tb"
+"use client";
+import { useEffect, useState } from "react";
+import { TbEdit, TbTrash } from "react-icons/tb";
+import { useSession } from "next-auth/react";
 
 export default function HomeQuoteSectionEditor() {
-  const [quote, setQuote] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [form, setForm] = useState({ text: "", reference: "", theme: "inspiration" })
-  const [saving, setSaving] = useState(false)
-  const [edit, setEdit] = useState(false)
+  const [quote, setQuote] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [form, setForm] = useState({
+    text: "",
+    reference: "",
+    theme: "inspiration",
+  });
+  const [saving, setSaving] = useState(false);
+  const [edit, setEdit] = useState(false);
+
+  const { data: session } = useSession();
+  const userEmail = session?.user?.email;
 
   useEffect(() => {
     fetch("/api/homequotesection")
       .then((res) => res.json())
       .then((d) => {
-        const q = Array.isArray(d) ? d[0] : d
-        setQuote(q)
-        setForm(q || { text: "", reference: "", theme: "inspiration" })
-        setLoading(false)
-      })
-  }, [])
+        const q = Array.isArray(d) ? d[0] : d;
+        setQuote(q);
+        setForm(q || { text: "", reference: "", theme: "inspiration" });
+        setLoading(false);
+      });
+  }, []);
 
   function handleChange(e) {
-    const { name, value } = e.target
-    setForm((f) => ({ ...f, [name]: value }))
+    const { name, value } = e.target;
+    setForm((f) => ({ ...f, [name]: value }));
   }
 
   async function handleSave() {
-    setSaving(true)
+    setSaving(true);
     const res = await fetch("/api/homequotesection", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    })
-    const updated = await res.json()
-    setQuote(updated)
-    setForm(updated)
-    setEdit(false)
-    setSaving(false)
+      body: JSON.stringify({ ...form, lastUpdatedBy: userEmail }),
+    });
+    const updated = await res.json();
+    setQuote(updated);
+    setForm(updated);
+    setEdit(false);
+    setSaving(false);
   }
 
   async function handleDelete() {
-    if (!window.confirm("Delete the quote?")) return
-    setSaving(true)
-    await fetch("/api/homequotesection", { method: "DELETE" })
-    setQuote(null)
-    setForm({ text: "", reference: "", theme: "inspiration" })
-    setEdit(false)
-    setSaving(false)
+    if (!window.confirm("Delete the quote?")) return;
+    setSaving(true);
+    await fetch("/api/homequotesection", { method: "DELETE" });
+    setQuote(null);
+    setForm({ text: "", reference: "", theme: "inspiration" });
+    setEdit(false);
+    setSaving(false);
   }
 
-  if (loading) return <div className="mt-10">Loading...</div>
+  if (loading) return <div className="mt-10">Loading...</div>;
 
   return (
     <div className="px-2 mt-6 space-y-6">
-      {(edit || !quote) ? (
+      {edit || !quote ? (
         <div className="space-y-6">
           <div className="flex flex-col gap-2">
             <label className="sm:text-xl font-semibold">Quote Text</label>
@@ -113,8 +121,10 @@ export default function HomeQuoteSectionEditor() {
             <button
               className="flex flex-row text-sm sm:text-base gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 px-4 ms:px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
               onClick={() => {
-                setEdit(false)
-                setForm(quote || { text: "", reference: "", theme: "inspiration" })
+                setEdit(false);
+                setForm(
+                  quote || { text: "", reference: "", theme: "inspiration" }
+                );
               }}
             >
               Cancel
@@ -135,12 +145,16 @@ export default function HomeQuoteSectionEditor() {
           <div className="border border-gray-300 rounded-xl px-4 py-3 bg-gray-50 text-gray-800">
             <div className="text-sm sm:text-lg italic">"{quote?.text}"</div>
             {quote?.reference && (
-              <div className="mt-2 text-sm text-gray-500 font-medium">- {quote.reference}</div>
+              <div className="mt-2 text-sm text-gray-500 font-medium">
+                - {quote.reference}
+              </div>
             )}
-            <div className="mt-1 text-sm text-violet-600 font-semibold">Theme: {quote.theme}</div>
+            <div className="mt-1 text-sm text-violet-600 font-semibold">
+              Theme: {quote.theme}
+            </div>
           </div>
         </div>
       )}
     </div>
-  )
+  );
 }

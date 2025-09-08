@@ -37,7 +37,10 @@ export async function PUT(req, { params }) {
 
   const data = await req.json();
 
-  const updated = await Blog.findByIdAndUpdate(id, data, {
+  // Remove 'history' if present in body to avoid conflict
+  const { history, ...updateData } = data;
+
+  const updated = await Blog.findByIdAndUpdate(id, updateData, {
     new: true,
     runValidators: true,
   });

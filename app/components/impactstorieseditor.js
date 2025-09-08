@@ -1,89 +1,99 @@
-'use client'
+"use client";
 
-import { useEffect, useRef, useState } from 'react'
-import { GraduationCap, Heart, Users, Calculator, Trash2, Plus } from 'lucide-react'
-import { TbTrash } from 'react-icons/tb'
+import { useEffect, useRef, useState } from "react";
+import {
+  GraduationCap,
+  Heart,
+  Users,
+  Calculator,
+  Trash2,
+  Plus,
+} from "lucide-react";
+import { TbTrash } from "react-icons/tb";
+import { useSession } from "next-auth/react";
 
 const ICON_MAP = {
   GraduationCap,
   Heart,
   Users,
   Calculator,
-}
+};
 
 const ICONS = [
-  { label: 'Graduation Cap', value: 'GraduationCap' },
-  { label: 'Heart', value: 'Heart' },
-  { label: 'Users', value: 'Users' },
-  { label: 'Calculator', value: 'Calculator' },
-]
-
+  { label: "Graduation Cap", value: "GraduationCap" },
+  { label: "Heart", value: "Heart" },
+  { label: "Users", value: "Users" },
+  { label: "Calculator", value: "Calculator" },
+];
 
 export default function ImpactSectionEditor() {
-  const [stories, setStories] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [showAdd, setShowAdd] = useState(false)
-  const [deleting, setDeleting] = useState(null)
+  const [stories, setStories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showAdd, setShowAdd] = useState(false);
+  const [deleting, setDeleting] = useState(null);
   const [form, setForm] = useState({
-    quote: '',
-    name: '',
-    location: '',
-    initials: '',
+    quote: "",
+    name: "",
+    location: "",
+    initials: "",
     icon: ICONS[0].value,
-  })
+  });
   const [adding, setAdding] = useState(false);
 
   const formRef = useRef(null);
 
+  const { data: session } = useSession();
+  const userEmail = session?.user?.email;
+
   useEffect(() => {
     fetchStories();
-  }, [])
+  }, []);
 
   async function fetchStories() {
-    setLoading(true)
-    const res = await fetch('/api/impact-stories')
-    const data = await res.json()
-    setStories(data)
-    setLoading(false)
+    setLoading(true);
+    const res = await fetch("/api/impact-stories");
+    const data = await res.json();
+    setStories(data);
+    setLoading(false);
   }
 
   async function handleDelete(id) {
-    if (!window.confirm('Delete this story?')) return
-    setDeleting(id)
-    await fetch(`/api/impact-stories?id=${id}`, { method: 'DELETE' })
-    setDeleting(null)
-    setStories((prev) => prev.filter((s) => s._id !== id))
+    if (!window.confirm("Delete this story?")) return;
+    setDeleting(id);
+    await fetch(`/api/impact-stories?id=${id}`, { method: "DELETE" });
+    setDeleting(null);
+    setStories((prev) => prev.filter((s) => s._id !== id));
   }
 
   function handleFormChange(e) {
-    const { name, value } = e.target
-    setForm((prev) => ({ ...prev, [name]: value }))
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   }
 
   async function handleAdd(e) {
-    e.preventDefault()
-    setAdding(true)
-    await fetch('/api/impact-stories', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    })
-    setAdding(false)
-    setShowAdd(false)
+    e.preventDefault();
+    setAdding(true);
+    await fetch("/api/impact-stories", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...form, lastUpdatedBy: userEmail }),
+    });
+    setAdding(false);
+    setShowAdd(false);
     setForm({
-      quote: '',
-      name: '',
-      location: '',
-      initials: '',
+      quote: "",
+      name: "",
+      location: "",
+      initials: "",
       icon: ICONS[0].value,
-    })
-    fetchStories()
+    });
+    fetchStories();
   }
 
   function handleScrollToForm() {
     setShowAdd(true);
     setTimeout(() => {
-      formRef.current?.scrollIntoView({ behavior: 'smooth' });
+      formRef.current?.scrollIntoView({ behavior: "smooth" });
     }, 100);
   }
 
@@ -103,18 +113,29 @@ export default function ImpactSectionEditor() {
             const Icon = ICON_MAP[story.icon] || Users;
 
             return (
-              <div key={story._id} className="gap-1 bg-violet-50 rounded-xl p-4 border-2 border-violet-300 w-full min-h-full flex flex-col justify-between">
-                <div className='flex flex-row justify-between'>
+              <div
+                key={story._id}
+                className="gap-1 bg-violet-50 rounded-xl p-4 border-2 border-violet-300 w-full min-h-full flex flex-col justify-between"
+              >
+                <div className="flex flex-row justify-between">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="bg-violet-200 text-violet-600 rounded-full p-2 text-xs font-semibold">{story.initials}</span>
-                      <span className="font-semibold text-gray-700">{story.name}</span>
+                      <span className="bg-violet-200 text-violet-600 rounded-full p-2 text-xs font-semibold">
+                        {story.initials}
+                      </span>
+                      <span className="font-semibold text-gray-700">
+                        {story.name}
+                      </span>
                     </div>
 
-                    <span className="text-gray-500 text-sm">({story.location})</span>
+                    <span className="text-gray-500 text-sm">
+                      ({story.location})
+                    </span>
 
                     <div className="text-xs text-gray-400 mt-1">
-                      {story.createdAt ? new Date(story.createdAt).toLocaleString() : ''}
+                      {story.createdAt
+                        ? new Date(story.createdAt).toLocaleString()
+                        : ""}
                     </div>
 
                     <p className="text-gray-700 mt-2">"{story.quote}"</p>
@@ -133,12 +154,15 @@ export default function ImpactSectionEditor() {
                   </button>
                 </div>
               </div>
-            )
+            );
           })}
         </div>
       )}
 
-      <div ref={formRef}  className="bg-white border border-gray-300 rounded-xl ms:p-6 p-5 w-full mt-4 sm:mt-10">
+      <div
+        ref={formRef}
+        className="bg-white border border-gray-300 rounded-xl ms:p-6 p-5 w-full mt-4 sm:mt-10"
+      >
         <h2 className="font-semibold text-lg mb-4">Add Impact Story</h2>
 
         <div className="flex flex-col gap-y-4">
@@ -153,7 +177,7 @@ export default function ImpactSectionEditor() {
                 className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
               />
             </div>
-            <div className='sm:col-span-1 col-span-2'>
+            <div className="sm:col-span-1 col-span-2">
               <label className="block text-sm font-medium mb-1">Name</label>
               <input
                 name="name"
@@ -163,7 +187,7 @@ export default function ImpactSectionEditor() {
                 className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
               />
             </div>
-            <div className='sm:col-span-1 col-span-2'>
+            <div className="sm:col-span-1 col-span-2">
               <label className="block text-sm font-medium mb-1">Location</label>
               <input
                 name="location"
@@ -173,7 +197,7 @@ export default function ImpactSectionEditor() {
                 className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
               />
             </div>
-            <div className='sm:col-span-1 col-span-2'>
+            <div className="sm:col-span-1 col-span-2">
               <label className="block text-sm font-medium mb-1">Initials</label>
               <input
                 name="initials"
@@ -183,7 +207,7 @@ export default function ImpactSectionEditor() {
                 className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
               />
             </div>
-            <div className='sm:col-span-1 col-span-2'>
+            <div className="sm:col-span-1 col-span-2">
               <label className="block text-sm font-medium mb-1">Icon</label>
               <select
                 name="icon"
@@ -192,7 +216,9 @@ export default function ImpactSectionEditor() {
                 className="p-2.5 text-sm w-full border border-gray-300 rounded-xl appearance-none cursor-pointer"
               >
                 {ICONS.map((icon) => (
-                  <option key={icon.value} value={icon.value}>{icon.label}</option>
+                  <option key={icon.value} value={icon.value}>
+                    {icon.label}
+                  </option>
                 ))}
               </select>
             </div>
@@ -205,11 +231,11 @@ export default function ImpactSectionEditor() {
               disabled={adding}
               className="px-10 py-2 font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white text-sm rounded-xl"
             >
-              {adding ? 'Adding...' : 'Add'}
+              {adding ? "Adding..." : "Add"}
             </button>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

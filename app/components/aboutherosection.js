@@ -1,16 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Calendar, Users, Heart } from "lucide-react";
 import { TbEdit, TbTrash } from "react-icons/tb";
 import { useSession } from "next-auth/react";
 
-const ICON_MAP = {
-  Calendar: <Calendar size={24} className="inline-block align-middle mr-1" />,
-  Users: <Users size={24} className="inline-block align-middle mr-1" />,
-  Heart: <Heart size={24} className="inline-block align-middle mr-1" />,
-};
-
-export default function HomeHeroSectionEditor() {
+export default function AboutHeroSectionEditor() {
   const { data: session } = useSession();
   const userEmail = session?.user?.email;
 
@@ -21,7 +14,7 @@ export default function HomeHeroSectionEditor() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    fetch("/api/homeherosection")
+    fetch("/api/aboutherosection")
       .then((res) => res.json())
       .then((d) => {
         setData(d);
@@ -89,7 +82,7 @@ export default function HomeHeroSectionEditor() {
 
   async function handleSave() {
     setSaving(true);
-    const res = await fetch("/api/homeherosection", {
+    const res = await fetch("/api/aboutherosection", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...form, lastUpdatedBy: userEmail }),
@@ -181,16 +174,16 @@ export default function HomeHeroSectionEditor() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-2 mt-4">
               <div className="flex flex-col gap-2">
-                <label>Per Day Label</label>
+                <label>Years of Impact</label>
                 <input
-                  name="perDay.label"
-                  value={form.stats?.perDay?.label || ""}
+                  name="yearsOfImpact.label"
+                  value={form.stats?.yearsOfImpact?.label || ""}
                   onChange={handleStatsChange}
                   className="w-full border border-gray-300 rounded-xl px-3 py-2 mb-1"
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <label>Per Day Value</label>
+                <label>Lives Changed</label>
                 <input
                   name="perDay.value"
                   value={form.stats?.perDay?.value || ""}

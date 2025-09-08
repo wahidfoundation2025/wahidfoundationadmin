@@ -34,9 +34,17 @@ export async function GET(_, { params }) {
 export async function PUT(req, { params }) {
   await dbConnect();
   const body = await req.json();
-  const updatedProject = await Project.findByIdAndUpdate(params.id, body, {
-    new: true,
-  });
+
+  // Remove 'history' if present in body to avoid conflict
+  const { history, ...updateData } = body;
+
+  const updatedProject = await Project.findByIdAndUpdate(
+    params.id,
+    updateData,
+    {
+      new: true,
+    }
+  );
   return new Response(JSON.stringify(updatedProject), {
     status: 200,
     headers: corsHeaders,

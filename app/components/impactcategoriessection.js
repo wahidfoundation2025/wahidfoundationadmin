@@ -1,12 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
 import { TbEdit } from "react-icons/tb";
+import { useSession } from "next-auth/react";
 
 export default function ImpactCategoriesEditor() {
   const [loading, setLoading] = useState(true);
   const [section, setSection] = useState({ title: "", subtitle: "" });
   const [categories, setCategories] = useState([]);
   const [edit, setEdit] = useState(false);
+
+  const { data: session } = useSession();
+  const userEmail = session?.user?.email;
 
   const [newCategory, setNewCategory] = useState({
     key: "",
@@ -38,7 +42,7 @@ export default function ImpactCategoriesEditor() {
     const res = await fetch("/api/impactcategories", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updated),
+      body: JSON.stringify({ ...updated, lastUpdatedBy: userEmail }),
     });
     const data = await res.json();
     setSection(data.section || { title: "", subtitle: "" });

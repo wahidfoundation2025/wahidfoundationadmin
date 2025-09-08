@@ -1,81 +1,95 @@
-"use client"
-import { useEffect, useState } from "react"
-import { Calendar, Users, Heart, GraduationCap, Building2 } from "lucide-react"
-import { TbEdit, TbTrash } from "react-icons/tb"
+"use client";
+import { useEffect, useState } from "react";
+import { Calendar, Users, Heart, GraduationCap, Building2 } from "lucide-react";
+import { TbEdit, TbTrash } from "react-icons/tb";
+import { useSession } from "next-auth/react";
 
 const ICON_MAP = {
   Calendar: <Calendar size={24} className="inline-block align-middle mr-1" />,
   Users: <Users size={24} className="inline-block align-middle mr-1" />,
   Heart: <Heart size={24} className="inline-block align-middle mr-1" />,
-  GraduationCap: <GraduationCap size={24} className="inline-block align-middle mr-1" />,
+  GraduationCap: (
+    <GraduationCap size={24} className="inline-block align-middle mr-1" />
+  ),
   Building: <Building2 size={24} className="inline-block align-middle mr-1" />,
-}
+};
 
 export default function HomeImpactSectionEditor() {
-  const [data, setData] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [edit, setEdit] = useState(false)
-  const [form, setForm] = useState({})
-  const [saving, setSaving] = useState(false)
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [edit, setEdit] = useState(false);
+  const [form, setForm] = useState({});
+  const [saving, setSaving] = useState(false);
+
+  const { data: session } = useSession();
+  const userEmail = session?.user?.email;
 
   useEffect(() => {
     fetch("/api/homeimpactsection")
       .then((res) => res.json())
       .then((d) => {
-        setData(d)
-        setForm(d || {})
-        setLoading(false)
-      })
-  }, [])
+        setData(d);
+        setForm(d || {});
+        setLoading(false);
+      });
+  }, []);
 
   function handleChange(e) {
-    const { name, value } = e.target
-    setForm((f) => ({ ...f, [name]: value }))
+    const { name, value } = e.target;
+    setForm((f) => ({ ...f, [name]: value }));
   }
 
   function handleStatChange(idx, field, value) {
     setForm((f) => ({
       ...f,
-      stats: f.stats?.map((s, i) => i === idx ? { ...s, [field]: value } : s) || [],
-    }))
+      stats:
+        f.stats?.map((s, i) => (i === idx ? { ...s, [field]: value } : s)) ||
+        [],
+    }));
   }
 
   function handleAddStat() {
     setForm((f) => ({
       ...f,
-      stats: [...(f.stats || []), { icon: '', title: '', value: '', description: '', color: '#10b981' }],
-    }))
+      stats: [
+        ...(f.stats || []),
+        { icon: "", title: "", value: "", description: "", color: "#10b981" },
+      ],
+    }));
   }
 
   function handleRemoveStat(idx) {
     setForm((f) => ({
       ...f,
       stats: f.stats?.filter((_, i) => i !== idx) || [],
-    }))
+    }));
   }
 
   async function handleSave() {
-    setSaving(true)
+    setSaving(true);
     const res = await fetch("/api/homeimpactsection", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    })
-    const updated = await res.json()
-    setData(updated)
-    setForm(updated)
-    setEdit(false)
-    setSaving(false)
+      body: JSON.stringify({ ...form, lastUpdatedBy: userEmail }),
+    });
+    const updated = await res.json();
+    setData(updated);
+    setForm(updated);
+    setEdit(false);
+    setSaving(false);
   }
 
-  if (loading) return <div className="mt-10">Loading...</div>
+  if (loading) return <div className="mt-10">Loading...</div>;
 
-  if (!data && !edit) return (
-    <div className="mt-6 px-2">
-      <p>No impact section found.</p>
-      <button className="btn" onClick={() => setEdit(true)}>Create</button>
-    </div>
-  )
+  if (!data && !edit)
+    return (
+      <div className="mt-6 px-2">
+        <p>No impact section found.</p>
+        <button className="btn" onClick={() => setEdit(true)}>
+          Create
+        </button>
+      </div>
+    );
 
   return (
     <>
@@ -83,21 +97,36 @@ export default function HomeImpactSectionEditor() {
         <div className="space-y-6 mt-6 px-2">
           <div className="flex flex-col gap-2">
             <label className="text-base ms:text-xl font-semibold">Title</label>
-            <input name="title" value={form.title || ""} onChange={handleChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400" />
+            <input
+              name="title"
+              value={form.title || ""}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400"
+            />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-base ms:text-xl font-semibold">Subtitle</label>
-            <input name="subtitle" value={form.subtitle || ""} onChange={handleChange} className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400" />
+            <label className="text-base ms:text-xl font-semibold">
+              Subtitle
+            </label>
+            <input
+              name="subtitle"
+              value={form.subtitle || ""}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400"
+            />
           </div>
 
           <hr className="text-gray-300 my-8" />
 
           <div className="flex flex-row gap-2 mb-4 items-center justify-between w-full">
-            <label className="text-base ms:text-xl font-semibold">Impact Stats</label>
+            <label className="text-base ms:text-xl font-semibold">
+              Impact Stats
+            </label>
             <button
               className="flex flex-row text-sm sm:text-base gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-500 px-4 sm:px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
-              onClick={handleAddStat} type="button"
+              onClick={handleAddStat}
+              type="button"
             >
               Add Stat
             </button>
@@ -105,11 +134,16 @@ export default function HomeImpactSectionEditor() {
 
           <div className="flex sm:flex-row flex-col gap-2 max-w-full overflow-x-auto">
             {(form.stats || []).map((stat, idx) => (
-              <div key={idx} className="flex min-w-full sm:min-w-[300px] max-w-fit sm:max-w-[320px] flex-col gap-3 items-center border border-gray-200 p-4 rounded-xl bg-gray-50">
+              <div
+                key={idx}
+                className="flex min-w-full sm:min-w-[300px] max-w-fit sm:max-w-[320px] flex-col gap-3 items-center border border-gray-200 p-4 rounded-xl bg-gray-50"
+              >
                 <div className="flex items-center justify-between w-full gap-2">
                   <select
-                    value={stat.icon || ''}
-                    onChange={e => handleStatChange(idx, 'icon', e.target.value)}
+                    value={stat.icon || ""}
+                    onChange={(e) =>
+                      handleStatChange(idx, "icon", e.target.value)
+                    }
                     className="border border-gray-300 rounded-lg px-3 py-2 flex-1 bg-white"
                   >
                     <option value="">Select Icon</option>
@@ -123,13 +157,46 @@ export default function HomeImpactSectionEditor() {
                   {ICON_MAP[stat.icon] && <span>{ICON_MAP[stat.icon]}</span>}
                 </div>
 
-                <input placeholder="Title" value={stat.title || ''} onChange={e => handleStatChange(idx, 'title', e.target.value)} className="border border-gray-300 w-full rounded-lg bg-white px-3 py-2" />
-                <input placeholder="Value" value={stat.value || ''} onChange={e => handleStatChange(idx, 'value', e.target.value)} className="border border-gray-300 w-full rounded-lg bg-white px-3 py-2" />
-                <input placeholder="Description" value={stat.description || ''} onChange={e => handleStatChange(idx, 'description', e.target.value)} className="border border-gray-300 w-full rounded-lg bg-white px-3 py-2" />
+                <input
+                  placeholder="Title"
+                  value={stat.title || ""}
+                  onChange={(e) =>
+                    handleStatChange(idx, "title", e.target.value)
+                  }
+                  className="border border-gray-300 w-full rounded-lg bg-white px-3 py-2"
+                />
+                <input
+                  placeholder="Value"
+                  value={stat.value || ""}
+                  onChange={(e) =>
+                    handleStatChange(idx, "value", e.target.value)
+                  }
+                  className="border border-gray-300 w-full rounded-lg bg-white px-3 py-2"
+                />
+                <input
+                  placeholder="Description"
+                  value={stat.description || ""}
+                  onChange={(e) =>
+                    handleStatChange(idx, "description", e.target.value)
+                  }
+                  className="border border-gray-300 w-full rounded-lg bg-white px-3 py-2"
+                />
 
                 <div className="flex justify-between items-center w-full">
-                  <input type="color" value={stat.color?.startsWith('#') ? stat.color : '#10b981'} onChange={e => handleStatChange(idx, 'color', e.target.value)} className="w-10 h-10 border-none bg-transparent" title="Pick color" />
-                  <button className="text-red-500 hover:bg-red-100 p-2 rounded-full" onClick={() => handleRemoveStat(idx)} type="button">
+                  <input
+                    type="color"
+                    value={stat.color?.startsWith("#") ? stat.color : "#10b981"}
+                    onChange={(e) =>
+                      handleStatChange(idx, "color", e.target.value)
+                    }
+                    className="w-10 h-10 border-none bg-transparent"
+                    title="Pick color"
+                  />
+                  <button
+                    className="text-red-500 hover:bg-red-100 p-2 rounded-full"
+                    onClick={() => handleRemoveStat(idx)}
+                    type="button"
+                  >
                     <TbTrash className="text-xl" />
                   </button>
                 </div>
@@ -147,7 +214,10 @@ export default function HomeImpactSectionEditor() {
             </button>
             <button
               className="flex flex-row text-sm sm:text-base gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 px-4 ms:px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
-              onClick={() => { setEdit(false); setForm(data) }}
+              onClick={() => {
+                setEdit(false);
+                setForm(data);
+              }}
             >
               Cancel
             </button>
@@ -160,7 +230,7 @@ export default function HomeImpactSectionEditor() {
             onClick={() => setEdit(true)}
           >
             Edit Impact
-             <TbEdit className="text-xl" />
+            <TbEdit className="text-xl" />
           </button>
 
           <div className="flex flex-col gap-2">
@@ -169,22 +239,31 @@ export default function HomeImpactSectionEditor() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <span className="text-base ms:text-xl font-semibold">Subtitle:</span>
+            <span className="text-base ms:text-xl font-semibold">
+              Subtitle:
+            </span>
             <span className="block">{data.subtitle}</span>
           </div>
 
           <hr className="text-gray-300 my-8" />
 
           <div>
-            <span className="text-base ms:text-xl font-semibold block mb-4">Impact Stats:</span>
+            <span className="text-base ms:text-xl font-semibold block mb-4">
+              Impact Stats:
+            </span>
 
             <div className="flex sm:flex-row flex-col gap-4 sm:overflow-x-auto">
               {(data.stats || []).map((stat, idx) => {
-                const Icon = ICON_MAP[stat.icon] || null
+                const Icon = ICON_MAP[stat.icon] || null;
                 return (
-                  <div key={idx} className="flex-shrink-0 min-w-full sm:min-w-[250px] max-w-full sm:max-w-[300px] border border-gray-200 p-4 rounded-xl bg-gray-50 flex flex-col gap-3">
+                  <div
+                    key={idx}
+                    className="flex-shrink-0 min-w-full sm:min-w-[250px] max-w-full sm:max-w-[300px] border border-gray-200 p-4 rounded-xl bg-gray-50 flex flex-col gap-3"
+                  >
                     <div className="flex items-center justify-between">
-                      <div className="text-sm text-gray-500">{stat.icon || "No Icon"}</div>
+                      <div className="text-sm text-gray-500">
+                        {stat.icon || "No Icon"}
+                      </div>
                       {Icon}
                     </div>
 
@@ -192,24 +271,34 @@ export default function HomeImpactSectionEditor() {
                       {stat.title || "No Title"}
                     </div>
 
-                    <div className="text-violet-700 text-sm">{stat.value || "No Value"}</div>
+                    <div className="text-violet-700 text-sm">
+                      {stat.value || "No Value"}
+                    </div>
 
-                    <div className="text-gray-600 text-sm">{stat.description || "No Description"}</div>
+                    <div className="text-gray-600 text-sm">
+                      {stat.description || "No Description"}
+                    </div>
 
                     <div className="flex justify-between items-center">
                       <div
                         className="w-6 h-6 rounded-full border border-gray-300"
-                        style={{ backgroundColor: stat.color?.startsWith('#') ? stat.color : '#10b981' }}
+                        style={{
+                          backgroundColor: stat.color?.startsWith("#")
+                            ? stat.color
+                            : "#10b981",
+                        }}
                       ></div>
-                      <div className="text-sm italic text-gray-500">{stat.color || "#10b981"}</div>
+                      <div className="text-sm italic text-gray-500">
+                        {stat.color || "#10b981"}
+                      </div>
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
           </div>
         </div>
       )}
     </>
-  )
+  );
 }
