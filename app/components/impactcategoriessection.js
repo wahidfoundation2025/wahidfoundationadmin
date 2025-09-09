@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { TbEdit } from "react-icons/tb";
+import { TbEdit, TbTrash } from "react-icons/tb";
+import { Edit } from "lucide-react";
 
 export default function ImpactCategoriesEditor() {
   const [loading, setLoading] = useState(true);
@@ -20,6 +21,7 @@ export default function ImpactCategoriesEditor() {
 
   const [editingKey, setEditingKey] = useState(null); // <-- track if editing an existing category
   const [newStat, setNewStat] = useState({ label: "", value: "", progress: 0 });
+  const [editingStatIndex, setEditingStatIndex] = useState(null);
 
   // Fetch data
   useEffect(() => {
@@ -49,6 +51,29 @@ export default function ImpactCategoriesEditor() {
   const handleSaveSection = () => {
     saveDoc({ section, categories });
     setEdit(false);
+  };
+
+  // Save or update stat
+  const handleSaveStat = () => {
+    if (!newStat.label || !newStat.value) {
+      alert("Stat needs both label and value.");
+      return;
+    }
+
+    let updatedStats;
+    if (editingStatIndex !== null) {
+      // Update existing stat
+      updatedStats = newCategory.stats.map((s, i) =>
+        i === editingStatIndex ? newStat : s
+      );
+      setEditingStatIndex(null);
+    } else {
+      // Add new stat
+      updatedStats = [...newCategory.stats, newStat];
+    }
+
+    setNewCategory({ ...newCategory, stats: updatedStats });
+    setNewStat({ label: "", value: "", progress: 0 });
   };
 
   // Add / Update category
@@ -107,15 +132,25 @@ export default function ImpactCategoriesEditor() {
     setNewStat({ label: "", value: "", progress: 0 });
   };
 
+  // Edit stat
+  const handleEditStat = (index) => {
+    setNewStat(newCategory.stats[index]);
+    setEditingStatIndex(index);
+  };
+
+  // Remove stat
+  const handleRemoveStat = (index) => {
+    const updatedStats = newCategory.stats.filter((_, i) => i !== index);
+    setNewCategory({ ...newCategory, stats: updatedStats });
+  };
+
   if (loading) return <p>Loading editor...</p>;
 
   return (
     <div className="space-y-8">
-      {/* Section Fields */}
-      <h2 className="font-semibold mb-2">Section Settings</h2>
-      <div>
+      <div className="px-4">
         {edit ? (
-          <>
+          <div className="pt-4">
             <input
               type="text"
               placeholder="Title"
@@ -123,7 +158,7 @@ export default function ImpactCategoriesEditor() {
               onChange={(e) =>
                 setSection({ ...section, title: e.target.value })
               }
-              className="w-full p-2 border rounded mb-2"
+              className="w-full text-xs px-2 py-1 border border-gray-300 rounded mb-2"
             />
             <input
               type="text"
@@ -132,7 +167,7 @@ export default function ImpactCategoriesEditor() {
               onChange={(e) =>
                 setSection({ ...section, subtitle: e.target.value })
               }
-              className="w-full p-2 border rounded mb-2"
+              className="w-full text-xs px-2 py-1 border border-gray-300 rounded mb-2"
             />
             <button
               onClick={handleSaveSection}
@@ -140,54 +175,76 @@ export default function ImpactCategoriesEditor() {
             >
               Save Section
             </button>
-          </>
+          </div>
         ) : (
           <div className="relative">
-            <span className="text-base sm:text-xl font-semibold">Title:</span>
-            <span className="block mt-2 text-base sm:text-lg">
+            <span className="text-sm sm:text-base font-semibold">Title:</span>
+            <span className="block mt-2 text-sm sm:text-base">
               {section.title}
             </span>
-            <span className="text-base sm:text-xl font-semibold mt-4 block">
+            <span className="text-sm sm:text-base font-semibold mt-4 block">
               Subtitle:
             </span>
-            <span className="block mt-2">{section.subtitle}</span>
+            <span className="block mt-2 text-sm sm:text-base">
+              {section.subtitle}
+            </span>
 
             <button
-              className="absolute text-sm sm:text-base right-3 sm:right-4 top-3 sm:top-4 flex flex-row gap-2 items-center font-medium border border-violet-600 hover:bg-violet-600 sm:px-6 px-4 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+              className="absolute text-xs sm:text-base right-3 sm:right-4 top-3 sm:top-4 flex flex-row gap-2 items-center font-medium border border-violet-600 hover:bg-violet-600 sm:px-6 px-2 py-1 cursor-pointer text-violet-600 hover:text-white transition rounded-md lg:rounded-xl"
               onClick={() => setEdit(true)}
             >
-              Edit Title/Subtitle <TbEdit className="text-xl" />
+              Edit Title/Subtitle <TbEdit className="text-base lg:text-xl" />
             </button>
           </div>
         )}
       </div>
 
+      <hr className="text-gray-300 mb-4" />
+
       {/* Categories */}
-      <div className="p-4 border rounded-xl bg-white shadow">
+      <div className="px-4">
         <h2 className="font-semibold mb-2">Categories</h2>
         {categories.length === 0 && (
           <p className="text-gray-500">No categories added yet.</p>
         )}
         {categories.map((cat) => (
-          <div key={cat.key} className="p-3 border rounded mb-2 bg-gray-50">
+          <div
+            key={cat.key}
+            className={`w-full md:w-1/2 lg:w-1/3 p-3 shadow-lg border border-gray-200 rounded mb-2 bg-gray-50`}
+          >
             <div className="flex justify-between items-center">
-              <h3 className="font-semibold">{cat.title}</h3>
-              <div className="flex gap-2">
+              <h3 className="font-semibold text-sm">{cat.title}</h3>
+              <div className="flex flex-col gap-2">
                 <button
                   onClick={() => handleEditCategory(cat)}
-                  className="text-blue-600 text-sm"
+                  className="text-violet-600 text-sm"
                 >
-                  Edit
+                  <TbEdit size={18} />
                 </button>
                 <button
                   onClick={() => handleRemoveCategory(cat.key)}
                   className="text-red-600 text-sm"
                 >
-                  Remove
+                   <TbTrash size={18} />
                 </button>
               </div>
             </div>
             <p className="text-sm text-gray-600">{cat.subtitle}</p>
+
+            <div className="flex justify-start items-center">
+              <p className="text-sm text-gray-600">Card Color: </p>
+              <div
+                className="w-5 h-5 rounded-full border border-gray-300"
+                style={{
+                  backgroundColor: cat.color?.startsWith("#")
+                    ? cat.color
+                    : "#10b981",
+                }}
+              ></div>
+              <div className="text-sm italic text-gray-500">
+                [{cat.color || "#10b981"}]
+              </div>
+            </div>
 
             {cat.stats && cat.stats.length > 0 && (
               <div className="mt-3 space-y-2">
@@ -212,8 +269,8 @@ export default function ImpactCategoriesEditor() {
       </div>
 
       {/* Add / Edit Category */}
-      <div className="p-4 border rounded-xl bg-white shadow">
-        <h2 className="font-semibold mb-2">
+      <div className="p-4 border text-sm border-gray-200 rounded-xl bg-white shadow">
+        <h2 className="font-semibold text-sm mb-2">
           {editingKey ? "Edit Category" : "Add Category"}
         </h2>
         <input
@@ -224,7 +281,7 @@ export default function ImpactCategoriesEditor() {
           onChange={(e) =>
             setNewCategory({ ...newCategory, key: e.target.value })
           }
-          className="w-full p-2 border rounded mb-2"
+          className="w-full text-xs px-2 py-1 border border-gray-300 rounded mb-2"
         />
         <input
           type="text"
@@ -233,7 +290,7 @@ export default function ImpactCategoriesEditor() {
           onChange={(e) =>
             setNewCategory({ ...newCategory, title: e.target.value })
           }
-          className="w-full p-2 border rounded mb-2"
+          className="w-full text-xs px-2 py-1 border border-gray-300 rounded mb-2"
         />
         <input
           type="text"
@@ -242,7 +299,7 @@ export default function ImpactCategoriesEditor() {
           onChange={(e) =>
             setNewCategory({ ...newCategory, subtitle: e.target.value })
           }
-          className="w-full p-2 border rounded mb-2"
+          className="w-full text-xs px-2 py-1 border border-gray-300 rounded mb-2"
         />
         <div className="flex items-center gap-2">
           <label className="text-xs">Card color: </label>
@@ -264,7 +321,7 @@ export default function ImpactCategoriesEditor() {
           onChange={(e) =>
             setNewCategory({ ...newCategory, description: e.target.value })
           }
-          className="w-full p-2 border rounded mb-2"
+          className="w-full text-xs px-2 py-1 border border-gray-300 rounded mb-2"
         />
         <input
           type="text"
@@ -273,7 +330,7 @@ export default function ImpactCategoriesEditor() {
           onChange={(e) =>
             setNewCategory({ ...newCategory, link: e.target.value })
           }
-          className="w-full p-2 border rounded mb-2"
+          className="w-full text-xs px-2 py-1 border border-gray-300 rounded mb-2"
         />
 
         <h3 className="font-semibold mt-4">Add Stat</h3>
@@ -282,14 +339,14 @@ export default function ImpactCategoriesEditor() {
           placeholder="Stat Label"
           value={newStat.label}
           onChange={(e) => setNewStat({ ...newStat, label: e.target.value })}
-          className="w-full p-2 border rounded mb-2"
+          className="w-full text-xs px-2 py-1 border border-gray-300 rounded mb-2"
         />
         <input
           type="text"
           placeholder="Stat Value"
           value={newStat.value}
           onChange={(e) => setNewStat({ ...newStat, value: e.target.value })}
-          className="w-full p-2 border rounded mb-2"
+          className="w-full text-xs px-2 py-1 border border-gray-300 rounded mb-2"
         />
         <input
           type="number"
@@ -298,29 +355,62 @@ export default function ImpactCategoriesEditor() {
           onChange={(e) =>
             setNewStat({ ...newStat, progress: Number(e.target.value) })
           }
-          className="w-full p-2 border rounded mb-2"
+          className="w-full text-xs px-2 py-1 border border-gray-300 rounded mb-2"
         />
         <button
-          onClick={handleAddStat}
-          className="px-4 py-2 bg-blue-600 text-white rounded mb-4"
+          onClick={handleSaveStat}
+          className="px-2 py-1 mr-2 bg-blue-600 text-white rounded mb-4"
         >
-          Add Stat
+          {editingStatIndex !== null ? "Update Stat" : "Add Stat"}
         </button>
 
         {newCategory.stats.length > 0 && (
           <div className="mb-4">
-            <h4 className="font-semibold">Preview Stats</h4>
-            {newCategory.stats.map((s, i) => (
-              <p key={i} className="text-sm">
-                {s.label}: {s.value} ({s.progress}%)
-              </p>
-            ))}
+            <h4 className="font-semibold mb-2">Stats</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {newCategory.stats.map((s, i) => (
+                <div
+                  key={i}
+                  className="p-3 border rounded-md shadow-sm bg-gray-50 flex flex-col justify-between"
+                >
+                  <div>
+                    <p className="font-medium text-sm">{s.label}</p>
+                    <p className="text-xs text-gray-600">{s.value}</p>
+
+                    <div className="w-full bg-gray-200 rounded-full h-2 mt-2 relative">
+                      <div
+                        className="bg-violet-600 h-2 rounded-full"
+                        style={{ width: `${s.progress}%` }}
+                      ></div>
+                      <span className="absolute right-1 -top-5 text-xs font-medium text-gray-700">
+                        {s.progress}%
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2 mt-3">
+                    <button
+                      onClick={() => handleEditStat(i)}
+                      className="text-blue-600 text-xs px-2 py-1 border border-blue-600 rounded"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleRemoveStat(i)}
+                      className="text-red-600 text-xs px-2 py-1 border border-red-600 rounded"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
         <button
           onClick={handleAddCategory}
-          className={`px-4 py-2 ${
+          className={`px-2 py-1 text-sm ${
             editingKey ? "bg-blue-600" : "bg-violet-600"
           } text-white rounded`}
         >
