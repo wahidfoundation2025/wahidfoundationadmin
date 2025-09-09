@@ -301,7 +301,7 @@ export default function ImpactCategoriesEditor() {
           className="w-full text-xs px-2 py-1 border border-gray-300 rounded mb-2"
         />
         <div className="flex items-center gap-2">
-          <label className="text-xs">Card Color: </label>
+          <label className="text-xs">Card color: </label>
           <input
             type="color"
             placeholder="Color"
