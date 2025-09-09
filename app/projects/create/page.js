@@ -310,6 +310,7 @@ export default function CreateProjectPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    handleAddScheme();
     setSubmitting(true);
     const res = await fetch("/api/projects", {
       method: "POST",

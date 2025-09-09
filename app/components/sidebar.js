@@ -23,6 +23,7 @@ import Logo from "../../public/logo.png";
 import { TbCategory } from "react-icons/tb";
 import { RiPagesLine } from "react-icons/ri";
 import { VscLayoutPanelJustify } from "react-icons/vsc";
+import { FcAbout } from "react-icons/fc";
 
 const cmsNavItems = [
   {
@@ -38,6 +39,7 @@ const cmsNavItems = [
     icon: <FolderKanban size={18} />,
   },
   { name: "Impact", key: "cms", href: "/impact", icon: <BookOpen size={18} /> },
+  { name: "About", key: "about", href: "/about", icon: <FcAbout size={18} /> },
   {
     name: "Volunteers",
     key: "cms",

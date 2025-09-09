@@ -36,11 +36,9 @@ export default function EditProjectPage({ params }) {
     date: new Date().toISOString().split("T")[0],
     status: "Pending",
   });
-  const [newScheme, setNewScheme] = useState({
-    name: "",
-    description: "",
-    link: "",
-  });
+  const [newScheme, setNewScheme] = useState(
+    `{ name: "", description: "", link: "" }`
+  );
   const [newUpdate, setNewUpdate] = useState({
     version: "",
     content: "",
@@ -1103,66 +1101,22 @@ export default function EditProjectPage({ params }) {
                 )}
               </div>
             ))}
-            <h2 className="font-semibold text-sm">Schemes</h2>
-            <input
-              value={newScheme.name || ""}
-              onChange={(e) =>
-                setNewScheme((prev) => ({
-                  ...prev,
-                  name: e.target.value || "",
-                }))
-              }
-              placeholder="Scheme Name"
-              className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
-            />
-            <textarea
-              value={newScheme.description || ""}
-              onChange={(e) =>
-                setNewScheme((prev) => ({
-                  ...prev,
-                  description: e.target.value || "",
-                }))
-              }
-              placeholder="Scheme Description"
-              className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
-            />
-            <input
-              value={newScheme.link || ""}
-              onChange={(e) =>
-                setNewScheme((prev) => ({
-                  ...prev,
-                  link: e.target.value || "",
-                }))
-              }
-              placeholder="Scheme Link"
-              className="p-2.5 text-sm w-full border border-gray-300 rounded-xl"
-            />
-            <button
-              type="button"
-              onClick={handleAddScheme}
-              className="px-4 py-2 bg-violet-600 text-white rounded-xl"
-            >
-              Add Scheme
-            </button>
-            {(form.scheme || []).length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
-                {(form.scheme || []).map((sch, idx) => (
-                  <span
-                    key={idx}
-                    className="bg-violet-100 border border-violet-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
-                  >
-                    {sch.name || "Untitled"}
-                    <button
-                      type="button"
-                      className="cursor-pointer hover:text-red-500 transition-colors"
-                      onClick={() => handleRemoveScheme(idx)}
-                    >
-                      <IoIosCloseCircle size={18} />
-                    </button>
-                  </span>
-                ))}
-              </div>
-            )}
+
+            <div className="text-sm">
+              <label className="font-medium block mb-1">
+                Schema Markup (JSON-LD)
+              </label>
+              <textarea
+                className="border p-2 w-full rounded-xl border-gray-300 font-mono"
+                placeholder='{"name": "Name of Schema", "description": "Description for Schema", "link": "https://"}'
+                value={newScheme}
+                onChange={(e) => setNewScheme(e.target.value)}
+                rows={6}
+              />
+            </div>
+            <p className="text-sm p-3 rounded-xl bg-purple-100 border border-gray-300">
+              {newScheme}
+            </p>
 
             <h2 className="font-semibold text-sm">Timeline Events</h2>
             <input
