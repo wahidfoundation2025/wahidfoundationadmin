@@ -311,6 +311,10 @@ export default async function ProjectDetailPage({ params }) {
               label="Target Keywords"
               value={project.target_keywords || "N/A"}
             />
+            <InfoRow
+              label="Schema Markup"
+              value={project.scheme || "N/A"}
+            />
           </div>
         </Section>
       )}
