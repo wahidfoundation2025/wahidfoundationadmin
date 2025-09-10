@@ -36,9 +36,7 @@ export default function EditProjectPage({ params }) {
     date: new Date().toISOString().split("T")[0],
     status: "Pending",
   });
-  const [newScheme, setNewScheme] = useState(
-    `{ name: "", description: "", link: "" }`
-  );
+  const [newScheme, setNewScheme] = useState("");
   const [newUpdate, setNewUpdate] = useState({
     version: "",
     content: "",
@@ -355,12 +353,20 @@ export default function EditProjectPage({ params }) {
   };
 
   const handleAddScheme = () => {
-    if (newScheme.name) {
-      setForm((prev) => ({
-        ...prev,
-        scheme: [...(prev.scheme || []), newScheme],
-      }));
-      setNewScheme({ name: "", description: "", link: "" });
+    if (!newScheme) return form;
+
+    try {
+      const parsed = JSON.parse(newScheme); // if using free JSON input
+      const updatedForm = {
+        ...form,
+        scheme: [...(form.scheme || []), parsed],
+      };
+      setForm(updatedForm);
+      setNewScheme("");
+      return updatedForm;
+    } catch (err) {
+      alert("Invalid JSON in schema");
+      return form;
     }
   };
 
@@ -446,12 +452,14 @@ export default function EditProjectPage({ params }) {
       return;
     }
 
+    const finalForm = newScheme ? handleAddScheme() : form;
+
     setSubmitting(true);
     try {
       const res = await fetch(`/api/projects/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(finalForm),
       });
       if (!res.ok) throw new Error("Failed to update project");
       router.push(`/projects/${id}`);

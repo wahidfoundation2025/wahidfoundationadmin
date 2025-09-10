@@ -313,7 +313,7 @@ export default async function ProjectDetailPage({ params }) {
             />
             <InfoRow
               label="Schema Markup"
-              value={project.scheme || "N/A"}
+              value={JSON.stringify(project.scheme) || "N/A"}
             />
           </div>
         </Section>
