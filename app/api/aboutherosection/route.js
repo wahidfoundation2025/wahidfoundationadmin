@@ -27,18 +27,27 @@ export async function GET() {
 
 // UPSERT the single hero section
 export async function POST(req) {
-  await dbConnect();
-  const body = await req.json();
-  const updated = await AboutHeroSection.findOneAndUpdate({}, body, {
-    new: true,
-    upsert: true,
-  });
-  return NextResponse.json(updated, {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
-  });
+  try {
+    await dbConnect();
+    const body = await req.json();
+
+    const updated = await AboutHeroSection.findOneAndUpdate({}, body, {
+      new: true,
+      upsert: true,
+    });
+
+    return NextResponse.json(updated, {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    });
+  } catch (err) {
+    console.error("POST /aboutherosection error:", err);
+    return NextResponse.json(
+      { error: "Failed to save hero section" },
+      { status: 500 }
+    );
+  }
 }
+
 
 // DELETE the single hero section
 export async function DELETE() {
