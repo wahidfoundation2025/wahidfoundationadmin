@@ -3,35 +3,33 @@ import { dbConnect } from "@/lib/dbConnect";
 import ImpactCategoriesDoc from "@/lib/models/impactcategories";
 import { NextResponse } from "next/server";
 
-// Handle CORS
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET,POST,DELETE,OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type,Authorization",
+};
+
+// Handle CORS preflight
 export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET,POST,DELETE,OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type,Authorization",
-    },
-  });
+  return new NextResponse(null, { status: 204, headers: corsHeaders });
 }
 
 export async function GET() {
   await dbConnect();
   const doc = await ImpactCategoriesDoc.findOne({});
-  return NextResponse.json(doc || { section: {}, categories: [] });
+  return NextResponse.json(doc || { section: {}, categories: [] }, { headers: corsHeaders });
 }
 
 export async function POST(req) {
   await dbConnect();
   const body = await req.json();
 
-  const updated = await ImpactCategoriesDoc.findOneAndUpdate(
-    {},
-    body,
-    { new: true, upsert: true }
-  );
+  const updated = await ImpactCategoriesDoc.findOneAndUpdate({}, body, {
+    new: true,
+    upsert: true,
+  });
 
-  return NextResponse.json(updated);
+  return NextResponse.json(updated, { headers: corsHeaders });
 }
 
 export async function DELETE() {
@@ -43,5 +41,5 @@ export async function DELETE() {
     { new: true, upsert: true }
   );
 
-  return NextResponse.json(cleared);
+  return NextResponse.json(cleared, { headers: corsHeaders });
 }
