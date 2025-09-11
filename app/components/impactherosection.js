@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { TbEdit } from "react-icons/tb";
+import InfoRow from "@/app/components/InfoRow";
 
 export default function ImpactHeroSectionEditor() {
   const [data, setData] = useState(null);
@@ -9,12 +10,17 @@ export default function ImpactHeroSectionEditor() {
   const [form, setForm] = useState({});
   const [saving, setSaving] = useState(false);
 
+  const [rawSchema, setRawSchema] = useState({});
+
   useEffect(() => {
     fetch("/api/impactherosection")
       .then((res) => res.json())
       .then((d) => {
         setData(d);
         setForm(d || {});
+        setRawSchema(
+          d?.schemaMarkup ? JSON.stringify(d.schemaMarkup, null, 2) : "{}"
+        );
         setLoading(false);
       });
   }, []);
@@ -71,16 +77,45 @@ export default function ImpactHeroSectionEditor() {
     }));
   }
 
+  // schema change handler
+  const handleSchemaChange = (e) => {
+    const value = e.target.value;
+    setRawSchema(value);
+
+    try {
+      const parsed = JSON.parse(value);
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        setForm((f) => ({ ...f, schemaMarkup: parsed }));
+      }
+    } catch {
+      // ignore while typing invalid JSON
+    }
+  };
+
   async function handleSave() {
     setSaving(true);
+
+    let schemaToSave = {};
+    try {
+      const parsed = JSON.parse(rawSchema);
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        schemaToSave = parsed;
+      }
+    } catch {}
+
     const res = await fetch("/api/impactherosection", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, schemaMarkup: schemaToSave }),
     });
     const updated = await res.json();
     setData(updated);
     setForm(updated);
+    setRawSchema(
+      updated?.schemaMarkup
+        ? JSON.stringify(updated.schemaMarkup, null, 2)
+        : "{}"
+    );
     setEdit(false);
     setSaving(false);
   }
@@ -269,13 +304,6 @@ export default function ImpactHeroSectionEditor() {
                 className="w-full border border-gray-300 rounded-xl px-3 py-2"
               />
               <input
-                name="image"
-                value={form.og?.image || ""}
-                onChange={handleOgChange}
-                placeholder="OG Image URL"
-                className="w-full border border-gray-300 rounded-xl px-3 py-2"
-              />
-              <input
                 name="url"
                 value={form.og?.url || ""}
                 onChange={handleOgChange}
@@ -311,6 +339,23 @@ export default function ImpactHeroSectionEditor() {
                 ))}
               </div>
             </div>
+
+            <div className="text-sm">
+              <label className="font-medium block mb-1">
+                Schema Markup (JSON-LD)
+              </label>
+              <textarea
+                name="schemaMarkup"
+                className="border p-2 w-full rounded-xl border-gray-300 font-mono"
+                placeholder='{"name": "Name of Schema", "description": "Description for Schema", "link": "https://"}'
+                value={rawSchema}
+                onChange={handleSchemaChange}
+                rows={6}
+              />
+            </div>
+            <p className="text-sm p-3 font-mono rounded-xl bg-purple-100 border border-gray-300 whitespace-pre-wrap">
+              {rawSchema || "No Schema Added"}
+            </p>
           </div>
         </div>
       ) : (
@@ -431,8 +476,8 @@ export default function ImpactHeroSectionEditor() {
                 Open Graph (OG)
               </p>
 
-              <div>
-                <p className="text-xs sm:text-sm font-medium text-gray-600">
+              <div className="flex gap-2 items-center">
+                <p className="text-xs sm:text-sm font-bold text-gray-600">
                   OG Title
                 </p>
                 <p className="text-sm sm:text-base text-gray-700">
@@ -440,8 +485,8 @@ export default function ImpactHeroSectionEditor() {
                 </p>
               </div>
 
-              <div>
-                <p className="text-xs sm:text-sm font-medium text-gray-600">
+              <div className="flex gap-2 items-center">
+                <p className="text-xs sm:text-sm font-bold text-gray-600">
                   OG Description
                 </p>
                 <p className="text-sm sm:text-base text-gray-700">
@@ -451,22 +496,51 @@ export default function ImpactHeroSectionEditor() {
                 </p>
               </div>
 
-              <div>
-                <p className="text-xs sm:text-sm font-medium text-gray-600">
-                  OG Image URL
-                </p>
-                <p className="text-sm sm:text-base text-gray-700 break-all">
-                  {data.og?.image || <span className="text-gray-400">N/A</span>}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-xs sm:text-sm font-medium text-gray-600">
+              <div className="flex gap-2 items-center">
+                <p className="text-xs sm:text-sm font-bold text-gray-600">
                   OG URL
                 </p>
                 <p className="text-sm sm:text-base text-gray-700 break-all">
                   {data.og?.url || <span className="text-gray-400">N/A</span>}
                 </p>
+              </div>
+
+              <hr className="text-gray-300 my-8" />
+
+              <h2 className="text-lg sm:text-xl font-semibold">
+                Schema Markup
+              </h2>
+              <div>
+                {data.schemaMarkup ? (
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-300 p-6 space-y-2">
+                    <h3 className="text-lg font-semibold">
+                      {data.schemaMarkup.name}
+                    </h3>
+                    <InfoRow
+                      label="Description"
+                      value={data.schemaMarkup.description || "N/A"}
+                    />
+                    <InfoRow
+                      label="Link"
+                      value={
+                        data.schemaMarkup.link ? (
+                          <a
+                            href={data.schemaMarkup.link}
+                            className="text-blue-600 hover:underline"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {data.schemaMarkup.link}
+                          </a>
+                        ) : (
+                          "N/A"
+                        )
+                      }
+                    />
+                  </div>
+                ) : (
+                  <span className="text-gray-400">N/A</span>
+                )}
               </div>
             </div>
           </div>
