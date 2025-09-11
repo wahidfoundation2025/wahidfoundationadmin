@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Pencil } from "lucide-react";
+import InfoRow from "@/app/components/InfoRow";
 
 async function getProject(id) {
   const res = await fetch(
@@ -313,7 +314,7 @@ export default async function ProjectDetailPage({ params }) {
             />
             <InfoRow
               label="Schema Markup"
-              value={project.scheme || "N/A"}
+              value={JSON.stringify(project.scheme) || "N/A"}
             />
           </div>
         </Section>
@@ -322,28 +323,7 @@ export default async function ProjectDetailPage({ params }) {
   );
 }
 
-// Helper components
-function InfoRow({ label, value }) {
-  return (
-    <div className="flex items-start space-x-2 text-sm text-gray-700">
-      <span className="font-medium">{label}:</span>
-      <div>
-        {Array.isArray(value) && value.length > 0 ? (
-          value.map((val, idx) => (
-            <span key={idx}>
-              {val}
-              {idx < value.length - 1 ? ", " : ""}
-            </span>
-          ))
-        ) : typeof value === "string" || typeof value === "number" ? (
-          <span>{value}</span>
-        ) : (
-          <span>{value || "N/A"}</span>
-        )}
-      </div>
-    </div>
-  );
-}
+// Helper component
 
 function Section({ title, children }) {
   return (
