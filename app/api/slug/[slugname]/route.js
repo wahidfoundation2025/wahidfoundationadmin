@@ -3,19 +3,15 @@ import { NextResponse } from "next/server";
 import { dbConnect } from "@/lib/dbConnect";
 import Project from "@/lib/models/Project";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*", // ⚠️ change this to frontend domain in production
-  "Access-Control-Allow-Methods": "GET, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
-};
+import { corsHeaders } from "../../../layout";
 
 // ✅ GET projectId from slug
 export async function GET(req, { params }) {
   await dbConnect();
-  console.log(params)
+  console.log(params);
 
   const { slugname } = params;
-  const slug = slugname
+  const slug = slugname;
   console.log("Received slug:", slugname);
 
   if (!slug) {
@@ -36,11 +32,11 @@ export async function GET(req, { params }) {
 
   return NextResponse.json(
     { projectId: project._id, slug: project.slug },
-    { headers: corsHeaders }
+    { status: 200, headers: corsHeaders }
   );
 }
 
 // ✅ OPTIONS (CORS preflight)
 export async function OPTIONS() {
-  return NextResponse.json({}, { headers: corsHeaders });
+  return NextResponse.json({}, { status: 200, headers: corsHeaders });
 }

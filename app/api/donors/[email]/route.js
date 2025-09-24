@@ -3,12 +3,7 @@ import Donor from '@/lib/models/donor';
 import donation from '@/lib/models/donation';
 import project from '@/lib/models/Project';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET,POST,PUT,OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Content-Type': 'application/json'
-};
+import { corsHeaders } from '../../../layout';
 
 export async function OPTIONS() {
   return new Response(null, {

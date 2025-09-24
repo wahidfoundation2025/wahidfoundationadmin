@@ -1,56 +1,48 @@
-import { dbConnect } from '../../../lib/dbConnect'
-import VolunteerPosition from '../../../lib/models/VolunteerPosition'
+import { dbConnect } from "../../../lib/dbConnect";
+import VolunteerPosition from "../../../lib/models/VolunteerPosition";
+
+import { corsHeaders } from "../../layout";
 
 export async function OPTIONS() {
   return new Response(null, {
     status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET,POST,DELETE,OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
-  })
+    headers: corsHeaders,
+  });
 }
 
 export async function GET() {
-  await dbConnect()
-  const positions = await VolunteerPosition.find()
+  await dbConnect();
+  const positions = await VolunteerPosition.find();
   return new Response(JSON.stringify(positions), {
     status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Content-Type': 'application/json',
-    },
-  })
+    headers: corsHeaders,
+  });
 }
 
 export async function POST(req) {
-  await dbConnect()
-  const data = await req.json()
-  const position = await VolunteerPosition.create(data)
+  await dbConnect();
+  const data = await req.json();
+  const position = await VolunteerPosition.create(data);
   return new Response(JSON.stringify(position), {
     status: 201,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Content-Type': 'application/json',
-    },
-  })
+    headers: corsHeaders,
+  });
 }
 
 // DELETE: /api/volunteer-positions?id=<id>
 export async function DELETE(req) {
-  await dbConnect()
-  const { searchParams } = new URL(req.url)
-  const id = searchParams.get('id')
+  await dbConnect();
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
   if (!id) {
-    return new Response(JSON.stringify({ error: 'Missing id' }), {
+    return new Response(JSON.stringify({ error: "Missing id" }), {
       status: 400,
-      headers: { 'Access-Control-Allow-Origin': '*' },
-    })
+      headers: corsHeaders,
+    });
   }
-  await VolunteerPosition.findByIdAndDelete(id)
+  await VolunteerPosition.findByIdAndDelete(id);
   return new Response(JSON.stringify({ success: true }), {
     status: 200,
-    headers: { 'Access-Control-Allow-Origin': '*' },
-  })
+    headers: corsHeaders,
+  });
 }

@@ -1,33 +1,42 @@
-import { dbConnect } from '../../../lib/dbConnect'
-import Donation from '../../../lib/models/donation'
-import Donor from '../../../lib/models/donor'
+import { dbConnect } from "../../../lib/dbConnect";
+import Donation from "../../../lib/models/donation";
+import Donor from "../../../lib/models/donor";
+
+import { corsHeaders } from "../../layout";
+
+// Handle preflight requests
+export async function OPTIONS() {
+  return new Response(null, { status: 200, headers: corsHeaders });
+}
 
 export async function POST() {
-  await dbConnect()
-  const donations = await Donation.find()
+  await dbConnect();
+  const donations = await Donation.find();
   // Group donations by donor email
-  const donorMap = {}
+  const donorMap = {};
   for (const donation of donations) {
     if (!donorMap[donation.email]) {
       donorMap[donation.email] = {
         name: donation.name,
         email: donation.email,
-        profilePicture: '',
+        profilePicture: "",
         donations: [],
         totalDonated: 0,
         projectsDonatedTo: new Set(),
-      }
+      };
     }
-    donorMap[donation.email].donations.push(donation._id)
-    donorMap[donation.email].totalDonated += donation.amount
+    donorMap[donation.email].donations.push(donation._id);
+    donorMap[donation.email].totalDonated += donation.amount;
     if (donation.projectId) {
-      donorMap[donation.email].projectsDonatedTo.add(donation.projectId.toString())
+      donorMap[donation.email].projectsDonatedTo.add(
+        donation.projectId.toString()
+      );
     }
   }
 
-  let created = 0
+  let created = 0;
   for (const email in donorMap) {
-    const donor = donorMap[email]
+    const donor = donorMap[email];
     // Upsert: create if not exists, else update
     await Donor.findOneAndUpdate(
       { email: donor.email },
@@ -42,15 +51,17 @@ export async function POST() {
         taxReceipts: [],
       },
       { upsert: true }
-    )
-    created++
+    );
+    created++;
   }
 
-  return new Response(JSON.stringify({ message: `Donor population complete! Upserted: ${created}` }), {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Content-Type': 'application/json',
-    },
-  })
+  return new Response(
+    JSON.stringify({
+      message: `Donor population complete! Upserted: ${created}`,
+    }),
+    {
+      status: 200,
+      headers: corsHeaders,
+    }
+  );
 }

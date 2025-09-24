@@ -1,12 +1,8 @@
-import { NextResponse } from 'next/server';
-import Category from '@/lib/models/Category';
-import { dbConnect } from '@/lib/dbConnect';
+import { NextResponse } from "next/server";
+import Category from "@/lib/models/Category";
+import { dbConnect } from "@/lib/dbConnect";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
+import { corsHeaders } from "../../layout";
 
 // Handle preflight requests
 export async function OPTIONS() {
@@ -16,7 +12,7 @@ export async function OPTIONS() {
 export async function GET() {
   await dbConnect();
   const categories = await Category.find();
-  return NextResponse.json(categories, { headers: corsHeaders });
+  return NextResponse.json(categories, { status: 200, headers: corsHeaders });
 }
 
 export async function POST(req) {

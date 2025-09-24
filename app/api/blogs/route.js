@@ -1,20 +1,15 @@
-import { NextResponse } from 'next/server';
-import { dbConnect } from '@/lib/dbConnect';
-import Blog from '@/lib/models/blog';
+import { NextResponse } from "next/server";
+import { dbConnect } from "@/lib/dbConnect";
+import Blog from "@/lib/models/blog";
 
-// Common CORS headers
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
+import { corsHeaders } from "../../layout";
 
 // Simple slug generation function
 function generateSlug(title) {
   return title
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
 
 // Handle GET (fetch all blogs)
@@ -22,11 +17,11 @@ export async function GET() {
   try {
     await dbConnect();
     const blogs = await Blog.find().sort({ createdAt: -1 });
-    return NextResponse.json(blogs, { headers: corsHeaders });
+    return NextResponse.json(blogs, { status: 200, headers: corsHeaders });
   } catch (error) {
-    console.error('GET /api/blogs error:', error);
+    console.error("GET /api/blogs error:", error);
     return NextResponse.json(
-      { error: 'Failed to fetch blogs', details: error.message },
+      { error: "Failed to fetch blogs", details: error.message },
       { status: 500, headers: corsHeaders }
     );
   }
@@ -35,13 +30,13 @@ export async function GET() {
 // Handle POST (create a blog)
 export async function POST(req) {
   try {
-    console.log('Received POST request to /api/blogs');
+    console.log("Received POST request to /api/blogs");
     await dbConnect();
     const body = await req.json();
-    console.log('Request body:', body);
+    console.log("Request body:", body);
 
     // Validate required fields
-    const requiredFields = ['title', 'content', 'authorName'];
+    const requiredFields = ["title", "content", "authorName"];
     for (const field of requiredFields) {
       if (!body[field]) {
         return NextResponse.json(
@@ -72,7 +67,7 @@ export async function POST(req) {
         body.schemaMarkup = JSON.parse(body.schemaMarkup);
       } catch (error) {
         return NextResponse.json(
-          { error: 'Invalid schemaMarkup: must be valid JSON' },
+          { error: "Invalid schemaMarkup: must be valid JSON" },
           { status: 400, headers: corsHeaders }
         );
       }
@@ -82,9 +77,9 @@ export async function POST(req) {
     const blog = await Blog.create(body);
     return NextResponse.json(blog, { status: 201, headers: corsHeaders });
   } catch (error) {
-    console.error('POST /api/blogs error:', error);
+    console.error("POST /api/blogs error:", error);
     return NextResponse.json(
-      { error: 'Failed to create blog', details: error.message },
+      { error: "Failed to create blog", details: error.message },
       { status: 400, headers: corsHeaders }
     );
   }

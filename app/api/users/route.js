@@ -2,11 +2,7 @@
 import { dbConnect } from '@/lib/dbConnect';
 import User from '@/lib/models/user';
 
-export const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
+import { corsHeaders } from '../../layout';
 
 // Handle preflight requests
 export async function OPTIONS() {
