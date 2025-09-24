@@ -1,6 +1,8 @@
 import { dbConnect } from "@/lib/dbConnect";
 import Project from "@/lib/models/Project";
 
+import { corsHeaders } from "../../layout";
+
 // GET Projects
 export async function GET(req) {
   await dbConnect();
@@ -18,12 +20,16 @@ export async function GET(req) {
     ...(donationType && { "donationOptions.type": donationType }),
   };
 
-  const [totalCount, activeCount, completedCount, projects] = await Promise.all([
-    Project.countDocuments(query),
-    Project.countDocuments({ status: "Active" }),
-    Project.countDocuments({ status: "Completed" }),
-    Project.find(query).skip((page - 1) * limit).limit(limit),
-  ]);
+  const [totalCount, activeCount, completedCount, projects] = await Promise.all(
+    [
+      Project.countDocuments(query),
+      Project.countDocuments({ status: "Active" }),
+      Project.countDocuments({ status: "Completed" }),
+      Project.find(query)
+        .skip((page - 1) * limit)
+        .limit(limit),
+    ]
+  );
 
   return new Response(
     JSON.stringify({
@@ -35,10 +41,7 @@ export async function GET(req) {
     }),
     {
       status: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
+      headers: corsHeaders,
     }
   );
 }
@@ -52,18 +55,12 @@ export async function POST(req) {
 
     return new Response(JSON.stringify(newProject), {
       status: 201,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
+      headers: corsHeaders,
     });
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), {
       status: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
+      headers: corsHeaders,
     });
   }
 }

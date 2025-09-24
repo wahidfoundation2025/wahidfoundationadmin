@@ -178,7 +178,7 @@ export default function HomeImpactSectionEditor() {
           <div>
             <span className="text-base ms:text-xl font-semibold block mb-4">Impact Stats:</span>
 
-            <div className="flex sm:flex-row flex-col gap-4 sm:overflow-x-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
               {(data.stats || []).map((stat, idx) => {
                 const Icon = ICON_MAP[stat.icon] || null
                 return (

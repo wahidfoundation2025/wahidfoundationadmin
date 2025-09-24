@@ -16,17 +16,16 @@ async function getProject(id) {
 }
 
 export default async function ProjectDetailPage({ params }) {
-  const project = await getProject(params.id);
+  const { id } = await params;
+  const project = await getProject(id);
   if (!project) return notFound();
-
-  console.log(project);
 
   return (
     <div className="min-h-full w-full bg-white p-6 rounded-2xl">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">{project.title}</h1>
         <Link
-          href={`/projects/${params.id}/edit`}
+          href={`/projects/${id}/edit`}
           className="p-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl flex items-center gap-2"
         >
           <Pencil className="w-5 h-5" />

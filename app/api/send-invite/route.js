@@ -1,7 +1,14 @@
-import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
-import Invite from '@/lib/models/invite';
-import  { dbConnect }from '@/lib/dbConnect';
+import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
+import Invite from "@/lib/models/invite";
+import { dbConnect } from "@/lib/dbConnect";
+
+import { corsHeaders } from "../../layout";
+
+// Handle preflight requests
+export async function OPTIONS() {
+  return new Response(null, { status: 200, headers: corsHeaders });
+}
 
 export async function POST(req) {
   try {
@@ -14,18 +21,27 @@ export async function POST(req) {
 
     if (!email || !role) {
       console.log("❌ Missing email or role");
-      return NextResponse.json({ error: 'Email and role are required' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Email and role are required" },
+        { status: 400 }
+      );
     }
 
     if (!Array.isArray(access)) {
       console.log("❌ Access is not an array:", access);
-      return NextResponse.json({ error: 'Access must be an array' }, { status: 422 });
+      return NextResponse.json(
+        { error: "Access must be an array" },
+        { status: 422 }
+      );
     }
 
     const existing = await Invite.findOne({ email });
     if (existing) {
       console.log("⚠️ Email already invited:", email);
-      return NextResponse.json({ error: 'Email already invited' }, { status: 409 });
+      return NextResponse.json(
+        { error: "Email already invited" },
+        { status: 409 }
+      );
     }
 
     const invite = await Invite.create({ email, role, access });
@@ -44,7 +60,7 @@ export async function POST(req) {
     const result = await transporter.sendMail({
       from: '"Wahid Admin" <no-reply@wahid.org.in>',
       to: email,
-      subject: 'You are invited to WahidAdmin Dashboard',
+      subject: "You are invited to WahidAdmin Dashboard",
       html: `
         <h2>You've been invited to WahidAdmin</h2>
         <p>You were invited to join the admin dashboard with role: <b>${role}</b></p>
@@ -54,10 +70,16 @@ export async function POST(req) {
 
     console.log("📤 Email sent:", result.messageId);
 
-    return NextResponse.json({ success: true, invite });
+    return NextResponse.json(
+      { success: true, invite },
+      { status: 201, headers: corsHeaders }
+    );
   } catch (err) {
-    console.error('❌ Invite Error:', err.message);
+    console.error("❌ Invite Error:", err.message);
     console.error(err.stack);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500, headers: corsHeaders }
+    );
   }
 }

@@ -1,14 +1,12 @@
 import { dbConnect } from '../../../lib/dbConnect'
 import Donor from '../../../lib/models/donor'
 
+import { corsHeaders } from '../../layout'
+
 export async function OPTIONS() {
   return new Response(null, {
     status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET,OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
+    headers: corsHeaders,
   })
 }
 
@@ -17,9 +15,6 @@ export async function GET() {
   const donors = await Donor.find().sort({ createdAt: -1 })
   return new Response(JSON.stringify(donors), {
     status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Content-Type': 'application/json',
-    },
+    headers: corsHeaders,
   })
 }
