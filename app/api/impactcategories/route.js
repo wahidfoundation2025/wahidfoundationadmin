@@ -3,11 +3,7 @@ import { dbConnect } from "@/lib/dbConnect";
 import ImpactCategoriesDoc from "@/lib/models/impactcategories";
 import { NextResponse } from "next/server";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET,POST,DELETE,OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type,Authorization",
-};
+import { corsHeaders } from "../../layout";
 
 // Handle CORS preflight
 export async function OPTIONS() {
@@ -17,7 +13,10 @@ export async function OPTIONS() {
 export async function GET() {
   await dbConnect();
   const doc = await ImpactCategoriesDoc.findOne({});
-  return NextResponse.json(doc || { section: {}, categories: [] }, { headers: corsHeaders });
+  return NextResponse.json(doc || { section: {}, categories: [] }, {
+    status: 200,
+    headers: corsHeaders,
+  });
 }
 
 export async function POST(req) {
@@ -29,7 +28,7 @@ export async function POST(req) {
     upsert: true,
   });
 
-  return NextResponse.json(updated, { headers: corsHeaders });
+  return NextResponse.json(updated, { status: 200, headers: corsHeaders });
 }
 
 export async function DELETE() {
@@ -41,5 +40,5 @@ export async function DELETE() {
     { new: true, upsert: true }
   );
 
-  return NextResponse.json(cleared, { headers: corsHeaders });
+  return NextResponse.json(cleared, { status: 200, headers: corsHeaders });
 }

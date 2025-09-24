@@ -140,7 +140,7 @@ export default function DonorsPage() {
       </div>
 
       {/* ------------------- CLERK USERS TABLE ------------------- */}
-      <h1 className="text-xl sm:text-2xl font-bold mt-12 mb-6">Logged-in Users</h1>
+      <h1 className="text-xl sm:text-2xl font-bold mt-12 mb-6">Registered Users</h1>
       <div className="bg-white border border-gray-300 rounded-xl shadow overflow-x-auto">
         <table className="w-full text-sm table-auto text-left">
           <thead className="bg-gray-200 text-gray-700 font-semibold border-b border-gray-300">

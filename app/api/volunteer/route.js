@@ -1,15 +1,13 @@
-import { dbConnect } from '../../../lib/dbConnect'
+import { dbConnect } from "../../../lib/dbConnect";
 import Volunteer from "../../../lib/models/volunteer";
+
+import { corsHeaders } from "../../layout";
 
 // Handle CORS preflight
 export async function OPTIONS() {
   return new Response(null, {
     status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
+    headers: corsHeaders,
   });
 }
 
@@ -19,10 +17,7 @@ export async function GET() {
   const volunteers = await Volunteer.find();
   return new Response(JSON.stringify(volunteers), {
     status: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Content-Type": "application/json",
-    },
+    headers: corsHeaders,
   });
 }
 
@@ -33,9 +28,6 @@ export async function POST(req) {
   const volunteer = await Volunteer.create(data);
   return new Response(JSON.stringify(volunteer), {
     status: 201,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Content-Type": "application/json",
-    },
+    headers: corsHeaders,
   });
 }

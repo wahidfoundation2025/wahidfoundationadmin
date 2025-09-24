@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, Trash2 } from "lucide-react";
 import { IoIosCloseCircle } from "react-icons/io";
 import { AiOutlineEdit } from "react-icons/ai";
+import isEqual from "lodash.isequal";
 
 import dynamic from "next/dynamic";
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
@@ -96,6 +97,9 @@ export default function EditProjectPage({ params }) {
     metadescription: "",
   });
 
+  const [initialForm, setInitialForm] = useState(null);
+  const [isDirty, setIsDirty] = useState(false);
+
   useEffect(() => {
     async function fetchProject() {
       try {
@@ -104,12 +108,12 @@ export default function EditProjectPage({ params }) {
         if (!res.ok) throw new Error("Failed to load project");
         const data = await res.json();
 
-        // Ensure all required fields are present with defaults
-        setForm((prev) => ({
-          ...prev,
+        const normalized = {
+          ...form,
           ...data,
           category: Array.isArray(data.category) ? data.category : [],
           mainImage: data.mainImage || "",
+          cardImage: data.cardImage || "",
           photoGallery: Array.isArray(data.photoGallery)
             ? data.photoGallery
             : [],
@@ -129,7 +133,7 @@ export default function EditProjectPage({ params }) {
                 type: opt.type || "Unknown",
                 isEnabled: opt.isEnabled || false,
               }))
-            : prev.donationOptions,
+            : form.donationOptions,
           impact: Array.isArray(data.impact) ? data.impact : [],
           scheme: Array.isArray(data.scheme) ? data.scheme : [],
           timeline: Array.isArray(data.timeline) ? data.timeline : [],
@@ -137,13 +141,10 @@ export default function EditProjectPage({ params }) {
           target_keywords: Array.isArray(data.target_keywords)
             ? data.target_keywords
             : [],
-        }));
-        setImagePreview(data.mainImage || "");
-        setCardPreview(data.cardImage || "");
-        setGalleryPreviews(
-          Array.isArray(data.photoGallery) ? data.photoGallery : []
-        );
-        setOgImagePreview(data.og?.image || "");
+        };
+
+        setForm(normalized);
+        setInitialForm(normalized);
       } catch (err) {
         console.error(err);
         setError("Failed to load project details. Please try again.");
@@ -152,25 +153,19 @@ export default function EditProjectPage({ params }) {
       }
     }
 
-    async function fetchCategories() {
-      try {
-        const res = await fetch("/api/categories");
-        if (!res.ok) throw new Error("Failed to load categories");
-        const data = await res.json();
-        setCategories(Array.isArray(data) ? data : []);
-      } catch (err) {
-        console.error(err);
-        setError("Failed to load categories. Please try again.");
-      }
-    }
-
     fetchProject();
-    fetchCategories();
   }, [id]);
+
+  // track dirty state
+  useEffect(() => {
+    if (initialForm) {
+      setIsDirty(!isEqual(form, initialForm));
+    }
+  }, [form, initialForm]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target || {};
-    if (!name) return; // Prevent errors from missing name
+    if (!name) return;
 
     if (name.startsWith("projectManager.")) {
       const field = name.split(".")[1];
@@ -452,16 +447,18 @@ export default function EditProjectPage({ params }) {
       return;
     }
 
-    const finalForm = newScheme ? handleAddScheme() : form;
-
     setSubmitting(true);
     try {
       const res = await fetch(`/api/projects/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(finalForm),
+        body: JSON.stringify(form),
       });
       if (!res.ok) throw new Error("Failed to update project");
+
+      setInitialForm(form);
+      setIsDirty(false);
+
       router.push(`/projects/${id}`);
     } catch (err) {
       console.error(err);
@@ -505,11 +502,16 @@ export default function EditProjectPage({ params }) {
         <h1 className="text-xl sm:text-2xl font-bold">Edit Project</h1>
         <button
           onClick={handleSubmit}
-          className="px-4 sm:px-10 py-2 text-sm sm:text-base font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white rounded-xl flex items-center gap-2"
-          disabled={submitting}
+          className={`px-4 py-2 rounded-lg flex items-center ${
+            isDirty
+              ? "bg-violet-600 text-white hover:bg-violet-700"
+              : "bg-gray-400 text-gray-200 cursor-not-allowed"
+          }`}
+          disabled={!isDirty || submitting}
+          type="submit"
         >
-          {submitting && <Loader2 className="w-4 h-4 animate-spin" />} Save
-          Changes
+          {submitting && <Loader2 className="w-4 h-4 animate-spin" />} 
+          <p className="mx-2">Save Changes</p>
         </button>
       </div>
 
@@ -782,7 +784,7 @@ export default function EditProjectPage({ params }) {
                 {uploadingMain ? (
                   <Loader2 className="animate-spin w-4 h-4" />
                 ) : (
-                  "Upload Main Image"
+                  "Upload New Main Image"
                 )}
               </button>
               <input
@@ -792,9 +794,9 @@ export default function EditProjectPage({ params }) {
                 className="hidden"
                 onChange={(e) => handleImageUpload(e, "main")}
               />
-              {imagePreview && (
+              {(imagePreview || form.mainImage) && (
                 <img
-                  src={imagePreview}
+                  src={imagePreview || form.mainImage}
                   alt="Main image preview"
                   className="w-40 h-40 object-cover rounded-xl border border-gray-200"
                 />
@@ -814,7 +816,7 @@ export default function EditProjectPage({ params }) {
                 {uploadingCard ? (
                   <Loader2 className="animate-spin w-4 h-4" />
                 ) : (
-                  "Upload Card Image"
+                  "Upload New Card Image"
                 )}
               </button>
               <input
@@ -824,9 +826,9 @@ export default function EditProjectPage({ params }) {
                 className="hidden"
                 onChange={(e) => handleImageUpload(e, "card")}
               />
-              {cardPreview && (
+              {(cardPreview || form.cardImage) && (
                 <img
-                  src={cardPreview}
+                  src={cardPreview || form.cardImage}
                   alt="Card image preview"
                   className="w-40 h-40 object-cover rounded-xl border border-gray-200"
                 />

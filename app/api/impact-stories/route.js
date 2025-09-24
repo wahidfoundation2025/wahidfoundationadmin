@@ -1,14 +1,12 @@
-import { dbConnect } from '@/lib/dbConnect'
-import ImpactStory from '../../../lib/models/ImpactStory'
+import { dbConnect } from "@/lib/dbConnect";
+import ImpactStory from "../../../lib/models/ImpactStory";
+
+import { corsHeaders } from "../../layout";
 
 export async function OPTIONS() {
   return new Response(null, {
     status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET,POST,DELETE,OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
+    headers: corsHeaders,
   });
 }
 
@@ -17,10 +15,7 @@ export async function GET() {
   const stories = await ImpactStory.find().sort({ createdAt: -1 });
   return new Response(JSON.stringify(stories), {
     status: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Content-Type": "application/json",
-    },
+    headers: corsHeaders,
   });
 }
 
@@ -30,10 +25,7 @@ export async function POST(req) {
   const story = await ImpactStory.create(data);
   return new Response(JSON.stringify(story), {
     status: 201,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Content-Type": "application/json",
-    },
+    headers: corsHeaders,
   });
 }
 
@@ -41,16 +33,16 @@ export async function POST(req) {
 export async function DELETE(req) {
   await dbConnect();
   const { searchParams } = new URL(req.url);
-  const id = searchParams.get('id');
+  const id = searchParams.get("id");
   if (!id) {
-    return new Response(JSON.stringify({ error: 'Missing id' }), {
+    return new Response(JSON.stringify({ error: "Missing id" }), {
       status: 400,
-      headers: { "Access-Control-Allow-Origin": "*" },
+      headers: corsHeaders,
     });
   }
   await ImpactStory.findByIdAndDelete(id);
   return new Response(JSON.stringify({ success: true }), {
     status: 200,
-    headers: { "Access-Control-Allow-Origin": "*" },
+    headers: corsHeaders,
   });
 }

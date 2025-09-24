@@ -1,12 +1,8 @@
 // app/api/invites/[email]/route.js
-import { dbConnect } from '@/lib/dbConnect';
-import Invite from '@/lib/models/invite';
+import { dbConnect } from "@/lib/dbConnect";
+import Invite from "@/lib/models/invite";
 
-export const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET,DELETE,OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
+import { corsHeaders } from "../../../layout";
 
 // Handle preflight requests
 export async function OPTIONS() {
@@ -25,21 +21,27 @@ export async function DELETE(_, { params }) {
     const deleted = await Invite.findOneAndDelete({ email });
 
     if (!deleted) {
-      return new Response(JSON.stringify({ message: 'Invite not found' }), {
+      return new Response(JSON.stringify({ message: "Invite not found" }), {
         status: 404,
         headers: corsHeaders,
       });
     }
 
-    return new Response(JSON.stringify({ message: 'Invite deleted successfully' }), {
-      status: 200,
-      headers: corsHeaders,
-    });
+    return new Response(
+      JSON.stringify({ message: "Invite deleted successfully" }),
+      {
+        status: 200,
+        headers: corsHeaders,
+      }
+    );
   } catch (error) {
-    console.error('DELETE /api/invites error:', error);
-    return new Response(JSON.stringify({ message: 'Failed to delete invite' }), {
-      status: 500,
-      headers: corsHeaders,
-    });
+    console.error("DELETE /api/invites error:", error);
+    return new Response(
+      JSON.stringify({ message: "Failed to delete invite" }),
+      {
+        status: 500,
+        headers: corsHeaders,
+      }
+    );
   }
 }

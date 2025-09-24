@@ -1,13 +1,9 @@
-import { NextResponse } from 'next/server';
-import { dbConnect } from '@/lib/dbConnect';
-import Blog from '@/lib/models/blog';
-import mongoose from 'mongoose';
+import { NextResponse } from "next/server";
+import { dbConnect } from "@/lib/dbConnect";
+import Blog from "@/lib/models/blog";
+import mongoose from "mongoose";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*', // change to your frontend domain in prod
-  'Access-Control-Allow-Methods': 'GET, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
+import { corsHeaders } from "../../../layout";
 
 // ✅ GET single blog
 export async function GET(req, { params }) {
@@ -15,12 +11,18 @@ export async function GET(req, { params }) {
   const { id } = params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return NextResponse.json({ error: 'Invalid ID' }, { status: 400, headers: corsHeaders });
+    return NextResponse.json(
+      { error: "Invalid ID" },
+      { status: 400, headers: corsHeaders }
+    );
   }
 
   const blog = await Blog.findById(id);
   if (!blog) {
-    return NextResponse.json({ error: 'Blog not found' }, { status: 404, headers: corsHeaders });
+    return NextResponse.json(
+      { error: "Blog not found" },
+      { status: 404, headers: corsHeaders }
+    );
   }
 
   return NextResponse.json(blog, { headers: corsHeaders });
@@ -32,7 +34,10 @@ export async function PUT(req, { params }) {
   const { id } = params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return NextResponse.json({ error: 'Invalid ID' }, { status: 400, headers: corsHeaders });
+    return NextResponse.json(
+      { error: "Invalid ID" },
+      { status: 400, headers: corsHeaders }
+    );
   }
 
   const data = await req.json();
@@ -43,7 +48,10 @@ export async function PUT(req, { params }) {
   });
 
   if (!updated) {
-    return NextResponse.json({ error: 'Blog not found' }, { status: 404, headers: corsHeaders });
+    return NextResponse.json(
+      { error: "Blog not found" },
+      { status: 404, headers: corsHeaders }
+    );
   }
 
   return NextResponse.json(updated, { headers: corsHeaders });
@@ -55,16 +63,25 @@ export async function DELETE(req, { params }) {
   const { id } = params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return NextResponse.json({ error: 'Invalid ID' }, { status: 400, headers: corsHeaders });
+    return NextResponse.json(
+      { error: "Invalid ID" },
+      { status: 400, headers: corsHeaders }
+    );
   }
 
   const deleted = await Blog.findByIdAndDelete(id);
 
   if (!deleted) {
-    return NextResponse.json({ error: 'Blog not found' }, { status: 404, headers: corsHeaders });
+    return NextResponse.json(
+      { error: "Blog not found" },
+      { status: 404, headers: corsHeaders }
+    );
   }
 
-  return NextResponse.json({ message: 'Blog deleted successfully' }, { headers: corsHeaders });
+  return NextResponse.json(
+    { message: "Blog deleted successfully" },
+    { headers: corsHeaders }
+  );
 }
 
 // ✅ OPTIONS preflight

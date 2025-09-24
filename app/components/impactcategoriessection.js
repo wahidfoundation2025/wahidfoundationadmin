@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { TbEdit, TbTrash } from "react-icons/tb";
-import { Edit } from "lucide-react";
 
 export default function ImpactCategoriesEditor() {
   const [loading, setLoading] = useState(true);
@@ -213,25 +212,25 @@ export default function ImpactCategoriesEditor() {
             className={`w-full md:w-1/2 lg:w-1/3 p-3 shadow-lg border border-gray-200 rounded mb-2 bg-gray-50`}
           >
             <div className="flex justify-between items-center">
-              <h3 className="font-semibold text-sm">{cat.title}</h3>
-              <div className="flex flex-col gap-2">
+              <h3 className="font-semibold text-md">{cat.title}</h3>
+              <div className="flex gap-2">
                 <button
                   onClick={() => handleEditCategory(cat)}
-                  className="text-violet-600 text-sm"
+                  className="text-violet-600 text-sm cursor-pointer"
                 >
                   <TbEdit size={18} />
                 </button>
                 <button
                   onClick={() => handleRemoveCategory(cat.key)}
-                  className="text-red-600 text-sm"
+                  className="text-red-600 text-sm cursor-pointer"
                 >
-                   <TbTrash size={18} />
+                  <TbTrash size={18} />
                 </button>
               </div>
             </div>
             <p className="text-sm text-gray-600">{cat.subtitle}</p>
 
-            <div className="flex justify-start items-center">
+            <div className="flex gap-2 justify-start items-center">
               <p className="text-sm text-gray-600">Card Color: </p>
               <div
                 className="w-5 h-5 rounded-full border border-gray-300"
@@ -269,7 +268,7 @@ export default function ImpactCategoriesEditor() {
       </div>
 
       {/* Add / Edit Category */}
-      <div className="p-4 border text-sm border-gray-200 rounded-xl bg-white shadow">
+      <div className="p-4 mx-4 border text-sm border-gray-200 rounded-xl bg-white shadow">
         <h2 className="font-semibold text-sm mb-2">
           {editingKey ? "Edit Category" : "Add Category"}
         </h2>
@@ -333,33 +332,35 @@ export default function ImpactCategoriesEditor() {
           className="w-full text-xs px-2 py-1 border border-gray-300 rounded mb-2"
         />
 
-        <h3 className="font-semibold mt-4">Add Stat</h3>
-        <input
-          type="text"
-          placeholder="Stat Label"
-          value={newStat.label}
-          onChange={(e) => setNewStat({ ...newStat, label: e.target.value })}
-          className="w-full text-xs px-2 py-1 border border-gray-300 rounded mb-2"
-        />
-        <input
-          type="text"
-          placeholder="Stat Value"
-          value={newStat.value}
-          onChange={(e) => setNewStat({ ...newStat, value: e.target.value })}
-          className="w-full text-xs px-2 py-1 border border-gray-300 rounded mb-2"
-        />
-        <input
-          type="number"
-          placeholder="Progress %"
-          value={newStat.progress}
-          onChange={(e) =>
-            setNewStat({ ...newStat, progress: Number(e.target.value) })
-          }
-          className="w-full text-xs px-2 py-1 border border-gray-300 rounded mb-2"
-        />
+        <h3 className="font-semibold mt-4 mb-2">Add Stat</h3>
+        <div className="flex flex-col lg:flex-row justify-evenly gap-2 mb-2">
+          <input
+            type="text"
+            placeholder="Stat Label"
+            value={newStat.label}
+            onChange={(e) => setNewStat({ ...newStat, label: e.target.value })}
+            className="w-full text-xs px-2 py-1 border border-gray-300 rounded mb-2"
+          />
+          <input
+            type="text"
+            placeholder="Stat Value"
+            value={newStat.value}
+            onChange={(e) => setNewStat({ ...newStat, value: e.target.value })}
+            className="w-full text-xs px-2 py-1 border border-gray-300 rounded mb-2"
+          />
+          <input
+            type="number"
+            placeholder="Progress %"
+            value={newStat.progress}
+            onChange={(e) =>
+              setNewStat({ ...newStat, progress: Number(e.target.value) })
+            }
+            className="w-full text-xs px-2 py-1 border border-gray-300 rounded mb-2"
+          />
+        </div>
         <button
           onClick={handleSaveStat}
-          className="px-2 py-1 mr-2 bg-blue-600 text-white rounded mb-4"
+          className="p-2 mr-2 bg-blue-600 text-white text-sm rounded mb-4 cursor-pointer"
         >
           {editingStatIndex !== null ? "Update Stat" : "Add Stat"}
         </button>
@@ -410,7 +411,7 @@ export default function ImpactCategoriesEditor() {
 
         <button
           onClick={handleAddCategory}
-          className={`px-2 py-1 text-sm ${
+          className={`p-2 cursor-pointer text-sm ${
             editingKey ? "bg-blue-600" : "bg-violet-600"
           } text-white rounded`}
         >

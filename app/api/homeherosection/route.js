@@ -2,15 +2,13 @@ import { dbConnect } from "../../../lib/dbConnect";
 import HomeHeroSection from "../../../lib/models/homeherosection";
 import { NextResponse } from "next/server";
 
+import { corsHeaders } from '../../layout';
+
 // CORS preflight handler
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "https://www.wahid.org.in",
-      "Access-Control-Allow-Methods": "GET",
-      "Access-Control-Allow-Headers": "Content-Type,Authorization",
-    },
+    headers: corsHeaders,
   });
 }
 
@@ -19,9 +17,8 @@ export async function GET() {
   await dbConnect();
   const data = await HomeHeroSection.findOne({});
   return NextResponse.json(data, {
-    headers: {
-      "Access-Control-Allow-Origin": "https://www.wahid.org.in",
-    },
+    status: 200,
+    headers: corsHeaders,
   });
 }
 
@@ -31,25 +28,22 @@ export async function POST(req) {
     await dbConnect();
     const body = await req.json();
 
-    // Remove 'history' if present in body to avoid conflict
-    const { history, ...updateData } = body;
+    const { history, ...updateBody } = body;
 
-    const updated = await HomeHeroSection.findOneAndUpdate(
-      {},
-      updateData, // no 'history' here
-      { new: true, upsert: true }
-    );
+    const updated = await HomeHeroSection.findOneAndUpdate({}, updateBody, {
+      new: true,
+      upsert: true,
+    });
 
     return NextResponse.json(updated, {
-      headers: {
-        "Access-Control-Allow-Origin": "https://www.wahid.org.in",
-      },
+      status: 200,
+      headers: corsHeaders,
     });
   } catch (err) {
-    console.error("POST /aboutherosection error:", err);
+    console.error("POST /homeherosection error:", err);
     return NextResponse.json(
       { error: "Failed to save hero section" },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     );
   }
 }
@@ -61,9 +55,8 @@ export async function DELETE() {
   return NextResponse.json(
     { success: true },
     {
-      headers: {
-        "Access-Control-Allow-Origin": "https://www.wahid.org.in",
-      },
+      status: 200,
+      headers: corsHeaders,
     }
   );
 }

@@ -2,15 +2,13 @@ import { dbConnect } from "../../../lib/dbConnect";
 import { NextResponse } from "next/server";
 import AboutVisionSection from "@/lib/models/aboutvisionsection";
 
+import { corsHeaders } from "../../layout";
+
 // CORS preflight handler
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET,POST,DELETE,OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type,Authorization",
-    },
+    headers: corsHeaders,
   });
 }
 
@@ -19,9 +17,8 @@ export async function GET() {
   await dbConnect();
   const data = await AboutVisionSection.findOne({});
   return NextResponse.json(data, {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
+    status: 200,
+    headers: corsHeaders,
   });
 }
 
@@ -34,9 +31,8 @@ export async function POST(req) {
     upsert: true,
   });
   return NextResponse.json(updated, {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
+    status: 200,
+    headers: corsHeaders,
   });
 }
 
@@ -47,9 +43,8 @@ export async function DELETE() {
   return NextResponse.json(
     { success: true },
     {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
+      status: 200,
+      headers: corsHeaders,
     }
   );
 }

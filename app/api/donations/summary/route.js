@@ -1,15 +1,10 @@
 import { dbConnect } from '../../../../lib/dbConnect'
 import Donation from '../../../../lib/models/donation'
 
+import { corsHeaders } from '../../../layout'
+
 export async function GET(req) {
   await dbConnect();
-
-  // CORS headers
-  const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
-  };
 
   // Handle preflight OPTIONS request
   if (req.method === "OPTIONS") {
