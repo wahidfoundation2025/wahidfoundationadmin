@@ -3,6 +3,35 @@ import Link from "next/link";
 import { Pencil } from "lucide-react";
 import InfoRow from "@/app/components/InfoRow";
 
+function normalizeImageArray(value) {
+  if (Array.isArray(value)) {
+    return value.flat().filter((item) => typeof item === "string" && item);
+  }
+
+  if (typeof value === "string" && value.trim()) {
+    const trimmed = value.trim();
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) {
+        return parsed.filter((item) => typeof item === "string" && item);
+      }
+    } catch (_) {
+      // Fallback for legacy single URL or comma-separated values.
+    }
+    return trimmed.includes(",")
+      ? trimmed.split(",").map((item) => item.trim()).filter(Boolean)
+      : [trimmed];
+  }
+
+  if (value && typeof value === "object") {
+    return Object.values(value)
+      .flat()
+      .filter((item) => typeof item === "string" && item);
+  }
+
+  return [];
+}
+
 async function getProject(id) {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/projects/${id}`,
@@ -19,6 +48,7 @@ export default async function ProjectDetailPage({ params }) {
   const { id } = await params;
   const project = await getProject(id);
   if (!project) return notFound();
+  const galleryImages = normalizeImageArray(project.photoGallery);
 
   return (
     <div className="min-h-full w-full bg-white p-6 rounded-2xl">
@@ -123,10 +153,10 @@ export default async function ProjectDetailPage({ params }) {
       </div>
 
       {/* Photo Gallery */}
-      {project.photoGallery?.length > 0 && (
+      {galleryImages.length > 0 && (
         <Section title="Photo Gallery">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {project.photoGallery.map((url, idx) => (
+            {galleryImages.map((url, idx) => (
               <img
                 key={idx}
                 src={url}

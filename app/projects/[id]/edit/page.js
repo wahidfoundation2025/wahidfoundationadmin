@@ -11,6 +11,35 @@ import dynamic from "next/dynamic";
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 import "react-quill-new/dist/quill.snow.css";
 
+function normalizeImageArray(value) {
+  if (Array.isArray(value)) {
+    return value.flat().filter((item) => typeof item === "string" && item);
+  }
+
+  if (typeof value === "string" && value.trim()) {
+    const trimmed = value.trim();
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) {
+        return parsed.filter((item) => typeof item === "string" && item);
+      }
+    } catch (_) {
+      // Keep fallback for legacy single URL or comma-separated values.
+    }
+    return trimmed.includes(",")
+      ? trimmed.split(",").map((item) => item.trim()).filter(Boolean)
+      : [trimmed];
+  }
+
+  if (value && typeof value === "object") {
+    return Object.values(value)
+      .flat()
+      .filter((item) => typeof item === "string" && item);
+  }
+
+  return [];
+}
+
 export default function EditProjectPage({ params }) {
   const { id } = use(params) || {};
   const router = useRouter();
@@ -108,15 +137,15 @@ export default function EditProjectPage({ params }) {
         if (!res.ok) throw new Error("Failed to load project");
         const data = await res.json();
 
+        const normalizedGallery = normalizeImageArray(data.photoGallery);
+
         const normalized = {
           ...form,
           ...data,
           category: Array.isArray(data.category) ? data.category : [],
           mainImage: data.mainImage || "",
           cardImage: data.cardImage || "",
-          photoGallery: Array.isArray(data.photoGallery)
-            ? data.photoGallery
-            : [],
+          photoGallery: normalizedGallery,
           og: {
             title: data.og?.title || "",
             description: data.og?.description || "",
@@ -144,6 +173,7 @@ export default function EditProjectPage({ params }) {
         };
 
         setForm(normalized);
+        setGalleryPreviews(normalizedGallery);
         setInitialForm(normalized);
       } catch (err) {
         console.error(err);
