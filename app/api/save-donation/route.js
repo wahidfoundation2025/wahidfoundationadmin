@@ -118,6 +118,18 @@ export async function POST(req) {
   await dbConnect();
   const data = await req.json();
 
+  // Idempotency: the same charge can arrive from both the checkout handler
+  // and the subscription webhook. Skip if we already recorded this paymentId.
+  if (data.paymentId) {
+    const existing = await Donation.findOne({ paymentId: data.paymentId });
+    if (existing) {
+      return new Response(JSON.stringify(existing), {
+        status: 200,
+        headers: corsHeaders,
+      });
+    }
+  }
+
   // Save donation
   const donation = await Donation.create({
     name: data.name,
@@ -128,6 +140,13 @@ export async function POST(req) {
     paymentId: data.paymentId,
     projectId: data.projectId,
     projectName: data.projectName,
+    subscriptionId: data.subscriptionId,
+    subscriptionStatus: data.subscriptionId
+      ? data.subscriptionStatus || "active"
+      : undefined,
+    dedicatedTo: data.dedicatedTo,
+    message: data.message,
+    requestCertificate: data.requestCertificate,
     address: data.address || "",
   });
 
