@@ -2,6 +2,7 @@ import { dbConnect } from "../../../lib/dbConnect";
 import Donation from "../../../lib/models/donation";
 import Donor from "../../../lib/models/donor";
 import Influencer from "../../../lib/models/influencer";
+import Project from "../../../lib/models/Project";
 import nodemailer from "nodemailer";
 import fontkit from "@pdf-lib/fontkit";
 import { PDFDocument, rgb } from "pdf-lib";
@@ -199,6 +200,27 @@ export async function POST(req) {
     }
   } catch (err) {
     console.error("Donor link failed (donation still saved):", err);
+  }
+
+  // Update the project's raised amount + completion so the card/detail
+  // progress bar reflects the new donation. (Runs only for new donations —
+  // the paymentId dedupe above returns early on repeats.)
+  if (data.projectId) {
+    try {
+      const proj = await Project.findById(data.projectId);
+      if (proj) {
+        proj.collected = (proj.collected || 0) + (data.amount || 0);
+        if (proj.totalRequired > 0) {
+          proj.completion = Math.min(
+            100,
+            Math.round((proj.collected / proj.totalRequired) * 100)
+          );
+        }
+        await proj.save();
+      }
+    } catch (err) {
+      console.error("Project totals update failed:", err);
+    }
   }
 
   // Generate PDF and send email
