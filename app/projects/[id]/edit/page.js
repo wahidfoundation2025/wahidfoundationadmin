@@ -90,6 +90,7 @@ export default function EditProjectPage({ params }) {
     completion: "",
     daysLeft: "",
     status: "Active",
+    isEmergency: false,
     mainImage: "",
     cardImage: "",
     photoGallery: [],
@@ -726,6 +727,27 @@ export default function EditProjectPage({ params }) {
                 <option value="Upcoming">Upcoming</option>
                 <option value="Draft">Draft</option>
               </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Emergency Project
+              </label>
+              <label
+                className={`flex cursor-pointer items-center gap-3 rounded-xl border p-2.5 text-sm transition ${
+                  form.isEmergency
+                    ? "border-red-300 bg-red-50 text-red-700"
+                    : "border-gray-300"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  name="isEmergency"
+                  checked={!!form.isEmergency}
+                  onChange={handleChange}
+                  className="h-4 w-4 accent-red-600"
+                />
+                Mark as Emergency Project (shown in a dedicated home-page section)
+              </label>
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Slug</label>

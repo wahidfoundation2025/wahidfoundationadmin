@@ -10,6 +10,7 @@ export async function GET(req) {
   const url = new URL(req.url);
   const search = url.searchParams.get("search") || "";
   const donationType = url.searchParams.get("donation_type"); // new filter
+  const emergency = url.searchParams.get("emergency"); // "true" => only emergency projects
   const page = parseInt(url.searchParams.get("page") || "1");
   const limit = parseInt(url.searchParams.get("limit") || "10");
 
@@ -18,6 +19,7 @@ export async function GET(req) {
     status: "Active",
     ...(search && { title: { $regex: search, $options: "i" } }),
     ...(donationType && { "donationOptions.type": donationType }),
+    ...(emergency === "true" && { isEmergency: true }),
   };
 
   const [totalCount, activeCount, completedCount, projects] = await Promise.all(
