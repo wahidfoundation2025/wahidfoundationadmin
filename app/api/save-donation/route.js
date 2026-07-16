@@ -1,6 +1,7 @@
 import { dbConnect } from "../../../lib/dbConnect";
 import Donation from "../../../lib/models/donation";
 import Donor from "../../../lib/models/donor";
+import Influencer from "../../../lib/models/influencer";
 import nodemailer from "nodemailer";
 import fontkit from "@pdf-lib/fontkit";
 import { PDFDocument, rgb } from "pdf-lib";
@@ -130,6 +131,13 @@ export async function POST(req) {
     }
   }
 
+  // Resolve influencer/referral attribution from the ?ref= code, if any.
+  let influencerName;
+  if (data.influencerCode) {
+    const inf = await Influencer.findOne({ code: data.influencerCode });
+    if (inf) influencerName = inf.name;
+  }
+
   // Save donation
   const donation = await Donation.create({
     name: data.name,
@@ -147,6 +155,8 @@ export async function POST(req) {
     dedicatedTo: data.dedicatedTo,
     message: data.message,
     requestCertificate: data.requestCertificate,
+    influencerCode: data.influencerCode || undefined,
+    influencerName,
     address: data.address || "",
   });
 

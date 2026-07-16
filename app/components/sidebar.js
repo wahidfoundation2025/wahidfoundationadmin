@@ -16,6 +16,7 @@ import {
   BookOpen,
   Settings as SettingsIcon,
   Database,
+  Megaphone,
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
@@ -81,6 +82,12 @@ const navItems = [
     icon: <Handshake size={18} />,
   },
   { name: "Donors", key: "donors", href: "/donors", icon: <Users size={18} /> },
+  {
+    name: "Influencers",
+    key: "influencers",
+    href: "/influencers",
+    icon: <Megaphone size={18} />,
+  },
   {
     name: "Settings",
     key: "settings",
@@ -223,6 +230,18 @@ export default function Sidebar({ children }) {
                 </Link>
               )}
 
+              {show("donations") && (
+                <Link href="/influencers">
+                  <div
+                    className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
+                      "/influencers"
+                    )}`}
+                  >
+                    {navItems[4].icon} {navItems[4].name}
+                  </div>
+                </Link>
+              )}
+
               {show("settings") && (
                 <Link href="/settings">
                   <div
@@ -230,7 +249,7 @@ export default function Sidebar({ children }) {
                       "/settings"
                     )}`}
                   >
-                    {navItems[4].icon} {navItems[4].name}
+                    {navItems[5].icon} {navItems[5].name}
                   </div>
                 </Link>
               )}
@@ -346,6 +365,18 @@ export default function Sidebar({ children }) {
                 </Link>
               )}
 
+              {show("donations") && (
+                <Link href="/influencers" onClick={() => setIsOpen(false)}>
+                  <div
+                    className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass(
+                      "/influencers"
+                    )}`}
+                  >
+                    {navItems[4].icon} {navItems[4].name}
+                  </div>
+                </Link>
+              )}
+
               {show("settings") && (
                 <Link href="/settings" onClick={() => setIsOpen(false)}>
                   <div
@@ -353,7 +384,7 @@ export default function Sidebar({ children }) {
                       "/settings"
                     )}`}
                   >
-                    {navItems[4].icon} {navItems[4].name}
+                    {navItems[5].icon} {navItems[5].name}
                   </div>
                 </Link>
               )}

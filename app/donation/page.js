@@ -57,6 +57,7 @@ export default function DonationPage() {
                 'Type',
                 'Frequency',
                 'Project',
+                'Influencer',
                 'Status',
                 'Date',
               ].map((heading, idx, arr) => (
@@ -87,6 +88,15 @@ export default function DonationPage() {
                   <td className="py-3 px-4 text-nowrap">{donation.donationType}</td>
                   <td className="py-3 px-4 text-nowrap">{donation.donationFrequency}</td>
                   <td className="py-3 px-4 text-nowrap">{getProjectName(donation.projectId)}</td>
+                  <td className="py-3 px-4 text-nowrap">
+                    {donation.influencerName ? (
+                      <span className="rounded-full bg-violet-100 px-2.5 py-0.5 text-xs font-medium text-violet-700">
+                        {donation.influencerName}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400">—</span>
+                    )}
+                  </td>
                   <td className="py-3 px-4 text-nowrap">
                     {donation.paymentId ? (
                       <span className="text-green-600 font-medium">Success</span>
