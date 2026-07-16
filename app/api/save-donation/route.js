@@ -160,43 +160,51 @@ export async function POST(req) {
     address: data.address || "",
   });
 
-  // Update donor
-  let donor = await Donor.findOne({ email: data.email });
-  if (donor) {
-    donor.totalDonated += data.amount;
-    donor.donations = donor.donations || [];
-    if (
-      !donor.donations.some((id) => id.toString() === donation._id.toString())
-    ) {
-      donor.donations.push(donation._id);
+  // Update donor. Wrapped so a donor-linking failure never blocks recording
+  // the donation itself (the profile reads donations by email regardless).
+  let donor = null;
+  try {
+    donor = await Donor.findOne({ email: data.email });
+    if (donor) {
+      donor.totalDonated += data.amount;
+      donor.donations = donor.donations || [];
+      if (
+        !donor.donations.some(
+          (id) => id.toString() === donation._id.toString()
+        )
+      ) {
+        donor.donations.push(donation._id);
+      }
+      if (
+        data.projectId &&
+        (!donor.projectsDonatedTo ||
+          !donor.projectsDonatedTo.includes(data.projectId))
+      ) {
+        donor.totalProjects += 1;
+        donor.projectsDonatedTo = donor.projectsDonatedTo || [];
+        donor.projectsDonatedTo.push(data.projectId);
+      }
+      await donor.save();
+    } else {
+      donor = await Donor.create({
+        name: data.name,
+        email: data.email,
+        address: data.address || "",
+        profilePicture: "",
+        totalDonated: data.amount,
+        totalProjects: data.projectId ? 1 : 0,
+        projectsDonatedTo: data.projectId ? [data.projectId] : [],
+        donations: [donation._id],
+      });
     }
-    if (
-      data.projectId &&
-      (!donor.projectsDonatedTo ||
-        !donor.projectsDonatedTo.includes(data.projectId))
-    ) {
-      donor.totalProjects += 1;
-      donor.projectsDonatedTo = donor.projectsDonatedTo || [];
-      donor.projectsDonatedTo.push(data.projectId);
-    }
-    await donor.save();
-  } else {
-    donor = await Donor.create({
-      name: data.name,
-      email: data.email,
-      address: data.address || "",
-      profilePicture: "",
-      totalDonated: data.amount,
-      totalProjects: data.projectId ? 1 : 0,
-      projectsDonatedTo: data.projectId ? [data.projectId] : [],
-      donations: [donation._id],
-    });
+  } catch (err) {
+    console.error("Donor link failed (donation still saved):", err);
   }
 
   // Generate PDF and send email
   try {
-    const pdfBuffer = await generatePdfBuffer(donation, donor);
-    await sendEmailWithPdf(donor.email, pdfBuffer);
+    const pdfBuffer = await generatePdfBuffer(donation, donor || data);
+    await sendEmailWithPdf(donor?.email || data.email, pdfBuffer);
     console.log("✅ PDF emailed successfully.");
   } catch (err) {
     console.error("❌ Error sending PDF email:", err);
