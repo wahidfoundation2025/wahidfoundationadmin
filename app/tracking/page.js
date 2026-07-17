@@ -18,7 +18,24 @@ const emptyScript = () => ({
   strategy: "afterInteractive",
   src: "",
   code: "",
+  pageScope: "all",
+  pages: [],
 });
+
+// Pages a script can be targeted to (paths on the public site).
+// "@payment-success" is a special event target: fires when the donation
+// Thank-You / payment-confirmation popup appears (for conversion pixels).
+const PAGES = [
+  { value: "/", label: "Home" },
+  { value: "/projects", label: "Projects" },
+  { value: "/impact", label: "Our Impact" },
+  { value: "/about", label: "About" },
+  { value: "/volunteer", label: "Volunteer" },
+  { value: "/blogs", label: "Blogs" },
+  { value: "/donate", label: "Donate" },
+  { value: "/profile", label: "Profile" },
+  { value: "@payment-success", label: "Payment confirmation (Thank You popup)" },
+];
 
 const PLACEMENTS = [
   { value: "head", label: "<head>" },
@@ -337,6 +354,64 @@ export default function TrackingPage() {
                           ))}
                         </select>
                       </div>
+                    </div>
+
+                    {/* Page targeting */}
+                    <div className="mt-4">
+                      <label className={labelCls}>Load on</label>
+                      <div className="flex flex-wrap gap-4">
+                        <label className="flex items-center gap-2 text-sm">
+                          <input
+                            type="radio"
+                            name={`scope-${i}`}
+                            checked={(sc.pageScope || "all") === "all"}
+                            onChange={() =>
+                              updateScript(i, { pageScope: "all" })
+                            }
+                            className="h-4 w-4 accent-violet-600"
+                          />
+                          All pages
+                        </label>
+                        <label className="flex items-center gap-2 text-sm">
+                          <input
+                            type="radio"
+                            name={`scope-${i}`}
+                            checked={sc.pageScope === "specific"}
+                            onChange={() =>
+                              updateScript(i, { pageScope: "specific" })
+                            }
+                            className="h-4 w-4 accent-violet-600"
+                          />
+                          Specific pages
+                        </label>
+                      </div>
+
+                      {sc.pageScope === "specific" && (
+                        <div className="mt-3 grid grid-cols-1 gap-2 rounded-xl border border-gray-200 p-3 sm:grid-cols-2 lg:grid-cols-3">
+                          {PAGES.map((pg) => {
+                            const selected = (sc.pages || []).includes(pg.value);
+                            return (
+                              <label
+                                key={pg.value}
+                                className="flex items-center gap-2 text-sm"
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={selected}
+                                  onChange={(e) => {
+                                    const set = new Set(sc.pages || []);
+                                    if (e.target.checked) set.add(pg.value);
+                                    else set.delete(pg.value);
+                                    updateScript(i, { pages: Array.from(set) });
+                                  }}
+                                  className="h-4 w-4 accent-violet-600"
+                                />
+                                {pg.label}
+                              </label>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
 
                     {sc.type === "external" ? (
