@@ -28,80 +28,30 @@ import { VscLayoutPanelJustify } from "react-icons/vsc";
 import { FcAbout } from "react-icons/fc";
 
 const cmsNavItems = [
-  {
-    name: "Home",
-    key: "dashboard",
-    href: "/home",
-    icon: <LayoutDashboard size={18} />,
-  },
-  {
-    name: "Projects",
-    key: "cms",
-    href: "/projects",
-    icon: <FolderKanban size={18} />,
-  },
-  { name: "Impact", key: "cms", href: "/impact", icon: <BookOpen size={18} /> },
-  { name: "About", key: "about", href: "/about", icon: <FcAbout size={18} /> },
-  {
-    name: "Volunteers",
-    key: "cms",
-    href: "/volunteers/list",
-    icon: <Users size={18} />,
-  },
-  {
-    name: "Blogs",
-    key: "blogs",
-    href: "/blogs",
-    icon: <RiPagesLine size={18} />,
-  },
-  {
-    name: "Categories",
-    key: "categories",
-    href: "/categories",
-    icon: <TbCategory size={18} />,
-  },
-  {
-    name: "Footer",
-    key: "footer",
-    href: "/footer",
-    icon: <VscLayoutPanelJustify size={18} />,
-  },
+  { name: "Home", href: "/home", icon: <LayoutDashboard size={17} /> },
+  { name: "Projects", href: "/projects", icon: <FolderKanban size={17} /> },
+  { name: "Impact", href: "/impact", icon: <BookOpen size={17} /> },
+  { name: "About", href: "/about", icon: <FcAbout size={17} /> },
+  { name: "Volunteers", href: "/volunteers/list", icon: <Users size={17} /> },
+  { name: "Blogs", href: "/blogs", icon: <RiPagesLine size={17} /> },
+  { name: "Categories", href: "/categories", icon: <TbCategory size={17} /> },
+  { name: "Footer", href: "/footer", icon: <VscLayoutPanelJustify size={17} /> },
 ];
 
-const navItems = [
-  {
-    name: "Dashboard",
-    key: "dashboard",
-    href: "/",
-    icon: <LayoutDashboard size={18} />,
-  },
-  { name: "CMS", key: "cms", icon: <Database size={18} /> }, // Dropdown trigger
-  {
-    name: "Donation",
-    key: "donations",
-    href: "/donation",
-    icon: <Handshake size={18} />,
-  },
+// Top-level nav (gated by the user's access keys)
+const mainNav = [
+  { name: "Dashboard", key: "dashboard", href: "/", icon: <LayoutDashboard size={18} /> },
+  { name: "Donation", key: "donations", href: "/donation", icon: <Handshake size={18} /> },
   { name: "Donors", key: "donors", href: "/donors", icon: <Users size={18} /> },
-  {
-    name: "Influencers",
-    key: "influencers",
-    href: "/influencers",
-    icon: <Megaphone size={18} />,
-  },
-  {
-    name: "Settings",
-    key: "settings",
-    href: "/settings",
-    icon: <SettingsIcon size={18} />,
-  },
-  {
-    name: "Tracking Scripts",
-    key: "settings",
-    href: "/tracking",
-    icon: <LineChart size={18} />,
-  },
+  { name: "Influencers", key: "donations", href: "/influencers", icon: <Megaphone size={18} /> },
+  { name: "Settings", key: "settings", href: "/settings", icon: <SettingsIcon size={18} /> },
+  { name: "Tracking Scripts", key: "settings", href: "/tracking", icon: <LineChart size={18} /> },
 ];
+
+const itemBase =
+  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors";
+const itemIdle = "text-emerald-100/70 hover:bg-white/10 hover:text-white";
+const itemActive = "bg-emerald-600 text-white shadow-sm";
 
 export default function Sidebar({ children }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -114,12 +64,9 @@ export default function Sidebar({ children }) {
   const { data: session } = useSession();
   const user = session?.user;
 
-  const getNavClass = (href) =>
-    pathname === href ? "bg-emerald-600 text-white font-semibold shadow-sm" : "";
-
-  const isCmsActive = cmsNavItems.some((item) =>
-    pathname.startsWith(item.href)
-  );
+  const isActive = (href) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const isCmsActive = cmsNavItems.some((i) => pathname.startsWith(i.href));
 
   const fetchAccess = async () => {
     try {
@@ -128,7 +75,7 @@ export default function Sidebar({ children }) {
       if (!res.ok) throw new Error("Access fetch failed");
       const data = await res.json();
       setAccess(data.access || []);
-      setRole(data.role || ""); // 👈 Set role here
+      setRole(data.role || "");
     } catch (err) {
       console.error("Failed to load user access:", err);
     } finally {
@@ -137,330 +84,210 @@ export default function Sidebar({ children }) {
   };
 
   useEffect(() => {
-    if (user?.email) {
-      fetchAccess();
-    }
+    if (user?.email) fetchAccess();
   }, [user]);
 
   const show = (key) => access.includes(key);
 
-  return (
-    <div className="flex flex-col h-screen overflow-y-auto normal-case">
-      <NavBar user={user} setIsOpen={setIsOpen} isOpen={isOpen} role={role} />
+  // Shared nav markup for desktop + mobile drawer
+  const renderNav = (onNavigate) => (
+    <nav className="flex flex-col gap-1">
+      {show("dashboard") && (
+        <Link href="/" onClick={onNavigate}>
+          <div className={`${itemBase} ${isActive("/") ? itemActive : itemIdle}`}>
+            <LayoutDashboard size={18} /> Dashboard
+          </div>
+        </Link>
+      )}
 
-      <div className="flex flex-row h-[90dvh]">
-        <aside className="hidden md:flex flex-col gap-2 min-w-[250px] w-[20%] p-6 bg-white text-black">
-          {loading ? (
-            <div className="flex flex-col gap-2">
-              {[...Array(5)].map((_, index) => (
-                <div
-                  key={index}
-                  className="w-full h-10 rounded-xl bg-gray-200"
-                ></div>
-              ))}
-            </div>
-          ) : (
-            <>
-              {show("dashboard") && (
-                <Link href="/">
+      {show("cms") && (
+        <>
+          <button
+            onClick={() => setCmsDropdown((v) => !v)}
+            className={`${itemBase} w-full justify-between ${
+              isCmsActive ? "bg-white/10 text-white" : itemIdle
+            }`}
+          >
+            <span className="flex items-center gap-3">
+              <Database size={18} /> CMS
+            </span>
+            {cmsDropdown || isCmsActive ? (
+              <ChevronUp size={16} />
+            ) : (
+              <ChevronDown size={16} />
+            )}
+          </button>
+
+          {(cmsDropdown || isCmsActive) && (
+            <div className="ml-4 flex flex-col gap-0.5 border-l border-white/10 pl-3">
+              {cmsNavItems.map((item) => (
+                <Link key={item.name} href={item.href} onClick={onNavigate}>
                   <div
-                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
-                      "/"
-                    )}`}
-                  >
-                    {navItems[0].icon} {navItems[0].name}
-                  </div>
-                </Link>
-              )}
-
-              {show("cms") && (
-                <>
-                  <button
-                    onClick={() => setCmsDropdown((v) => !v)}
-                    className={`flex hover:bg-emerald-50 cursor-pointer items-center justify-between gap-2 w-full rounded-lg px-3 py-2 font-medium transition normal-case ${
-                      isCmsActive
-                        ? "bg-emerald-600 text-white font-semibold shadow-sm"
-                        : ""
+                    className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] transition-colors ${
+                      pathname.startsWith(item.href)
+                        ? "bg-emerald-600 font-medium text-white"
+                        : "text-emerald-100/60 hover:bg-white/10 hover:text-white"
                     }`}
                   >
-                    <div className="flex flex-row items-center gap-2">
-                      {navItems[1].icon} CMS
-                    </div>
-                    {cmsDropdown || isCmsActive ? (
-                      <ChevronUp size={20} />
-                    ) : (
-                      <ChevronDown size={20} />
-                    )}
-                  </button>
-
-                  {(cmsDropdown || isCmsActive) && (
-                    <div className="ml-6 flex flex-col gap-0.5">
-                      {cmsNavItems.map((item) => (
-                        <Link key={item.name} href={item.href}>
-                          <div
-                            className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg p-2 cursor-pointer transition normal-case ${
-                              pathname.startsWith(item.href)
-                                ? "bg-emerald-600 text-white font-semibold shadow-sm"
-                                : ""
-                            }`}
-                          >
-                            {item.icon} {item.name}
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </>
-              )}
-
-              {show("donations") && (
-                <Link href="/donation">
-                  <div
-                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
-                      "/donation"
-                    )}`}
-                  >
-                    {navItems[2].icon} {navItems[2].name}
+                    {item.icon} {item.name}
                   </div>
                 </Link>
-              )}
-
-              {show("donors") && (
-                <Link href="/donors">
-                  <div
-                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
-                      "/donors"
-                    )}`}
-                  >
-                    {navItems[3].icon} {navItems[3].name}
-                  </div>
-                </Link>
-              )}
-
-              {show("donations") && (
-                <Link href="/influencers">
-                  <div
-                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
-                      "/influencers"
-                    )}`}
-                  >
-                    {navItems[4].icon} {navItems[4].name}
-                  </div>
-                </Link>
-              )}
-
-              {show("settings") && (
-                <Link href="/settings">
-                  <div
-                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
-                      "/settings"
-                    )}`}
-                  >
-                    {navItems[5].icon} {navItems[5].name}
-                  </div>
-                </Link>
-              )}
-
-              {show("settings") && (
-                <Link href="/tracking">
-                  <div
-                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
-                      "/tracking"
-                    )}`}
-                  >
-                    {navItems[6].icon} {navItems[6].name}
-                  </div>
-                </Link>
-              )}
-            </>
+              ))}
+            </div>
           )}
-        </aside>
+        </>
+      )}
 
-        {/* Mobile Menu Button */}
-        <div className="md:hidden fixed top-5 left-3">
-          <button onClick={() => setIsOpen(!isOpen)} className="text-gray-800">
-            {isOpen && <Menu size={28} />}
-          </button>
+      {mainNav
+        .filter((i) => i.key !== "dashboard" && show(i.key))
+        .map((item) => (
+          <Link key={item.href} href={item.href} onClick={onNavigate}>
+            <div
+              className={`${itemBase} ${
+                isActive(item.href) ? itemActive : itemIdle
+              }`}
+            >
+              {item.icon} {item.name}
+            </div>
+          </Link>
+        ))}
+    </nav>
+  );
+
+  const SidebarSkeleton = () => (
+    <div className="flex flex-col gap-2">
+      {[...Array(6)].map((_, i) => (
+        <div key={i} className="h-10 w-full rounded-xl bg-white/10" />
+      ))}
+    </div>
+  );
+
+  return (
+    <div className="flex h-screen overflow-hidden bg-[#f6f7f9]">
+      {/* ---------- Desktop sidebar (dark) ---------- */}
+      <aside className="hidden w-[264px] shrink-0 flex-col bg-emerald-950 md:flex">
+        <div className="flex items-center gap-2.5 px-5 py-5">
+          <Image src={Logo} alt="Wahid" height={34} className="rounded-md" />
+          <div className="leading-tight">
+            <p className="text-base font-extrabold tracking-tight text-white">
+              WAHID
+            </p>
+            <p className="text-[11px] text-emerald-300/70">Admin Panel</p>
+          </div>
         </div>
 
-        {/* Mobile Sidebar */}
-        <div
-          className={`fixed top-0 left-0 h-full w-64 bg-white shadow-md z-40 p-6 transform transition-transform duration-300 ease-in-out ${
-            isOpen ? "translate-x-0" : "-translate-x-full"
-          } md:hidden`}
-        >
-          <div className="flex justify-between items-center mb-4">
-            <Image src={Logo} alt="Logo" className="h-8 w-auto" />
-            <button onClick={() => setIsOpen(false)}>
-              <X size={24} />
+        <div className="flex-1 overflow-y-auto px-3 pb-4">
+          {loading ? <SidebarSkeleton /> : renderNav()}
+        </div>
+
+        {user && (
+          <div className="border-t border-white/10 p-3">
+            <div className="flex items-center justify-between gap-2 rounded-xl bg-white/5 px-3 py-2.5">
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-white">
+                  {user.name}
+                </p>
+                <p className="truncate text-[11px] capitalize text-emerald-300/70">
+                  {role || "—"}
+                </p>
+              </div>
+              <button
+                onClick={() => signOut({ callbackUrl: "/login" })}
+                title="Sign out"
+                className="shrink-0 rounded-lg p-2 text-emerald-100/70 transition hover:bg-white/10 hover:text-white"
+              >
+                <LogOut size={16} />
+              </button>
+            </div>
+          </div>
+        )}
+      </aside>
+
+      {/* ---------- Mobile drawer ---------- */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setIsOpen(false)}
+          />
+          <div className="absolute left-0 top-0 flex h-full w-[270px] flex-col bg-emerald-950">
+            <div className="flex items-center justify-between px-5 py-5">
+              <div className="flex items-center gap-2.5">
+                <Image src={Logo} alt="Wahid" height={32} className="rounded-md" />
+                <p className="text-base font-extrabold text-white">WAHID</p>
+              </div>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="rounded-lg p-1.5 text-emerald-100/70 hover:bg-white/10 hover:text-white"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto px-3 pb-4">
+              {loading ? <SidebarSkeleton /> : renderNav(() => setIsOpen(false))}
+            </div>
+            {user && (
+              <div className="border-t border-white/10 p-3">
+                <button
+                  onClick={() => signOut({ callbackUrl: "/login" })}
+                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-emerald-100/70 hover:bg-white/10 hover:text-white"
+                >
+                  <LogOut size={16} /> Sign out
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ---------- Content ---------- */}
+      <div className="flex min-w-0 flex-1 flex-col">
+        {/* Top bar (light) */}
+        <header className="flex h-16 shrink-0 items-center justify-between border-b border-[#e6e8ec] bg-white px-4 sm:px-6">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsOpen(true)}
+              className="rounded-lg p-2 text-gray-700 hover:bg-gray-100 md:hidden"
+              aria-label="Open menu"
+            >
+              <Menu size={20} />
             </button>
+            <div className="md:hidden">
+              <Image src={Logo} alt="Wahid" height={28} />
+            </div>
           </div>
 
-          {loading ? (
-            <div className="flex flex-col gap-2">
-              {[...Array(5)].map((_, index) => (
-                <div
-                  key={index}
-                  className="w-full h-10 rounded-xl bg-gray-200"
-                ></div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col gap-2">
-              {show("dashboard") && (
-                <Link href="/" onClick={() => setIsOpen(false)}>
-                  <div
-                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition ${getNavClass(
-                      "/"
-                    )}`}
-                  >
-                    {navItems[0].icon} {navItems[0].name}
-                  </div>
-                </Link>
-              )}
-
-              {show("cms") && (
-                <>
-                  <button
-                    onClick={() => setCmsDropdown((v) => !v)}
-                    className={`flex hover:bg-emerald-50 items-center justify-between gap-2 w-full rounded-lg px-3 py-2 font-medium transition ${
-                      isCmsActive ? "text-emerald-700 bg-emerald-200" : ""
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      {navItems[1].icon} CMS
-                    </div>
-                    {cmsDropdown || isCmsActive ? (
-                      <ChevronUp size={20} />
-                    ) : (
-                      <ChevronDown size={20} />
-                    )}
-                  </button>
-                  {(cmsDropdown || isCmsActive) && (
-                    <div className="ml-6 flex flex-col gap-0.5">
-                      {cmsNavItems.map((item) => (
-                        <Link
-                          key={item.name}
-                          href={item.href}
-                          onClick={() => setIsOpen(false)}
-                        >
-                          <div
-                            className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg p-2 cursor-pointer transition ${
-                              pathname.startsWith(item.href)
-                                ? "bg-emerald-600 text-white font-semibold shadow-sm"
-                                : ""
-                            }`}
-                          >
-                            {item.icon} {item.name}
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </>
-              )}
-
-              {show("donations") && (
-                <Link href="/donation" onClick={() => setIsOpen(false)}>
-                  <div
-                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass(
-                      "/donation"
-                    )}`}
-                  >
-                    {navItems[2].icon} {navItems[2].name}
-                  </div>
-                </Link>
-              )}
-
-              {show("donors") && (
-                <Link href="/donors" onClick={() => setIsOpen(false)}>
-                  <div
-                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass(
-                      "/donors"
-                    )}`}
-                  >
-                    {navItems[3].icon} {navItems[3].name}
-                  </div>
-                </Link>
-              )}
-
-              {show("donations") && (
-                <Link href="/influencers" onClick={() => setIsOpen(false)}>
-                  <div
-                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass(
-                      "/influencers"
-                    )}`}
-                  >
-                    {navItems[4].icon} {navItems[4].name}
-                  </div>
-                </Link>
-              )}
-
-              {show("settings") && (
-                <Link href="/settings" onClick={() => setIsOpen(false)}>
-                  <div
-                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass(
-                      "/settings"
-                    )}`}
-                  >
-                    {navItems[5].icon} {navItems[5].name}
-                  </div>
-                </Link>
-              )}
-
-              {show("settings") && (
-                <Link href="/tracking" onClick={() => setIsOpen(false)}>
-                  <div
-                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass(
-                      "/tracking"
-                    )}`}
-                  >
-                    {navItems[6].icon} {navItems[6].name}
-                  </div>
-                </Link>
-              )}
+          {user && (
+            <div className="flex items-center gap-3">
+              <Link
+                href="/profile"
+                className="flex items-center gap-2.5 rounded-full py-1 pl-1 pr-3 transition hover:bg-gray-100"
+              >
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold text-white">
+                  {(user.name || "U").slice(0, 1).toUpperCase()}
+                </span>
+                <span className="hidden text-left sm:block">
+                  <span className="block text-sm font-semibold leading-tight text-gray-900">
+                    {user.name}
+                  </span>
+                  <span className="block text-[11px] capitalize leading-tight text-gray-500">
+                    {role}
+                  </span>
+                </span>
+              </Link>
+              <button
+                onClick={() => signOut({ callbackUrl: "/login" })}
+                title="Sign out"
+                className="rounded-lg border border-[#e6e8ec] p-2 text-gray-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+              >
+                <LogOut size={16} />
+              </button>
             </div>
           )}
-        </div>
+        </header>
 
-        <main className="flex-1 sm:p-6 p-0 bg-gray-100 w-full max-h-screen overflow-y-auto">
-          {children}
-        </main>
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6">{children}</main>
       </div>
     </div>
   );
 }
-
-const NavBar = ({ user, isOpen, setIsOpen, role }) => {
-  return (
-    <nav className="flex items-center justify-between w-full p-4 sm:px-12 border-b border-gray-200 h-[10dvh]">
-      <div className="flex flex-row gap-3 items-center">
-        <div className="md:hidden">
-          <button onClick={() => setIsOpen(!isOpen)} className="text-gray-800">
-            <Menu size={28} />
-          </button>
-        </div>
-
-        <Image src={Logo} alt="Wahid" height={40} />
-        <h1 className="text-xl font-semibold sm:block hidden">WAHID</h1>
-      </div>
-
-     {user && (
-  <div className="flex flex-row gap-4 items-center">
-    <Link href="/profile" className="flex items-center gap-4 cursor-pointer">
-      <div className="text-right">
-        <p className="font-medium">{user.name}</p>
-        <p className="text-xs text-gray-500">{role}</p>
-      </div>
-    </Link>
-    <button
-      onClick={() => signOut({ callbackUrl: "/login" })}
-      className="cursor-pointer hover:bg-red-200 rounded-full p-2.5 border border-gray-300 transition hover:border-red-300"
-    >
-      <LogOut size={16} />
-    </button>
-  </div>
-)}
-    </nav>
-  );
-};
