@@ -81,7 +81,7 @@ export default function AboutStorySectionEditor() {
       <div className="flex flex-row gap-2 mb-2 items-center justify-between">
         <label className="text-base ms:text-xl font-semibold">{label}</label>
         <button
-          className="flex flex-row text-sm sm:text-base gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-500 px-4 ms:px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+          className="flex flex-row text-sm sm:text-base gap-2 items-center font-medium btn btn-primary border border-emerald-600 hover:bg-emerald-500 px-4 ms:px-6 py-2 cursor-pointer text-emerald-600 hover:text-white transition rounded-xl"
           onClick={() => handleAddItem(section)}
           type="button"
         >
@@ -93,7 +93,7 @@ export default function AboutStorySectionEditor() {
         {(form[section] || []).map((item, idx) => (
           <div
             key={idx}
-            className="flex flex-col gap-2 border-2 border-violet-300 p-4 rounded-xl bg-violet-50"
+            className="flex flex-col gap-2 border-2 border-emerald-300 p-4 rounded-xl bg-emerald-50"
           >
             <input
               placeholder="Title"
@@ -135,7 +135,7 @@ export default function AboutStorySectionEditor() {
               name="title"
               value={form.title || ""}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
             />
           </div>
 
@@ -147,7 +147,7 @@ export default function AboutStorySectionEditor() {
               name="subtitle"
               value={form.subtitle || ""}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
             />
           </div>
 
@@ -159,14 +159,14 @@ export default function AboutStorySectionEditor() {
 
           <div className="flex gap-2 absolute right-3 sm:right-6 top-3 sm:top-6">
             <button
-              className="flex flex-row sm:text-base text-sm gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-600 sm:px-6 px-4 py-2 cursor-pointer text-white  transition rounded-xl"
+              className="flex flex-row sm:text-base text-sm gap-2 items-center font-medium btn btn-primary border bg-emerald-600 hover:bg-emerald-600 sm:px-6 px-4 py-2 cursor-pointer text-white  transition rounded-xl"
               onClick={handleSave}
               disabled={saving}
             >
               {saving ? "Saving..." : "Save"}
             </button>
             <button
-              className="flex flex-row sm:text-base text-sm gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 sm:px-6 px-4 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+              className="flex flex-row sm:text-base text-sm gap-2 items-center font-medium btn btn-primary border border-emerald-600 hover:bg-emerald-600 sm:px-6 px-4 py-2 cursor-pointer text-emerald-600 hover:text-white transition rounded-xl"
               onClick={() => {
                 setEdit(false);
                 setForm(data);
@@ -179,7 +179,7 @@ export default function AboutStorySectionEditor() {
       ) : (
         <div className="px-2 mt-6 space-y-6">
           <button
-            className="absolute text-sm sm:text-base right-3 sm:right-4 top-3 sm:top-4 flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 sm:px-6 px-4 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+            className="absolute text-sm sm:text-base right-3 sm:right-4 top-3 sm:top-4 flex flex-row gap-2 items-center font-medium btn btn-primary border border-emerald-600 hover:bg-emerald-600 sm:px-6 px-4 py-2 cursor-pointer text-emerald-600 hover:text-white transition rounded-xl"
             onClick={() => setEdit(true)}
           >
             Edit Section
@@ -210,7 +210,7 @@ export default function AboutStorySectionEditor() {
                 data[section].map((item, idx) => (
                   <div
                     key={idx}
-                    className="border-2 border-violet-300 p-4 rounded-xl bg-violet-50 flex flex-col gap-2"
+                    className="border-2 border-emerald-300 p-4 rounded-xl bg-emerald-50 flex flex-col gap-2"
                   >
                     <div className="font-semibold text-base text-gray-800">
                       {item.title || "No Title"}

@@ -57,7 +57,7 @@ export default function HomeCMSPage() {
                   setActiveSection(section.key)
                   setShowDropdown(false)
                 }}
-                className={`text-left text-sm px-6 py-1.5 rounded-lg cursor-pointer font-semibold transition-all ${activeSection === section.key ? "bg-violet-600 text-white" : "hover:bg-violet-200 hover:text-violet-600"}`}
+                className={`text-left text-sm px-6 py-1.5 rounded-lg cursor-pointer font-semibold transition-all ${activeSection === section.key ? "bg-emerald-600 text-white" : "hover:bg-emerald-200 hover:text-emerald-600"}`}
               >
                 {section.name}
               </button>
@@ -71,7 +71,7 @@ export default function HomeCMSPage() {
           <button
             key={section.key}
             onClick={() => setActiveSection(section.key)}
-            className={`text-left px-6 py-2 rounded-lg cursor-pointer font-semibold transition-all ${activeSection === section.key ? "bg-violet-600 text-white" : "hover:bg-violet-200 hover:text-violet-600"}`}
+            className={`text-left px-6 py-2 rounded-lg cursor-pointer font-semibold transition-all ${activeSection === section.key ? "bg-emerald-600 text-white" : "hover:bg-emerald-200 hover:text-emerald-600"}`}
           >
             {section.name}
           </button>

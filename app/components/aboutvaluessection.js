@@ -95,7 +95,7 @@ export default function AboutValuesSectionEditor() {
               name="title"
               value={form.title || ""}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
             />
           </div>
 
@@ -107,7 +107,7 @@ export default function AboutValuesSectionEditor() {
               name="subtitle"
               value={form.subtitle || ""}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
             />
           </div>
 
@@ -119,7 +119,7 @@ export default function AboutValuesSectionEditor() {
                 Cards
               </label>
               <button
-                className="flex flex-row text-sm sm:text-base gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-500 px-4 ms:px-6 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+                className="flex flex-row text-sm sm:text-base gap-2 items-center font-medium btn btn-primary border border-emerald-600 hover:bg-emerald-500 px-4 ms:px-6 py-2 cursor-pointer text-emerald-600 hover:text-white transition rounded-xl"
                 onClick={handleAddCard}
                 type="button"
               >
@@ -131,7 +131,7 @@ export default function AboutValuesSectionEditor() {
               {(form.cards || []).map((card, idx) => (
                 <div
                   key={idx}
-                  className="flex min-w-full sm:min-w-[250px] max-w-fit sm:max-w-[300px] flex-col gap-4 items-center border-2 border-violet-300 p-4 rounded-xl bg-violet-50"
+                  className="flex min-w-full sm:min-w-[250px] max-w-fit sm:max-w-[300px] flex-col gap-4 items-center border-2 border-emerald-300 p-4 rounded-xl bg-emerald-50"
                 >
                   <div className="flex flex-row gap-2 items-center justify-between w-full">
                     <select
@@ -184,14 +184,14 @@ export default function AboutValuesSectionEditor() {
 
           <div className="flex gap-2 absolute right-3 sm:right-6 top-3 sm:top-6">
             <button
-              className="flex flex-row sm:text-base text-sm gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-600 sm:px-6 px-4 py-2 cursor-pointer text-white  transition rounded-xl"
+              className="flex flex-row sm:text-base text-sm gap-2 items-center font-medium btn btn-primary border bg-emerald-600 hover:bg-emerald-600 sm:px-6 px-4 py-2 cursor-pointer text-white  transition rounded-xl"
               onClick={handleSave}
               disabled={saving}
             >
               {saving ? "Saving..." : "Save"}
             </button>
             <button
-              className="flex flex-row sm:text-base text-sm gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 sm:px-6 px-4 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+              className="flex flex-row sm:text-base text-sm gap-2 items-center font-medium btn btn-primary border border-emerald-600 hover:bg-emerald-600 sm:px-6 px-4 py-2 cursor-pointer text-emerald-600 hover:text-white transition rounded-xl"
               onClick={() => {
                 setEdit(false);
                 setForm(data);
@@ -204,7 +204,7 @@ export default function AboutValuesSectionEditor() {
       ) : (
         <div className="px-2 mt-6 space-y-6">
           <button
-            className="absolute text-sm sm:text-base right-3 sm:right-4 top-3 sm:top-4 flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 sm:px-6 px-4 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+            className="absolute text-sm sm:text-base right-3 sm:right-4 top-3 sm:top-4 flex flex-row gap-2 items-center font-medium btn btn-primary border border-emerald-600 hover:bg-emerald-600 sm:px-6 px-4 py-2 cursor-pointer text-emerald-600 hover:text-white transition rounded-xl"
             onClick={() => setEdit(true)}
           >
             Edit Section <TbEdit className="text-xl" />
@@ -236,7 +236,7 @@ export default function AboutValuesSectionEditor() {
                 return (
                   <div
                     key={idx}
-                    className="flex-shrink-0 min-w-full sm:min-w-[250px] max-w-fit sm:max-w-[300px] border-2 border-violet-300 p-4 rounded-xl bg-violet-50 flex flex-col gap-3"
+                    className="flex-shrink-0 min-w-full sm:min-w-[250px] max-w-fit sm:max-w-[300px] border-2 border-emerald-300 p-4 rounded-xl bg-emerald-50 flex flex-col gap-3"
                   >
                     <div className="flex items-center justify-between">
                       <div className="text-sm text-gray-500">

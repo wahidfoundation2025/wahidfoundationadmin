@@ -127,7 +127,7 @@ export default function ImpactHeroSectionEditor() {
       <div>
         <p className="my-4 p-2">No hero section found.</p>
         <button
-          className="btn flex flex-row sm:text-base text-sm gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-600 sm:px-6 px-4 py-2 cursor-pointer text-white  transition rounded-xl"
+          className="btn flex flex-row sm:text-base text-sm gap-2 items-center font-medium btn btn-primary border bg-emerald-600 hover:bg-emerald-600 sm:px-6 px-4 py-2 cursor-pointer text-white  transition rounded-xl"
           onClick={() => setEdit(true)}
         >
           Create
@@ -145,7 +145,7 @@ export default function ImpactHeroSectionEditor() {
               name="title"
               value={form.title || ""}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
             />
           </div>
 
@@ -157,7 +157,7 @@ export default function ImpactHeroSectionEditor() {
               name="subtitle"
               value={form.subtitle || ""}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
             />
           </div>
 
@@ -169,7 +169,7 @@ export default function ImpactHeroSectionEditor() {
               name="ctaText"
               value={form.ctaText || ""}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
             />
           </div>
 
@@ -239,14 +239,14 @@ export default function ImpactHeroSectionEditor() {
 
           <div className="flex gap-2 absolute right-3 sm:right-6 top-3 sm:top-6">
             <button
-              className="flex flex-row sm:text-base text-sm gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-600 sm:px-6 px-4 py-2 cursor-pointer text-white  transition rounded-xl"
+              className="flex flex-row sm:text-base text-sm gap-2 items-center font-medium btn btn-primary border bg-emerald-600 hover:bg-emerald-600 sm:px-6 px-4 py-2 cursor-pointer text-white  transition rounded-xl"
               onClick={handleSave}
               disabled={saving}
             >
               {saving ? "Saving..." : "Save"}
             </button>
             <button
-              className="flex flex-row sm:text-base text-sm gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 sm:px-6 px-4 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+              className="flex flex-row sm:text-base text-sm gap-2 items-center font-medium btn btn-primary border border-emerald-600 hover:bg-emerald-600 sm:px-6 px-4 py-2 cursor-pointer text-emerald-600 hover:text-white transition rounded-xl"
               onClick={() => {
                 setEdit(false);
                 setForm(data);
@@ -268,7 +268,7 @@ export default function ImpactHeroSectionEditor() {
                 name="metatitle"
                 value={form.metatitle || ""}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400"
+                className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
               />
             </div>
 
@@ -281,7 +281,7 @@ export default function ImpactHeroSectionEditor() {
                 name="metadescription"
                 value={form.metadescription || ""}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400"
+                className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
                 rows={3}
               />
             </div>
@@ -325,13 +325,13 @@ export default function ImpactHeroSectionEditor() {
                 {(form.target_keywords || []).map((kw, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center gap-2 bg-violet-100 text-violet-700 px-3 py-1 rounded-full text-sm"
+                    className="flex items-center gap-2 bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-sm"
                   >
                     {kw}
                     <button
                       type="button"
                       onClick={() => removeKeyword(idx)}
-                      className="text-violet-500 hover:text-red-500 ml-1"
+                      className="text-emerald-500 hover:text-red-500 ml-1"
                     >
                       ✕
                     </button>
@@ -361,7 +361,7 @@ export default function ImpactHeroSectionEditor() {
       ) : (
         <div className="px-2 mt-6 space-y-6">
           <button
-            className="absolute text-sm sm:text-base right-3 sm:right-4 top-3 sm:top-4 flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 sm:px-6 px-4 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+            className="absolute text-sm sm:text-base right-3 sm:right-4 top-3 sm:top-4 flex flex-row gap-2 items-center font-medium btn btn-primary border border-emerald-600 hover:bg-emerald-600 sm:px-6 px-4 py-2 cursor-pointer text-emerald-600 hover:text-white transition rounded-xl"
             onClick={() => setEdit(true)}
           >
             Edit Hero <TbEdit className="text-xl" />
@@ -396,21 +396,21 @@ export default function ImpactHeroSectionEditor() {
             <div className="flex sm:gap-6 gap-2 mt-4 flex-wrap">
               {data.stats && (
                 <>
-                  <div className="border-2 border-violet-300 bg-violet-50 rounded-lg px-3 py-1.5 sm:py-2">
+                  <div className="border-2 border-emerald-300 bg-emerald-50 rounded-lg px-3 py-1.5 sm:py-2">
                     <span className="font-semibold text-sm sm:text-base">
                       {data.stats.projects?.label}
                       {": "}
                     </span>
                     {data.stats.projects?.value}
                   </div>
-                  <div className="border-2 border-violet-300 bg-violet-50 rounded-lg px-3 py-1.5 sm:py-2">
+                  <div className="border-2 border-emerald-300 bg-emerald-50 rounded-lg px-3 py-1.5 sm:py-2">
                     <span className="font-semibold text-sm sm:text-base">
                       {data.stats.livesChanged?.label}
                       {": "}
                     </span>
                     {data.stats.livesChanged?.value}
                   </div>
-                  <div className="border-2 border-violet-300 bg-violet-50 rounded-lg px-3 py-1.5 sm:py-2">
+                  <div className="border-2 border-emerald-300 bg-emerald-50 rounded-lg px-3 py-1.5 sm:py-2">
                     <span className="font-semibold text-sm sm:text-base">
                       {data.stats.states?.label}
                       {": "}
@@ -457,7 +457,7 @@ export default function ImpactHeroSectionEditor() {
                   data.target_keywords.map((keyword, idx) => (
                     <span
                       key={idx}
-                      className="bg-violet-100 text-violet-700 px-3 py-1 rounded-full text-xs sm:text-sm"
+                      className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs sm:text-sm"
                     >
                       {keyword}
                     </span>

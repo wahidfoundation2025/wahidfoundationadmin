@@ -60,8 +60,8 @@ export default function ImpactCMSPage() {
                 }}
                 className={`text-left text-sm px-6 py-1.5 rounded-lg cursor-pointer font-semibold transition-all ${
                   activeSection === section.key
-                    ? "bg-violet-600 text-white"
-                    : "hover:bg-violet-200 hover:text-violet-600"
+                    ? "bg-emerald-600 text-white"
+                    : "hover:bg-emerald-200 hover:text-emerald-600"
                 }`}
               >
                 {section.name}
@@ -78,8 +78,8 @@ export default function ImpactCMSPage() {
             onClick={() => setActiveSection(section.key)}
             className={`text-left px-6 py-2 rounded-lg cursor-pointer font-semibold transition-all ${
               activeSection === section.key
-                ? "bg-violet-600 text-white"
-                : "hover:bg-violet-200 hover:text-violet-600"
+                ? "bg-emerald-600 text-white"
+                : "hover:bg-emerald-200 hover:text-emerald-600"
             }`}
           >
             {section.name}

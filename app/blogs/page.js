@@ -37,7 +37,7 @@ export default function BlogListPage() {
 
         <Link href="/blogeditor">
           <button
-            className="flex flex-row text-sm sm:text-base gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-700 px-4 sm:px-6 py-2 cursor-pointer text-white transition rounded-xl"
+            className="flex flex-row text-sm sm:text-base gap-2 items-center font-medium btn btn-primary border bg-emerald-600 hover:bg-emerald-700 px-4 sm:px-6 py-2 cursor-pointer text-white transition rounded-xl"
           >
             <Plus size={16} /> Create New
           </button>
@@ -50,7 +50,7 @@ export default function BlogListPage() {
       ) : (
         <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
           {blogs.map(blog => (
-            <div key={blog._id} className="border-2 border-violet-300 bg-violet-50 p-4 rounded-xl gap-4">
+            <div key={blog._id} className="border-2 border-emerald-300 bg-emerald-50 p-4 rounded-xl gap-4">
               <div className="flex gap-3">
                 {blog.imageUrl && (
                   <img src={blog.imageUrl} alt="" className="w-20 h-20 object-cover rounded-full" />
@@ -65,7 +65,7 @@ export default function BlogListPage() {
               <div className="mt-2 flex justify-end gap-4">
                 <Link href={`/blogs/${blog._id}/edit`}>
                   <button
-                    className="text-violet-600 hover:bg-violet-200 rounded-3xl p-2 cursor-pointer transition"
+                    className="text-emerald-600 hover:bg-emerald-200 rounded-3xl p-2 cursor-pointer transition"
                     title="Edit"
                   >
                     <TbEdit size={20} />

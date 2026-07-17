@@ -511,7 +511,7 @@ export default function EditProjectPage({ params }) {
             fetchProject();
             fetchCategories();
           }}
-          className="mt-4 px-4 py-2 bg-violet-600 text-white rounded-xl"
+          className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-xl"
         >
           Retry
         </button>
@@ -535,7 +535,7 @@ export default function EditProjectPage({ params }) {
           onClick={handleSubmit}
           className={`px-4 py-2 rounded-lg flex items-center ${
             isDirty
-              ? "bg-violet-600 text-white hover:bg-violet-700"
+              ? "bg-emerald-600 text-white hover:bg-emerald-700"
               : "bg-gray-400 text-gray-200 cursor-not-allowed"
           }`}
           disabled={!isDirty || submitting}
@@ -612,7 +612,7 @@ export default function EditProjectPage({ params }) {
                   {(form.category || []).map((cat) => (
                     <span
                       key={cat}
-                      className="bg-violet-100 border border-violet-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
+                      className="bg-emerald-100 border border-emerald-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
                     >
                       {cat}
                       <button
@@ -797,7 +797,7 @@ export default function EditProjectPage({ params }) {
                 <button
                   type="button"
                   onClick={handleAddKeyword}
-                  className="px-4 py-2 bg-violet-600 text-white rounded-xl"
+                  className="px-4 py-2 bg-emerald-600 text-white rounded-xl"
                 >
                   Add
                 </button>
@@ -807,7 +807,7 @@ export default function EditProjectPage({ params }) {
                   {(form.target_keywords || []).map((keyword, idx) => (
                     <span
                       key={idx}
-                      className="bg-violet-100 border border-violet-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
+                      className="bg-emerald-100 border border-emerald-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
                     >
                       {keyword}
                       <button
@@ -1055,7 +1055,7 @@ export default function EditProjectPage({ params }) {
             <button
               type="button"
               onClick={handleAddImpact}
-              className="px-4 py-2 bg-violet-600 text-white rounded-xl"
+              className="px-4 py-2 bg-emerald-600 text-white rounded-xl"
             >
               Add Impact
             </button>
@@ -1067,7 +1067,7 @@ export default function EditProjectPage({ params }) {
                     ? "bg-green-200"
                     : imp.type === "Indirect"
                     ? "bg-amber-100"
-                    : "bg-violet-100"
+                    : "bg-emerald-100"
                 } p-3 rounded-xl`}
               >
                 {editingImpactIndex === idx ? (
@@ -1084,7 +1084,7 @@ export default function EditProjectPage({ params }) {
                             ? "border-green-300"
                             : imp.type === "Indirect"
                             ? "border-amber-300"
-                            : "border-violet-400"
+                            : "border-emerald-400"
                         } p-2.5 w-full text-sm border rounded-xl`}
                       />
                       <input
@@ -1098,7 +1098,7 @@ export default function EditProjectPage({ params }) {
                             ? "border-green-300"
                             : imp.type === "Indirect"
                             ? "border-amber-300"
-                            : "border-violet-400"
+                            : "border-emerald-400"
                         } p-2.5 w-full text-sm border rounded-xl`}
                       />
                       <textarea
@@ -1114,7 +1114,7 @@ export default function EditProjectPage({ params }) {
                             ? "border-green-300"
                             : imp.type === "Indirect"
                             ? "border-amber-300"
-                            : "border-violet-400"
+                            : "border-emerald-400"
                         } p-2.5 w-full text-sm border rounded-xl`}
                       />
                     </div>
@@ -1125,7 +1125,7 @@ export default function EditProjectPage({ params }) {
                         </span>
                       </button>
                       <button onClick={handleSaveImpact}>
-                        <span className="font-semibold cursor-pointer bg-violet-600 text-white px-2 py-1 rounded-sm">
+                        <span className="font-semibold cursor-pointer bg-emerald-600 text-white px-2 py-1 rounded-sm">
                           Save
                         </span>
                       </button>
@@ -1220,7 +1220,7 @@ export default function EditProjectPage({ params }) {
             <button
               type="button"
               onClick={handleAddTimelineEvent}
-              className="px-4 py-2 bg-violet-600 text-white rounded-xl"
+              className="px-4 py-2 bg-emerald-600 text-white rounded-xl"
             >
               Add Timeline Event
             </button>
@@ -1232,7 +1232,7 @@ export default function EditProjectPage({ params }) {
                     ? "bg-green-200"
                     : event.status === "In-Progress"
                     ? "bg-amber-100"
-                    : "bg-violet-100"
+                    : "bg-emerald-100"
                 } p-3 rounded-xl`}
               >
                 {editingTimelineEventIndex === idx ? (
@@ -1252,7 +1252,7 @@ export default function EditProjectPage({ params }) {
                             ? "border-green-300"
                             : event.status === "In-Progress"
                             ? "border-amber-300"
-                            : "border-violet-400"
+                            : "border-emerald-400"
                         } p-2.5 w-full text-sm border rounded-xl`}
                       />
                       <input
@@ -1269,7 +1269,7 @@ export default function EditProjectPage({ params }) {
                             ? "border-green-300"
                             : event.status === "In-Progress"
                             ? "border-amber-300"
-                            : "border-violet-400"
+                            : "border-emerald-400"
                         } p-2.5 w-full text-sm border rounded-xl`}
                       />
                       <input
@@ -1286,7 +1286,7 @@ export default function EditProjectPage({ params }) {
                             ? "border-green-300"
                             : event.status === "In-Progress"
                             ? "border-amber-300"
-                            : "border-violet-400"
+                            : "border-emerald-400"
                         } p-2.5 w-full text-sm border rounded-xl`}
                       />
                     </div>
@@ -1297,7 +1297,7 @@ export default function EditProjectPage({ params }) {
                         </span>
                       </button>
                       <button onClick={handleSaveTimelineEvent}>
-                        <span className="font-semibold cursor-pointer bg-violet-600 text-white px-2 py-1 rounded-sm">
+                        <span className="font-semibold cursor-pointer bg-emerald-600 text-white px-2 py-1 rounded-sm">
                           Save
                         </span>
                       </button>
@@ -1374,12 +1374,12 @@ export default function EditProjectPage({ params }) {
             <button
               type="button"
               onClick={handleAddUpdate}
-              className="px-4 py-2 bg-violet-600 text-white rounded-xl"
+              className="px-4 py-2 bg-emerald-600 text-white rounded-xl"
             >
               Add Update
             </button>
             {form.updates.map((upd, idx) => (
-              <div key={idx} className="p-3 rounded-xl bg-violet-100">
+              <div key={idx} className="p-3 rounded-xl bg-emerald-100">
                 {editingUpdateIndex === idx ? (
                   <div className="space-y-2">
                     <div className="flex flex-col space-y-2">
@@ -1423,7 +1423,7 @@ export default function EditProjectPage({ params }) {
                         </span>
                       </button>
                       <button onClick={handleSaveUpdate}>
-                        <span className="font-semibold cursor-pointer bg-violet-600 text-white px-2 py-1 rounded-sm">
+                        <span className="font-semibold cursor-pointer bg-emerald-600 text-white px-2 py-1 rounded-sm">
                           Save
                         </span>
                       </button>

@@ -56,7 +56,7 @@ export default async function ProjectDetailPage({ params }) {
         <h1 className="text-3xl font-bold">{project.title}</h1>
         <Link
           href={`/projects/${id}/edit`}
-          className="p-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl flex items-center gap-2"
+          className="p-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl flex items-center gap-2"
         >
           <Pencil className="w-5 h-5" />
           <span className="text-sm font-medium">Edit</span>
@@ -235,7 +235,7 @@ export default async function ProjectDetailPage({ params }) {
                     ? "bg-green-200 border-green-300"
                     : imp.type === "Indirect"
                     ? "bg-amber-100 border-amber-200"
-                    : "bg-violet-100 border-violet-200"
+                    : "bg-emerald-100 border-emerald-200"
                 }`}
               >
                 <h3 className="text-lg font-semibold">{imp.title}</h3>
@@ -259,7 +259,7 @@ export default async function ProjectDetailPage({ params }) {
                     ? "bg-green-200 border-green-300"
                     : event.status === "In-Progress"
                     ? "bg-amber-100 border-amber-200"
-                    : "bg-violet-100 border-violet-200"
+                    : "bg-emerald-100 border-emerald-200"
                 }`}
               >
                 <h3 className="text-lg font-semibold">{event.title}</h3>

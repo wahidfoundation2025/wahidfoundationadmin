@@ -90,7 +90,7 @@ export default function DonationPage() {
                   <td className="py-3 px-4 text-nowrap">{getProjectName(donation.projectId)}</td>
                   <td className="py-3 px-4 text-nowrap">
                     {donation.influencerName ? (
-                      <span className="rounded-full bg-violet-100 px-2.5 py-0.5 text-xs font-medium text-violet-700">
+                      <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-700">
                         {donation.influencerName}
                       </span>
                     ) : (

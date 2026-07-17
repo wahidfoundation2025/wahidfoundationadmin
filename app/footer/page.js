@@ -111,7 +111,7 @@ export default function FooterSettingsPage() {
             ) : (
               <button
                 onClick={() => setEditMode(true)}
-                className="bg-violet-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-violet-700 transition"
+                className="bg-emerald-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-emerald-700 transition"
               >
                 <Edit size={16} /> Edit
               </button>

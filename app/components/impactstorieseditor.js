@@ -103,11 +103,11 @@ export default function ImpactSectionEditor() {
             const Icon = ICON_MAP[story.icon] || Users;
 
             return (
-              <div key={story._id} className="gap-1 bg-violet-50 rounded-xl p-4 border-2 border-violet-300 w-full min-h-full flex flex-col justify-between">
+              <div key={story._id} className="gap-1 bg-emerald-50 rounded-xl p-4 border-2 border-emerald-300 w-full min-h-full flex flex-col justify-between">
                 <div className='flex flex-row justify-between'>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="bg-violet-200 text-violet-600 rounded-full p-2 text-xs font-semibold">{story.initials}</span>
+                      <span className="bg-emerald-200 text-emerald-600 rounded-full p-2 text-xs font-semibold">{story.initials}</span>
                       <span className="font-semibold text-gray-700">{story.name}</span>
                     </div>
 
@@ -203,7 +203,7 @@ export default function ImpactSectionEditor() {
               type="submit"
               onClick={handleAdd}
               disabled={adding}
-              className="px-10 py-2 font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white text-sm rounded-xl"
+              className="px-10 py-2 font-medium cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white text-sm rounded-xl"
             >
               {adding ? 'Adding...' : 'Add'}
             </button>

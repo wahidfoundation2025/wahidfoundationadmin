@@ -65,7 +65,7 @@ export default function VolunteerListPage() {
                       <td className="py-3 px-4 text-right">
                         <button
                           onClick={() => setSelected(vol)}
-                          className="text-violet-600 hover:bg-violet-200 rounded-3xl p-2 cursor-pointer transition"
+                          className="text-emerald-600 hover:bg-emerald-200 rounded-3xl p-2 cursor-pointer transition"
                           title="View"
                         >
                           <Eye size={16} />

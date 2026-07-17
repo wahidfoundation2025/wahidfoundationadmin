@@ -145,7 +145,7 @@ export default function TrackingPage() {
     });
 
   const inputCls =
-    "w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-200";
+    "w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200";
   const labelCls = "mb-1 block text-sm font-semibold text-gray-700";
 
   return (
@@ -264,7 +264,7 @@ export default function TrackingPage() {
                             onChange={(e) =>
                               updateScript(i, { enabled: e.target.checked })
                             }
-                            className="h-4 w-4 accent-violet-600"
+                            className="h-4 w-4 accent-emerald-600"
                           />
                           Enabled
                         </label>
@@ -368,7 +368,7 @@ export default function TrackingPage() {
                             onChange={() =>
                               updateScript(i, { pageScope: "all" })
                             }
-                            className="h-4 w-4 accent-violet-600"
+                            className="h-4 w-4 accent-emerald-600"
                           />
                           All pages
                         </label>
@@ -380,7 +380,7 @@ export default function TrackingPage() {
                             onChange={() =>
                               updateScript(i, { pageScope: "specific" })
                             }
-                            className="h-4 w-4 accent-violet-600"
+                            className="h-4 w-4 accent-emerald-600"
                           />
                           Specific pages
                         </label>
@@ -404,7 +404,7 @@ export default function TrackingPage() {
                                     else set.delete(pg.value);
                                     updateScript(i, { pages: Array.from(set) });
                                   }}
-                                  className="h-4 w-4 accent-violet-600"
+                                  className="h-4 w-4 accent-emerald-600"
                                 />
                                 {pg.label}
                               </label>

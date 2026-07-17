@@ -184,7 +184,7 @@ async function handleDeleteUser(email) {
                       <td className="py-3 px-2 text-sm text-gray-900 bg-white">
                         <button
                           onClick={() => openEditModal(user)}
-                          className="ml-4 cursor-pointer text-violet-600 p-2 rounded-full hover:bg-violet-100"
+                          className="ml-4 cursor-pointer text-emerald-600 p-2 rounded-full hover:bg-emerald-100"
                           title="Edit user"
                         >
                           <TbEdit size={20} />
@@ -285,14 +285,14 @@ async function handleDeleteUser(email) {
                 <button
                   type="button"
                   onClick={() => setEditingUser(null)}
-                  className="px-6 py-2 font-medium cursor-pointer border border-violet-600 text-violet-600 hover:bg-violet-600 hover:text-white transition-colors text-sm rounded-xl"
+                  className="px-6 py-2 font-medium cursor-pointer border border-emerald-600 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-colors text-sm rounded-xl"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   onClick={handleUpdate}
-                  className="px-6 py-2 font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white text-sm rounded-xl"
+                  className="px-6 py-2 font-medium cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white text-sm rounded-xl"
                 >
                   Save
                 </button>
@@ -354,7 +354,7 @@ async function handleDeleteUser(email) {
                 <button
                   type="submit"
                   onClick={handleAddSubmit}
-                  className="px-10 py-2 font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white text-sm rounded-xl"
+                  className="px-10 py-2 font-medium cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white text-sm rounded-xl"
                 >
                   Add
                 </button>

@@ -96,7 +96,7 @@ export default function CreateBlogPage() {
         <h1 className="text-2xl font-bold">Create Blog</h1>
         <button
           onClick={handleSubmit}
-          className="font-medium btn btn-primary border bg-violet-600 hover:bg-violet-700 px-6 py-2 cursor-pointer text-white transition rounded-xl"
+          className="font-medium btn btn-primary border bg-emerald-600 hover:bg-emerald-700 px-6 py-2 cursor-pointer text-white transition rounded-xl"
         >
           Save Blog
         </button>
@@ -167,7 +167,7 @@ export default function CreateBlogPage() {
             {form.category.map((cat) => (
               <span
                 key={cat}
-                className="bg-violet-100 border border-violet-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
+                className="bg-emerald-100 border border-emerald-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
               >
                 {cat}
                 <button
@@ -205,8 +205,8 @@ export default function CreateBlogPage() {
             file:mr-4 file:py-2 file:px-4
             file:rounded-lg file:border-0
             file:text-sm file:font-semibold
-            file:bg-violet-100 file:text-violet-700
-            hover:file:bg-violet-200 transition-all cursor-pointer"
+            file:bg-emerald-100 file:text-emerald-700
+            hover:file:bg-emerald-200 transition-all cursor-pointer"
         />
         <label className="font-medium block mb-1">Image Alt Text</label>
         <input
@@ -257,7 +257,7 @@ export default function CreateBlogPage() {
               />
               <button
                 type="button"
-                className="font-medium border bg-violet-600 hover:bg-violet-700 px-4 py-2 text-white transition rounded-xl"
+                className="font-medium border bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-white transition rounded-xl"
                 onClick={handleAddKeyword}
               >
                 Add
@@ -268,7 +268,7 @@ export default function CreateBlogPage() {
                 {form.targetKeywords.map((keyword) => (
                   <span
                     key={keyword}
-                    className="bg-violet-100 border border-violet-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
+                    className="bg-emerald-100 border border-emerald-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
                   >
                     {keyword}
                     <button
@@ -330,8 +330,8 @@ export default function CreateBlogPage() {
                 file:mr-4 file:py-2 file:px-4
                 file:rounded-lg file:border-0
                 file:text-sm file:font-semibold
-                file:bg-violet-100 file:text-violet-700
-                hover:file:bg-violet-200 transition-all cursor-pointer"
+                file:bg-emerald-100 file:text-emerald-700
+                hover:file:bg-emerald-200 transition-all cursor-pointer"
             />
           </div>
         </div>

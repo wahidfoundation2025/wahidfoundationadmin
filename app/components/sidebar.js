@@ -115,7 +115,7 @@ export default function Sidebar({ children }) {
   const user = session?.user;
 
   const getNavClass = (href) =>
-    pathname === href ? "text-violet-700 bg-violet-200 font-medium" : "";
+    pathname === href ? "bg-emerald-600 text-white font-semibold shadow-sm" : "";
 
   const isCmsActive = cmsNavItems.some((item) =>
     pathname.startsWith(item.href)
@@ -164,7 +164,7 @@ export default function Sidebar({ children }) {
               {show("dashboard") && (
                 <Link href="/">
                   <div
-                    className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
+                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
                       "/"
                     )}`}
                   >
@@ -177,9 +177,9 @@ export default function Sidebar({ children }) {
                 <>
                   <button
                     onClick={() => setCmsDropdown((v) => !v)}
-                    className={`flex hover:bg-violet-200 cursor-pointer items-center justify-between gap-2 w-full rounded-lg px-3 py-2 font-medium transition normal-case ${
+                    className={`flex hover:bg-emerald-50 cursor-pointer items-center justify-between gap-2 w-full rounded-lg px-3 py-2 font-medium transition normal-case ${
                       isCmsActive
-                        ? "text-violet-700 bg-violet-200 font-medium"
+                        ? "bg-emerald-600 text-white font-semibold shadow-sm"
                         : ""
                     }`}
                   >
@@ -198,9 +198,9 @@ export default function Sidebar({ children }) {
                       {cmsNavItems.map((item) => (
                         <Link key={item.name} href={item.href}>
                           <div
-                            className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg p-2 cursor-pointer transition normal-case ${
+                            className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg p-2 cursor-pointer transition normal-case ${
                               pathname.startsWith(item.href)
-                                ? "text-violet-700 bg-violet-200 font-medium"
+                                ? "bg-emerald-600 text-white font-semibold shadow-sm"
                                 : ""
                             }`}
                           >
@@ -216,7 +216,7 @@ export default function Sidebar({ children }) {
               {show("donations") && (
                 <Link href="/donation">
                   <div
-                    className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
+                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
                       "/donation"
                     )}`}
                   >
@@ -228,7 +228,7 @@ export default function Sidebar({ children }) {
               {show("donors") && (
                 <Link href="/donors">
                   <div
-                    className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
+                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
                       "/donors"
                     )}`}
                   >
@@ -240,7 +240,7 @@ export default function Sidebar({ children }) {
               {show("donations") && (
                 <Link href="/influencers">
                   <div
-                    className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
+                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
                       "/influencers"
                     )}`}
                   >
@@ -252,7 +252,7 @@ export default function Sidebar({ children }) {
               {show("settings") && (
                 <Link href="/settings">
                   <div
-                    className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
+                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
                       "/settings"
                     )}`}
                   >
@@ -264,7 +264,7 @@ export default function Sidebar({ children }) {
               {show("settings") && (
                 <Link href="/tracking">
                   <div
-                    className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
+                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
                       "/tracking"
                     )}`}
                   >
@@ -310,7 +310,7 @@ export default function Sidebar({ children }) {
               {show("dashboard") && (
                 <Link href="/" onClick={() => setIsOpen(false)}>
                   <div
-                    className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition ${getNavClass(
+                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition ${getNavClass(
                       "/"
                     )}`}
                   >
@@ -323,8 +323,8 @@ export default function Sidebar({ children }) {
                 <>
                   <button
                     onClick={() => setCmsDropdown((v) => !v)}
-                    className={`flex hover:bg-violet-200 items-center justify-between gap-2 w-full rounded-lg px-3 py-2 font-medium transition ${
-                      isCmsActive ? "text-violet-700 bg-violet-200" : ""
+                    className={`flex hover:bg-emerald-50 items-center justify-between gap-2 w-full rounded-lg px-3 py-2 font-medium transition ${
+                      isCmsActive ? "text-emerald-700 bg-emerald-200" : ""
                     }`}
                   >
                     <div className="flex items-center gap-2">
@@ -345,9 +345,9 @@ export default function Sidebar({ children }) {
                           onClick={() => setIsOpen(false)}
                         >
                           <div
-                            className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg p-2 cursor-pointer transition ${
+                            className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg p-2 cursor-pointer transition ${
                               pathname.startsWith(item.href)
-                                ? "text-violet-700 bg-violet-200 font-medium"
+                                ? "bg-emerald-600 text-white font-semibold shadow-sm"
                                 : ""
                             }`}
                           >
@@ -363,7 +363,7 @@ export default function Sidebar({ children }) {
               {show("donations") && (
                 <Link href="/donation" onClick={() => setIsOpen(false)}>
                   <div
-                    className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass(
+                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass(
                       "/donation"
                     )}`}
                   >
@@ -375,7 +375,7 @@ export default function Sidebar({ children }) {
               {show("donors") && (
                 <Link href="/donors" onClick={() => setIsOpen(false)}>
                   <div
-                    className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass(
+                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass(
                       "/donors"
                     )}`}
                   >
@@ -387,7 +387,7 @@ export default function Sidebar({ children }) {
               {show("donations") && (
                 <Link href="/influencers" onClick={() => setIsOpen(false)}>
                   <div
-                    className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass(
+                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass(
                       "/influencers"
                     )}`}
                   >
@@ -399,7 +399,7 @@ export default function Sidebar({ children }) {
               {show("settings") && (
                 <Link href="/settings" onClick={() => setIsOpen(false)}>
                   <div
-                    className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass(
+                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass(
                       "/settings"
                     )}`}
                   >
@@ -411,7 +411,7 @@ export default function Sidebar({ children }) {
               {show("settings") && (
                 <Link href="/tracking" onClick={() => setIsOpen(false)}>
                   <div
-                    className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass(
+                    className={`flex hover:bg-emerald-50 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass(
                       "/tracking"
                     )}`}
                   >

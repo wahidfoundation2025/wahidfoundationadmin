@@ -345,7 +345,7 @@ export default function CreateProjectPage() {
         <h1 className="text-xl sm:text-2xl font-bold">Create New Project</h1>
         <button
           onClick={handleSubmit}
-          className="px-4 sm:px-10 py-2 text-sm sm:text-base font-medium cursor-pointer bg-violet-600 hover:bg-violet-700 text-white rounded-xl flex items-center gap-2"
+          className="px-4 sm:px-10 py-2 text-sm sm:text-base font-medium cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl flex items-center gap-2"
           disabled={submitting}
         >
           {submitting && <Loader2 className="w-4 h-4 animate-spin" />} Save
@@ -417,7 +417,7 @@ export default function CreateProjectPage() {
                   {form.category.map((cat) => (
                     <span
                       key={cat}
-                      className="bg-violet-100 border border-violet-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
+                      className="bg-emerald-100 border border-emerald-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
                     >
                       {cat}
                       <button
@@ -588,7 +588,7 @@ export default function CreateProjectPage() {
                 <button
                   type="button"
                   onClick={handleAddKeyword}
-                  className="px-4 py-2 bg-violet-600 text-white rounded-xl"
+                  className="px-4 py-2 bg-emerald-600 text-white rounded-xl"
                 >
                   Add
                 </button>
@@ -598,7 +598,7 @@ export default function CreateProjectPage() {
                   {form.target_keywords.map((keyword, idx) => (
                     <span
                       key={idx}
-                      className="bg-violet-100 border border-violet-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
+                      className="bg-emerald-100 border border-emerald-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
                     >
                       {keyword}
                       <button
@@ -828,7 +828,7 @@ export default function CreateProjectPage() {
             <button
               type="button"
               onClick={handleAddImpact}
-              className="px-4 py-2 bg-violet-600 text-white rounded-xl"
+              className="px-4 py-2 bg-emerald-600 text-white rounded-xl"
             >
               Add Impact
             </button>
@@ -840,7 +840,7 @@ export default function CreateProjectPage() {
                     ? "bg-green-200"
                     : imp.type === "Indirect"
                     ? "bg-amber-100"
-                    : "bg-violet-100"
+                    : "bg-emerald-100"
                 } p-3 rounded-xl`}
               >
                 {editingImpactIndex === idx ? (
@@ -857,7 +857,7 @@ export default function CreateProjectPage() {
                             ? "border-green-300"
                             : imp.type === "Indirect"
                             ? "border-amber-300"
-                            : "border-violet-400"
+                            : "border-emerald-400"
                         } p-2.5 w-full text-sm border rounded-xl`}
                       />
                       <input
@@ -871,7 +871,7 @@ export default function CreateProjectPage() {
                             ? "border-green-300"
                             : imp.type === "Indirect"
                             ? "border-amber-300"
-                            : "border-violet-400"
+                            : "border-emerald-400"
                         } p-2.5 w-full text-sm border rounded-xl`}
                       />
                       <textarea
@@ -887,7 +887,7 @@ export default function CreateProjectPage() {
                             ? "border-green-300"
                             : imp.type === "Indirect"
                             ? "border-amber-300"
-                            : "border-violet-400"
+                            : "border-emerald-400"
                         } p-2.5 w-full text-sm border rounded-xl`}
                       />
                     </div>
@@ -898,7 +898,7 @@ export default function CreateProjectPage() {
                         </span>
                       </button>
                       <button onClick={handleSaveImpact}>
-                        <span className="font-semibold cursor-pointer bg-violet-600 text-white px-2 py-1 rounded-sm">
+                        <span className="font-semibold cursor-pointer bg-emerald-600 text-white px-2 py-1 rounded-sm">
                           Save
                         </span>
                       </button>
@@ -978,7 +978,7 @@ export default function CreateProjectPage() {
             <button
               type="button"
               onClick={handleAddScheme}
-              className="px-4 py-2 bg-violet-600 text-white rounded-xl"
+              className="px-4 py-2 bg-emerald-600 text-white rounded-xl"
             >
               Add Scheme
             </button>
@@ -990,7 +990,7 @@ export default function CreateProjectPage() {
               //     {form.scheme.map((sch, idx) => (
               //       <span
               //         key={idx}
-              //         className="flex-1 min-w-48 bg-violet-100 border border-violet-300 p-3 rounded-xl text-sm gap-2"
+              //         className="flex-1 min-w-48 bg-emerald-100 border border-emerald-300 p-3 rounded-xl text-sm gap-2"
               //       >
               //         <div className="flex w-full flex-row gap-4 justify-between items-start">
               //           <span className="font-semibold">
@@ -1057,7 +1057,7 @@ export default function CreateProjectPage() {
             <button
               type="button"
               onClick={handleAddTimelineEvent}
-              className="px-4 py-2 bg-violet-600 text-white rounded-xl"
+              className="px-4 py-2 bg-emerald-600 text-white rounded-xl"
             >
               Add Timeline Event
             </button>
@@ -1069,7 +1069,7 @@ export default function CreateProjectPage() {
                     ? "bg-green-200"
                     : event.status === "In-Progress"
                     ? "bg-amber-100"
-                    : "bg-violet-100"
+                    : "bg-emerald-100"
                 } p-3 rounded-xl`}
               >
                 {editingTimelineEventIndex === idx ? (
@@ -1089,7 +1089,7 @@ export default function CreateProjectPage() {
                             ? "border-green-300"
                             : event.status === "In-Progress"
                             ? "border-amber-300"
-                            : "border-violet-400"
+                            : "border-emerald-400"
                         } p-2.5 w-full text-sm border rounded-xl`}
                       />
                       <input
@@ -1106,7 +1106,7 @@ export default function CreateProjectPage() {
                             ? "border-green-300"
                             : event.status === "In-Progress"
                             ? "border-amber-300"
-                            : "border-violet-400"
+                            : "border-emerald-400"
                         } p-2.5 w-full text-sm border rounded-xl`}
                       />
                       <input
@@ -1123,7 +1123,7 @@ export default function CreateProjectPage() {
                             ? "border-green-300"
                             : event.status === "In-Progress"
                             ? "border-amber-300"
-                            : "border-violet-400"
+                            : "border-emerald-400"
                         } p-2.5 w-full text-sm border rounded-xl`}
                       />
                     </div>
@@ -1134,7 +1134,7 @@ export default function CreateProjectPage() {
                         </span>
                       </button>
                       <button onClick={handleSaveTimelineEvent}>
-                        <span className="font-semibold cursor-pointer bg-violet-600 text-white px-2 py-1 rounded-sm">
+                        <span className="font-semibold cursor-pointer bg-emerald-600 text-white px-2 py-1 rounded-sm">
                           Save
                         </span>
                       </button>
@@ -1200,14 +1200,14 @@ export default function CreateProjectPage() {
             <button
               type="button"
               onClick={handleAddUpdate}
-              className="px-4 py-2 bg-violet-600 text-white rounded-xl"
+              className="px-4 py-2 bg-emerald-600 text-white rounded-xl"
             >
               Add Update
             </button>
             {form.updates.map((upd, idx) => (
               <div
                 key={idx}
-                className="p-3 rounded-xl bg-violet-100"
+                className="p-3 rounded-xl bg-emerald-100"
               >
                 {editingUpdateIndex === idx ? (
                   <div className="space-y-2">
@@ -1252,7 +1252,7 @@ export default function CreateProjectPage() {
                         </span>
                       </button>
                       <button onClick={handleSaveUpdate}>
-                        <span className="font-semibold cursor-pointer bg-violet-600 text-white px-2 py-1 rounded-sm">
+                        <span className="font-semibold cursor-pointer bg-emerald-600 text-white px-2 py-1 rounded-sm">
                           Save
                         </span>
                       </button>

@@ -49,7 +49,7 @@ export default function ProjectsPage() {
 
         <button
           onClick={() => router.push('/projects/create')}
-          className="flex flex-row text-sm sm:text-base gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-700 px-4 sm:px-6 py-2 cursor-pointer text-white transition rounded-xl"
+          className="flex flex-row text-sm sm:text-base gap-2 items-center font-medium btn btn-primary border bg-emerald-600 hover:bg-emerald-700 px-4 sm:px-6 py-2 cursor-pointer text-white transition rounded-xl"
         >
           <Plus size={16} /> Create Project
         </button>
@@ -107,7 +107,7 @@ export default function ProjectsPage() {
                     </button>
                     <button
                       onClick={() => router.push(`/projects/${project._id}/edit`)}
-                      className="text-violet-600 hover:bg-violet-200 rounded-3xl p-2 cursor-pointer transition"
+                      className="text-emerald-600 hover:bg-emerald-200 rounded-3xl p-2 cursor-pointer transition"
                       title="Edit"
                     >
                       <TbEdit size={20} />

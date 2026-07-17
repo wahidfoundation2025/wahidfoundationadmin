@@ -64,7 +64,7 @@ export default function AboutHeroSectionEditor() {
               name="title"
               value={form.title || ""}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
             />
           </div>
 
@@ -76,7 +76,7 @@ export default function AboutHeroSectionEditor() {
               name="subtitle"
               value={form.subtitle || ""}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
             />
           </div>
 
@@ -88,7 +88,7 @@ export default function AboutHeroSectionEditor() {
               name="vision"
               value={form.vision || ""}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
             />
           </div>
 
@@ -100,20 +100,20 @@ export default function AboutHeroSectionEditor() {
               name="mission"
               value={form.mission || ""}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
             />
           </div>
 
           <div className="flex gap-2 absolute right-3 sm:right-6 top-3 sm:top-6">
             <button
-              className="flex flex-row sm:text-base text-sm gap-2 items-center font-medium btn btn-primary border bg-violet-600 hover:bg-violet-600 sm:px-6 px-4 py-2 cursor-pointer text-white  transition rounded-xl"
+              className="flex flex-row sm:text-base text-sm gap-2 items-center font-medium btn btn-primary border bg-emerald-600 hover:bg-emerald-600 sm:px-6 px-4 py-2 cursor-pointer text-white  transition rounded-xl"
               onClick={handleSave}
               disabled={saving}
             >
               {saving ? "Saving..." : "Save"}
             </button>
             <button
-              className="flex flex-row sm:text-base text-sm gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 sm:px-6 px-4 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+              className="flex flex-row sm:text-base text-sm gap-2 items-center font-medium btn btn-primary border border-emerald-600 hover:bg-emerald-600 sm:px-6 px-4 py-2 cursor-pointer text-emerald-600 hover:text-white transition rounded-xl"
               onClick={() => {
                 setEdit(false);
                 setForm(data);
@@ -126,7 +126,7 @@ export default function AboutHeroSectionEditor() {
       ) : (
         <div className="px-2 mt-6 space-y-6">
           <button
-            className="absolute text-sm sm:text-base right-3 sm:right-4 top-3 sm:top-4 flex flex-row gap-2 items-center font-medium btn btn-primary border border-violet-600 hover:bg-violet-600 sm:px-6 px-4 py-2 cursor-pointer text-violet-600 hover:text-white transition rounded-xl"
+            className="absolute text-sm sm:text-base right-3 sm:right-4 top-3 sm:top-4 flex flex-row gap-2 items-center font-medium btn btn-primary border border-emerald-600 hover:bg-emerald-600 sm:px-6 px-4 py-2 cursor-pointer text-emerald-600 hover:text-white transition rounded-xl"
             onClick={() => setEdit(true)}
           >
             Edit Section <TbEdit className="text-xl" />

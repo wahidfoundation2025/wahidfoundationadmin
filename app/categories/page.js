@@ -81,7 +81,7 @@ export default function CategoriesPage() {
         <h1 className="text-xl sm:text-2xl font-bold">Categories</h1>
         <button
           onClick={openAddModal}
-          className="flex items-center gap-2 px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl"
+          className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl"
         >
           <FaPlus />
           Add Category
@@ -95,7 +95,7 @@ export default function CategoriesPage() {
           {categories.map((cat) => (
             <div
               key={cat._id}
-              className="flex justify-between items-start bg-violet-50 border-2 border-violet-300 p-3 rounded-xl"
+              className="flex justify-between items-start bg-emerald-50 border-2 border-emerald-300 p-3 rounded-xl"
             >
               <div>
                 <h2 className="font-semibold text-lg">{cat.name}</h2>
@@ -105,7 +105,7 @@ export default function CategoriesPage() {
               <div className="space-x-2 ml-4 flex-shrink-0">
                 <button
                   onClick={() => openEditModal(cat)}
-                  className="text-violet-600 hover:bg-violet-200 rounded-3xl p-2 transition"
+                  className="text-emerald-600 hover:bg-emerald-200 rounded-3xl p-2 transition"
                   title="Edit"
                 >
                   <TbEdit size={20} />
@@ -159,7 +159,7 @@ export default function CategoriesPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg"
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg"
                 >
                   {saving ? "Saving..." : "Save"}
                 </button>

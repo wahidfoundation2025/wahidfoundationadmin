@@ -189,7 +189,7 @@ export default function ImpactCategoriesEditor() {
             </span>
 
             <button
-              className="absolute text-xs sm:text-base right-3 sm:right-4 top-3 sm:top-4 flex flex-row gap-2 items-center font-medium border border-violet-600 hover:bg-violet-600 sm:px-6 px-2 py-1 cursor-pointer text-violet-600 hover:text-white transition rounded-md lg:rounded-xl"
+              className="absolute text-xs sm:text-base right-3 sm:right-4 top-3 sm:top-4 flex flex-row gap-2 items-center font-medium border border-emerald-600 hover:bg-emerald-600 sm:px-6 px-2 py-1 cursor-pointer text-emerald-600 hover:text-white transition rounded-md lg:rounded-xl"
               onClick={() => setEdit(true)}
             >
               Edit Title/Subtitle <TbEdit className="text-base lg:text-xl" />
@@ -216,7 +216,7 @@ export default function ImpactCategoriesEditor() {
               <div className="flex gap-2">
                 <button
                   onClick={() => handleEditCategory(cat)}
-                  className="text-violet-600 text-sm cursor-pointer"
+                  className="text-emerald-600 text-sm cursor-pointer"
                 >
                   <TbEdit size={18} />
                 </button>
@@ -255,7 +255,7 @@ export default function ImpactCategoriesEditor() {
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
-                        className="bg-violet-600 h-2 rounded-full"
+                        className="bg-emerald-600 h-2 rounded-full"
                         style={{ width: `${s.progress}%` }}
                       ></div>
                     </div>
@@ -380,7 +380,7 @@ export default function ImpactCategoriesEditor() {
 
                     <div className="w-full bg-gray-200 rounded-full h-2 mt-2 relative">
                       <div
-                        className="bg-violet-600 h-2 rounded-full"
+                        className="bg-emerald-600 h-2 rounded-full"
                         style={{ width: `${s.progress}%` }}
                       ></div>
                       <span className="absolute right-1 -top-5 text-xs font-medium text-gray-700">
@@ -412,7 +412,7 @@ export default function ImpactCategoriesEditor() {
         <button
           onClick={handleAddCategory}
           className={`p-2 cursor-pointer text-sm ${
-            editingKey ? "bg-blue-600" : "bg-violet-600"
+            editingKey ? "bg-blue-600" : "bg-emerald-600"
           } text-white rounded`}
         >
           {editingKey ? "Update Category" : "Add Category"}

@@ -96,7 +96,7 @@ export default function EditBlogPage() {
 
         <button
           onClick={handleSave}
-          className="font-medium border bg-violet-600 hover:bg-violet-700 px-6 py-2 text-white rounded-xl transition"
+          className="font-medium border bg-emerald-600 hover:bg-emerald-700 px-6 py-2 text-white rounded-xl transition"
         >
           Save Changes
         </button>
@@ -145,7 +145,7 @@ export default function EditBlogPage() {
             {selectedCategories.map((cat) => (
               <span
                 key={cat}
-                className="bg-violet-100 border border-violet-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
+                className="bg-emerald-100 border border-emerald-300 py-1 pl-3 pr-2 rounded-full text-sm flex items-center gap-2"
               >
                 {cat}
                 <button
@@ -181,8 +181,8 @@ export default function EditBlogPage() {
             file:mr-4 file:py-2 file:px-4
             file:rounded-lg file:border-0
             file:text-sm file:font-semibold
-            file:bg-violet-100 file:text-violet-700
-            hover:file:bg-violet-200 transition-all cursor-pointer"
+            file:bg-emerald-100 file:text-emerald-700
+            hover:file:bg-emerald-200 transition-all cursor-pointer"
         />
       </div>
 

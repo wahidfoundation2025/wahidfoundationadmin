@@ -133,7 +133,7 @@ export default function InfluencersPage() {
         <button
           type="submit"
           disabled={saving}
-          className="flex items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700 disabled:opacity-50"
+          className="flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-50"
         >
           <Plus size={16} />
           {saving ? "Adding…" : "Add Influencer"}

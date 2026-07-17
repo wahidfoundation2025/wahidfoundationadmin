@@ -47,7 +47,7 @@ export default function ProfilePage() {
             <img
               src={session.user.image || "/default-avatar.png"} // Google photo if available
               alt="Profile"
-              className="w-24 h-24 rounded-full object-cover border-4 border-violet-200"
+              className="w-24 h-24 rounded-full object-cover border-4 border-emerald-200"
             />
             <div>
               <h2 className="text-3xl font-semibold">{session.user.name}</h2>
@@ -71,7 +71,7 @@ export default function ProfilePage() {
                 {userData.access?.map((a, i) => (
                   <span
                     key={i}
-                    className="px-3 py-1 text-sm bg-violet-100 text-violet-700 rounded-full"
+                    className="px-3 py-1 text-sm bg-emerald-100 text-emerald-700 rounded-full"
                   >
                     {a}
                   </span>
