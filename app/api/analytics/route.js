@@ -143,18 +143,39 @@ export async function GET(req) {
     projById[String(p._id)] = p;
   });
 
-  const byProject = byProjectAgg.map((r) => {
+  // Donations whose project was deleted (or had none) collapse into a single
+  // catch-all row instead of one row per dangling id.
+  const known = [];
+  const orphan = {
+    projectId: "",
+    title: "General / Unassigned",
+    slug: null,
+    totalRequired: 0,
+    amount: 0,
+    donations: 0,
+    donors: 0,
+  };
+  byProjectAgg.forEach((r) => {
     const p = projById[String(r._id)];
-    return {
-      projectId: String(r._id || ""),
-      title: p?.title || "General / Unassigned",
-      slug: p?.slug || null,
-      totalRequired: p?.totalRequired || 0,
-      amount: r.amount || 0,
-      donations: r.donations || 0,
-      donors: r.donors || 0,
-    };
+    if (p) {
+      known.push({
+        projectId: String(r._id),
+        title: p.title,
+        slug: p.slug || null,
+        totalRequired: p.totalRequired || 0,
+        amount: r.amount || 0,
+        donations: r.donations || 0,
+        donors: r.donors || 0,
+      });
+    } else {
+      orphan.amount += r.amount || 0;
+      orphan.donations += r.donations || 0;
+      orphan.donors += r.donors || 0;
+    }
   });
+  const byProject = [...known, ...(orphan.donations ? [orphan] : [])].sort(
+    (a, b) => b.amount - a.amount
+  );
 
   const t = totalsAgg[0] || { raised: 0, donations: 0, donors: 0 };
   const totals = {
