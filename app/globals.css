@@ -7,7 +7,10 @@
 ------------------------------------------------------------------ */
 
 :root {
-  --background: #f4f5f6;
+  /* Page behind the floating app shell */
+  --background: #e9eaec;
+  /* Surface inside the shell */
+  --shell: #f7f7f8;
   --foreground: #101828;
 
   --brand-50: #ecfdf5;
