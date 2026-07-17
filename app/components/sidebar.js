@@ -17,6 +17,7 @@ import {
   Settings as SettingsIcon,
   Database,
   Megaphone,
+  LineChart,
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
@@ -93,6 +94,12 @@ const navItems = [
     key: "settings",
     href: "/settings",
     icon: <SettingsIcon size={18} />,
+  },
+  {
+    name: "Tracking Scripts",
+    key: "settings",
+    href: "/tracking",
+    icon: <LineChart size={18} />,
   },
 ];
 
@@ -253,6 +260,18 @@ export default function Sidebar({ children }) {
                   </div>
                 </Link>
               )}
+
+              {show("settings") && (
+                <Link href="/tracking">
+                  <div
+                    className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 mt-0 py-2 cursor-pointer font-medium transition normal-case ${getNavClass(
+                      "/tracking"
+                    )}`}
+                  >
+                    {navItems[6].icon} {navItems[6].name}
+                  </div>
+                </Link>
+              )}
             </>
           )}
         </aside>
@@ -385,6 +404,18 @@ export default function Sidebar({ children }) {
                     )}`}
                   >
                     {navItems[5].icon} {navItems[5].name}
+                  </div>
+                </Link>
+              )}
+
+              {show("settings") && (
+                <Link href="/tracking" onClick={() => setIsOpen(false)}>
+                  <div
+                    className={`flex hover:bg-violet-200 items-center gap-2 rounded-lg px-3 py-2 cursor-pointer font-medium transition ${getNavClass(
+                      "/tracking"
+                    )}`}
+                  >
+                    {navItems[6].icon} {navItems[6].name}
                   </div>
                 </Link>
               )}
