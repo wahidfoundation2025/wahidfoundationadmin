@@ -18,6 +18,8 @@ import {
   Database,
   Megaphone,
   LineChart,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
@@ -53,12 +55,29 @@ const itemBase =
 const itemIdle = "text-emerald-100/70 hover:bg-white/10 hover:text-white";
 const itemActive = "bg-emerald-600 text-white shadow-sm";
 
+const STORAGE_KEY = "wf_admin_sidebar_collapsed";
+
 export default function Sidebar({ children }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const [cmsDropdown, setCmsDropdown] = useState(false);
   const [access, setAccess] = useState([]);
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState("");
+
+  // Remember the collapsed preference across sessions.
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(STORAGE_KEY) === "1") setCollapsed(true);
+    } catch {}
+  }, []);
+  const toggleCollapsed = () =>
+    setCollapsed((v) => {
+      try {
+        localStorage.setItem(STORAGE_KEY, v ? "0" : "1");
+      } catch {}
+      return !v;
+    });
 
   const pathname = usePathname();
   const { data: session } = useSession();
@@ -89,13 +108,19 @@ export default function Sidebar({ children }) {
 
   const show = (key) => access.includes(key);
 
-  // Shared nav markup for desktop + mobile drawer
-  const renderNav = (onNavigate) => (
+  // Shared nav markup. `mini` renders the collapsed icon-only rail.
+  const renderNav = (onNavigate, mini = false) => (
     <nav className="flex flex-col gap-1">
       {show("dashboard") && (
         <Link href="/" onClick={onNavigate}>
-          <div className={`${itemBase} ${isActive("/") ? itemActive : itemIdle}`}>
-            <LayoutDashboard size={18} /> Dashboard
+          <div
+            title={mini ? "Dashboard" : undefined}
+            className={`${itemBase} ${isActive("/") ? itemActive : itemIdle} ${
+              mini ? "justify-center px-2" : ""
+            }`}
+          >
+            <LayoutDashboard size={18} />
+            {!mini && "Dashboard"}
           </div>
         </Link>
       )}
@@ -103,22 +128,35 @@ export default function Sidebar({ children }) {
       {show("cms") && (
         <>
           <button
-            onClick={() => setCmsDropdown((v) => !v)}
-            className={`${itemBase} w-full justify-between ${
+            title={mini ? "CMS" : undefined}
+            onClick={() => {
+              if (mini) {
+                setCollapsed(false);
+                try {
+                  localStorage.setItem(STORAGE_KEY, "0");
+                } catch {}
+                setCmsDropdown(true);
+              } else {
+                setCmsDropdown((v) => !v);
+              }
+            }}
+            className={`${itemBase} w-full ${
               isCmsActive ? "bg-white/10 text-white" : itemIdle
-            }`}
+            } ${mini ? "justify-center px-2" : "justify-between"}`}
           >
             <span className="flex items-center gap-3">
-              <Database size={18} /> CMS
+              <Database size={18} />
+              {!mini && "CMS"}
             </span>
-            {cmsDropdown || isCmsActive ? (
-              <ChevronUp size={16} />
-            ) : (
-              <ChevronDown size={16} />
-            )}
+            {!mini &&
+              (cmsDropdown || isCmsActive ? (
+                <ChevronUp size={16} />
+              ) : (
+                <ChevronDown size={16} />
+              ))}
           </button>
 
-          {(cmsDropdown || isCmsActive) && (
+          {!mini && (cmsDropdown || isCmsActive) && (
             <div className="ml-4 flex flex-col gap-0.5 border-l border-white/10 pl-3">
               {cmsNavItems.map((item) => (
                 <Link key={item.name} href={item.href} onClick={onNavigate}>
@@ -143,11 +181,13 @@ export default function Sidebar({ children }) {
         .map((item) => (
           <Link key={item.href} href={item.href} onClick={onNavigate}>
             <div
+              title={mini ? item.name : undefined}
               className={`${itemBase} ${
                 isActive(item.href) ? itemActive : itemIdle
-              }`}
+              } ${mini ? "justify-center px-2" : ""}`}
             >
-              {item.icon} {item.name}
+              {item.icon}
+              {!mini && item.name}
             </div>
           </Link>
         ))}
@@ -164,41 +204,63 @@ export default function Sidebar({ children }) {
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#f6f7f9]">
-      {/* ---------- Desktop sidebar (dark) ---------- */}
-      <aside className="hidden w-[264px] shrink-0 flex-col bg-emerald-950 md:flex">
-        <div className="flex items-center gap-2.5 px-5 py-5">
+      {/* ---------- Desktop sidebar (dark, collapsible) ---------- */}
+      <aside
+        className={`hidden shrink-0 flex-col bg-emerald-950 transition-[width] duration-200 md:flex ${
+          collapsed ? "w-[76px]" : "w-[264px]"
+        }`}
+      >
+        <div
+          className={`flex items-center py-5 ${
+            collapsed ? "justify-center px-2" : "gap-2.5 px-5"
+          }`}
+        >
           <Image src={Logo} alt="Wahid" height={34} className="rounded-md" />
-          <div className="leading-tight">
-            <p className="text-base font-extrabold tracking-tight text-white">
-              WAHID
-            </p>
-            <p className="text-[11px] text-emerald-300/70">Admin Panel</p>
-          </div>
+          {!collapsed && (
+            <div className="leading-tight">
+              <p className="text-base font-extrabold tracking-tight text-white">
+                WAHID
+              </p>
+              <p className="text-[11px] text-emerald-300/70">Admin Panel</p>
+            </div>
+          )}
         </div>
 
-        <div className="flex-1 overflow-y-auto px-3 pb-4">
-          {loading ? <SidebarSkeleton /> : renderNav()}
+        <div
+          className={`flex-1 overflow-y-auto pb-4 ${collapsed ? "px-2" : "px-3"}`}
+        >
+          {loading ? <SidebarSkeleton /> : renderNav(undefined, collapsed)}
         </div>
 
         {user && (
           <div className="border-t border-white/10 p-3">
-            <div className="flex items-center justify-between gap-2 rounded-xl bg-white/5 px-3 py-2.5">
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-white">
-                  {user.name}
-                </p>
-                <p className="truncate text-[11px] capitalize text-emerald-300/70">
-                  {role || "—"}
-                </p>
-              </div>
+            {collapsed ? (
               <button
                 onClick={() => signOut({ callbackUrl: "/login" })}
                 title="Sign out"
-                className="shrink-0 rounded-lg p-2 text-emerald-100/70 transition hover:bg-white/10 hover:text-white"
+                className="flex w-full items-center justify-center rounded-lg p-2 text-emerald-100/70 transition hover:bg-white/10 hover:text-white"
               >
                 <LogOut size={16} />
               </button>
-            </div>
+            ) : (
+              <div className="flex items-center justify-between gap-2 rounded-xl bg-white/5 px-3 py-2.5">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-white">
+                    {user.name}
+                  </p>
+                  <p className="truncate text-[11px] capitalize text-emerald-300/70">
+                    {role || "—"}
+                  </p>
+                </div>
+                <button
+                  onClick={() => signOut({ callbackUrl: "/login" })}
+                  title="Sign out"
+                  className="shrink-0 rounded-lg p-2 text-emerald-100/70 transition hover:bg-white/10 hover:text-white"
+                >
+                  <LogOut size={16} />
+                </button>
+              </div>
+            )}
           </div>
         )}
       </aside>
@@ -255,6 +317,20 @@ export default function Sidebar({ children }) {
             <div className="md:hidden">
               <Image src={Logo} alt="Wahid" height={28} />
             </div>
+
+            {/* Collapse / expand the sidebar (desktop) */}
+            <button
+              onClick={toggleCollapsed}
+              title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+              className="hidden rounded-lg p-2 text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 md:inline-flex"
+            >
+              {collapsed ? (
+                <PanelLeftOpen size={18} />
+              ) : (
+                <PanelLeftClose size={18} />
+              )}
+            </button>
           </div>
 
           {user && (
