@@ -191,7 +191,7 @@ export default function DashboardPage() {
   const hasData = (data?.totals?.donations || 0) > 0;
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-[1400px] space-y-6">
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
@@ -212,15 +212,15 @@ export default function DashboardPage() {
             <CalendarDays size={16} className="text-emerald-600" />
             Date range
           </span>
-          <div className="flex flex-wrap gap-1 rounded-xl bg-gray-100 p-1">
+          <div className="flex flex-wrap gap-1 rounded-full bg-[#f1f2f4] p-1">
             {PRESETS.map((p) => (
               <button
                 key={p.key}
                 onClick={() => setPreset(p.key)}
-                className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
+                className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition ${
                   preset === p.key
                     ? "bg-white text-emerald-700 shadow-sm"
-                    : "text-gray-600 hover:text-gray-900"
+                    : "text-gray-500 hover:text-gray-900"
                 }`}
               >
                 {p.label}
@@ -246,7 +246,8 @@ export default function DashboardPage() {
             </div>
           )}
 
-          <span className="ml-auto text-xs text-gray-500">
+          <span className="chip ml-auto text-gray-500">
+            <CalendarDays size={14} className="text-gray-400" />
             {range.from
               ? `${range.from.toLocaleDateString("en-IN")} – ${(
                   range.to || new Date()
@@ -265,16 +266,16 @@ export default function DashboardPage() {
       ) : (
         <>
           {/* KPIs */}
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
             {kpis.map((k) => (
-              <div key={k.label} className="admin-card p-5">
+              <div key={k.label} className="admin-card p-6">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-500">
+                  <span className="text-[13px] font-medium text-gray-500">
                     {k.label}
                   </span>
-                  <span className={`rounded-lg p-2 ${k.tone}`}>{k.icon}</span>
+                  <span className={`rounded-xl p-2.5 ${k.tone}`}>{k.icon}</span>
                 </div>
-                <p className="mt-3 text-2xl font-extrabold tracking-tight text-gray-900">
+                <p className="mt-4 text-[28px] font-extrabold leading-none tracking-tight text-gray-900">
                   {k.value}
                 </p>
               </div>
@@ -282,8 +283,8 @@ export default function DashboardPage() {
           </div>
 
           {/* Trend + type split */}
-          <div className="grid gap-4 lg:grid-cols-3">
-            <div className="admin-card p-5 lg:col-span-2">
+          <div className="grid gap-5 lg:grid-cols-3">
+            <div className="admin-card p-6 lg:col-span-2">
               <h2 className="mb-4 text-base font-bold text-gray-900">
                 Donations over time
               </h2>
@@ -307,7 +308,7 @@ export default function DashboardPage() {
               )}
             </div>
 
-            <div className="admin-card p-5">
+            <div className="admin-card p-6">
               <h2 className="mb-4 text-base font-bold text-gray-900">
                 By donation type
               </h2>
@@ -336,7 +337,7 @@ export default function DashboardPage() {
 
           {/* Project-level donation stats */}
           <div className="admin-card overflow-hidden">
-            <div className="flex items-center justify-between border-b border-[#e6e8ec] px-5 py-4">
+            <div className="flex items-center justify-between border-b border-[#eceef1] px-6 py-4">
               <h2 className="flex items-center gap-2 text-base font-bold text-gray-900">
                 <FolderKanban size={17} className="text-emerald-600" />
                 Donations by project
@@ -411,9 +412,9 @@ export default function DashboardPage() {
           </div>
 
           {/* Influencers + recent */}
-          <div className="grid gap-4 lg:grid-cols-2">
+          <div className="grid gap-5 lg:grid-cols-2">
             <div className="admin-card overflow-hidden">
-              <div className="border-b border-[#e6e8ec] px-5 py-4">
+              <div className="border-b border-[#eceef1] px-6 py-4">
                 <h2 className="flex items-center gap-2 text-base font-bold text-gray-900">
                   <Megaphone size={17} className="text-emerald-600" />
                   Top influencers
@@ -459,7 +460,7 @@ export default function DashboardPage() {
             </div>
 
             <div className="admin-card overflow-hidden">
-              <div className="border-b border-[#e6e8ec] px-5 py-4">
+              <div className="border-b border-[#eceef1] px-6 py-4">
                 <h2 className="text-base font-bold text-gray-900">
                   Recent donations
                 </h2>
@@ -511,7 +512,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Footer stats */}
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-3">
             <MiniStat
               label="Active projects"
               value={data?.projects?.active ?? 0}

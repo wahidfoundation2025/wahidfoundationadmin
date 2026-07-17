@@ -7,7 +7,7 @@
 ------------------------------------------------------------------ */
 
 :root {
-  --background: #f6f7f9;
+  --background: #f4f5f6;
   --foreground: #101828;
 
   --brand-50: #ecfdf5;
@@ -77,20 +77,36 @@
 
 /* ---------------- Reusable admin components ---------------- */
 @layer components {
+  /* Soft floating panel — the core surface of the admin */
   .admin-card {
     background: #fff;
-    border: 1px solid var(--line);
-    border-radius: 1rem;
-    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+    border: 1px solid #eceef1;
+    border-radius: 1.25rem;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.03),
+      0 8px 24px -18px rgba(16, 24, 40, 0.18);
   }
   .page-title {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     font-weight: 700;
+    letter-spacing: -0.03em;
     color: #0b1f17;
   }
   .page-subtitle {
     color: var(--muted);
     font-size: 0.9375rem;
+  }
+  /* Pill chip used for filters / meta */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 9999px;
+    border: 1px solid #eceef1;
+    background: #fff;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #344054;
   }
   .label {
     display: block;
@@ -104,27 +120,37 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    border-radius: 0.75rem;
-    padding: 0.6rem 1rem;
+    border-radius: 9999px;
+    padding: 0.55rem 1.1rem;
     font-size: 0.875rem;
     font-weight: 600;
     transition: all 0.15s ease;
     cursor: pointer;
+    white-space: nowrap;
   }
   .btn-primary {
     background: var(--brand-600);
     color: #fff;
+    box-shadow: 0 6px 16px -8px rgba(5, 150, 105, 0.6);
   }
   .btn-primary:hover {
     background: var(--brand-700);
   }
+  .btn-dark {
+    background: #101828;
+    color: #fff;
+  }
+  .btn-dark:hover {
+    background: #1d2939;
+  }
   .btn-ghost {
     background: #fff;
     color: #344054;
-    border: 1px solid var(--line);
+    border: 1px solid #eceef1;
   }
   .btn-ghost:hover {
     background: #f9fafb;
+    border-color: #dfe3e8;
   }
   .btn-danger {
     background: #fff;
